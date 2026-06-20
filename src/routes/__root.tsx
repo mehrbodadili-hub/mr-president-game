@@ -84,6 +84,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "آقای رئیس‌جمهور - دستیار بازی" },
+      { name: "twitter:description", content: "دستیار بازی آقای رئیس‌جمهور" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e093cfe9-46ff-4d4b-a621-bee401d5b0cf/id-preview-1b270e4c--67c0e6e2-b4c5-460a-a947-17f5ebdec661.lovable.app-1781981412451.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e093cfe9-46ff-4d4b-a621-bee401d5b0cf/id-preview-1b270e4c--67c0e6e2-b4c5-460a-a947-17f5ebdec661.lovable.app-1781981412451.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
