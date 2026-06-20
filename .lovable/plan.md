@@ -1,39 +1,65 @@
-# Plan: Port "آقای رئیس‌جمهور - دستیار بازی" into Lovable
 
-I'll bring your AI Studio game over exactly as it is — same screens, same Persian text, same logic, same look. The only changes are the minimum needed to make it run inside the Lovable (TanStack Start) project.
+# دو زبانه کردن بازی «آقای رئیس‌جمهور»
 
-## What gets copied as-is
+## هدف
+اضافه کردن پشتیبانی کامل از دو زبان **فارسی** و **انگلیسی** با یک کلید تعویض زبان در رابط کاربری. از این به بعد هر متن جدیدی که اضافه شود، در هر دو زبان نگهداری می‌شود.
 
-From the uploaded zip, all gameplay code moves over unchanged:
+## معماری i18n
 
-- `src/App.tsx` (~4358 lines — the full game controller)
-- `src/types.ts`, `src/constants.ts`, `src/utils.ts`
-- All 12 components in `src/components/` (Day0Setup, NightWizard, ChaosPhase, PlayerCard, RoleTable, SearchManager, SpeakingTimer, GameGuide, CollapsibleGuide, ConditionsModal, Night0Terrorist)
-- The cover image `regenerated_image_1780649811869.jpg` (uploaded to Lovable's CDN so the repo stays small; the other 3 unused cover images are dropped)
-- Persian RTL styling, Vazirmatn Google Font, dark background, custom gold-glow animation, custom scrollbar — all kept identical
-- Login (Mehrbod / Said), localStorage persistence, dev panel, execution modes, simulated winner — all kept identical
+### کتابخانه
+استفاده از `react-i18next` + `i18next` (سبک، استاندارد، با پشتیبانی RTL/LTR).
 
-## Minimum integration changes
+### ساختار فایل‌ها
+```text
+src/
+  i18n/
+    index.ts            ← پیکربندی i18next
+    locales/
+      fa.json           ← همه متن‌های فارسی
+      en.json           ← همه متن‌های انگلیسی
+  components/
+    LanguageToggle.tsx  ← دکمه تعویض زبان (FA / EN)
+```
 
-1. **Mount under TanStack Start routing.** `src/routes/index.tsx` becomes a thin wrapper that renders the ported `App` component on the client only (the game heavily uses `localStorage` / `window`, so it runs after mount to avoid SSR mismatches). The `<html lang="en">` shell in `__root.tsx` gets `dir="rtl"` and the page `<title>` updates to "آقای رئیس‌جمهور - دستیار بازی".
-2. **Styles.** Vazirmatn font `<link>` goes into `__root.tsx` head (per Tailwind v4 rules — no remote `@import` in CSS). The body background `#050608`, font, gold-glow keyframes, and custom scrollbar move into `src/styles.css`.
-3. **Dependencies.** Install `motion` and `@google/genai` (lucide-react is already present). `express`, `dotenv`, `tsx` from the original are dev-server-only and not needed here.
-4. **Asset reference.** The single `new URL('./assets/images/...', import.meta.url)` cover-image import is replaced with the Lovable CDN URL from the uploaded asset pointer. No code logic changes.
-5. **Cleanup.** The current placeholder home page (blank-app SVG) is removed.
+### کلیدهای ترجمه
+ساختار تو در تو بر اساس بخش‌های بازی:
+- `common.*` — دکمه‌ها و واژه‌های مشترک (تأیید، لغو، بعدی، قبلی، ...)
+- `setup.*` — صفحه Day0Setup (تعداد بازیکن، نقش‌ها، نام‌ها)
+- `roles.*` — نام و توضیح هر نقش (شهروند، تروریست، جادوگر، ...)
+- `night.*` — مراحل شب (Night0Terrorist، NightWizard)
+- `day.*` — مراحل روز و رأی‌گیری
+- `chaos.*` — فاز هرج و مرج
+- `guide.*` — راهنمای بازی (GameGuide، CollapsibleGuide)
+- `conditions.*` — شرط‌های پایان بازی
+- `timer.*` — تایمر صحبت
+- `search.*` — مدیریت جستجو
 
-## What is NOT changing
+## تغییرات کد
 
-- No redesign, no refactor, no feature additions or removals
-- No backend / Lovable Cloud — the game is purely client-side with localStorage, same as the original
-- No new auth system — the existing hardcoded login stays exactly as you have it
-- Game rules, role logic, night/day phases, chaos phase, search manager, timer — untouched
+1. **نصب**: `bun add react-i18next i18next i18next-browser-languagedetector`
+2. **`src/i18n/index.ts`**: راه‌اندازی i18next با fallback فارسی، تشخیص خودکار زبان از localStorage.
+3. **`src/i18n/locales/fa.json` و `en.json`**: استخراج تمام رشته‌های متنی فعلی از کامپوننت‌ها و `constants.ts` به این دو فایل.
+4. **`src/routes/__root.tsx`**: import کردن `src/i18n` و مدیریت داینامیک `<html lang dir>` (فارسی → `rtl`، انگلیسی → `ltr`).
+5. **`src/styles.css`**: کلاس‌های RTL/LTR aware (در صورت نیاز برای فلش‌ها و آیکون‌ها).
+6. **همه کامپوننت‌ها** (`Day0Setup`, `Night0Terrorist`, `NightWizard`, `ChaosPhase`, `RoleTable`, `PlayerCard`, `SearchManager`, `SpeakingTimer`, `ConditionsModal`, `GameGuide`, `CollapsibleGuide`, `App.tsx`, `routes/index.tsx`):
+   - متن‌های hardcoded با `t('key')` جایگزین می‌شوند.
+   - `useTranslation()` اضافه می‌شود.
+7. **`constants.ts`**: نام و توضیح نقش‌ها به‌جای رشته ثابت، با کلید ترجمه ذخیره می‌شوند و در زمان نمایش `t()` می‌خورند.
+8. **`LanguageToggle.tsx`**: دکمه کوچک بالای صفحه (مثلاً کنار عنوان) با دو حالت `FA | EN`. زبان انتخاب‌شده در `localStorage` ذخیره می‌شود.
 
-## Technical notes
+## فونت و جهت
+- فارسی: فونت Vazirmatn یا فعلی، جهت `rtl`.
+- انگلیسی: فونت Inter یا مشابه، جهت `ltr`.
+- سوییچ بین این دو از طریق تغییر `dir` و `lang` روی `<html>` در `__root.tsx`.
 
-- TanStack Start runs SSR; the game expects `localStorage` at module scope of several `useState` initializers. The wrapper route gates rendering with a `useEffect` mounted flag so `App` only renders in the browser. This is a one-line guard — no edits inside `App.tsx`.
-- `import.meta.env.DEV` still works under Vite 7 / TanStack Start, so the dev-mode panel detection keeps functioning.
-- Tailwind v4 is already configured here; the original also used Tailwind v4, so utility classes port over unchanged.
-- Lovable login chrome around the published app is separate from the in-game login screen — both will exist; the in-game one is preserved as you built it.
+## قانون نگهداری از این به بعد
+هر زمان متنی اضافه/تغییر می‌کند:
+- کلید جدید به **هر دو** `fa.json` و `en.json` اضافه می‌شود.
+- کامپوننت‌ها همیشه از `t()` استفاده می‌کنند، نه رشته ثابت.
+- این به‌عنوان یک memory دائمی پروژه ذخیره می‌شود تا در همه تعاملات بعدی رعایت شود.
 
-After implementing, I'll run the project build to confirm everything compiles, then you can open the preview and log in with your existing credentials.
-
+## خروجی نهایی
+- یک دکمه تعویض زبان در گوشه بالای صفحه.
+- تمام بازی به‌صورت کامل به هر دو زبان قابل استفاده است.
+- جهت صفحه به‌طور خودکار بین RTL و LTR تغییر می‌کند.
+- زبان انتخابی کاربر بین بازدیدها حفظ می‌شود.

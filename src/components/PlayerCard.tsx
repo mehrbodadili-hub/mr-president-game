@@ -4,8 +4,8 @@
  */
 
 import { Player, RoleType } from '../types';
-import { ROLE_DETAILS } from '../constants';
 import { Shield, ShieldAlert, Award, AlertTriangle, Eye, EyeOff, Trash2, Heart, UserMinus, Key, HelpCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface PlayerCardProps {
   player: Player;
@@ -36,7 +36,8 @@ export default function PlayerCard({
   onRemovePlayer,
   totalPlayers = 10,
 }: PlayerCardProps) {
-  const roleInfo = ROLE_DETAILS[player.role] || ROLE_DETAILS['none'];
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language !== 'en';
   const isMason = player.identity === 'freemason';
   const displayRole = showSecrets || PUBLIC_ROLES.includes(player.role);
 
@@ -52,7 +53,7 @@ export default function PlayerCard({
           ? 'bg-rose-950/20 border-rose-900/30 shadow-md shadow-rose-955/5'
           : 'bg-slate-900/90 border-slate-800 hover:border-slate-700'
       }`}
-      dir="rtl"
+      dir={isRtl ? 'rtl' : 'ltr'}
     >
       {/* Header Info */}
       <div className="flex items-start justify-between gap-2 mb-3">
@@ -60,22 +61,22 @@ export default function PlayerCard({
           {/* Status badge */}
           {!player.isAlive ? (
             <span className="bg-red-950 text-red-400 border border-red-900/50 text-[10px] px-2 py-0.5 rounded">
-              کشته شده
+              {t('playerCard.dead')}
             </span>
           ) : player.isImprisoned ? (
             <span className="bg-amber-950 text-amber-400 border border-amber-900/50 text-[10px] px-2 py-0.5 rounded animate-pulse">
-              در زندان (بدون رای)
+              {t('playerCard.imprisoned')}
             </span>
           ) : (
             <span className="bg-teal-950 text-teal-400 border border-teal-950 text-[10px] px-2 py-0.5 rounded">
-              زنده
+              {t('playerCard.alive')}
             </span>
           )}
 
           {/* Freemason identifier (moderator only) */}
           {isMason && showSecrets && (
             <span className="bg-rose-900/40 text-rose-300 border border-rose-800 text-[10px] px-2 py-0.5 rounded font-mono">
-              فراماسون #{player.masonNumber}
+              {t('playerCard.freemasonTag', { n: player.masonNumber })}
             </span>
           )}
 
@@ -83,7 +84,7 @@ export default function PlayerCard({
           {player.hasTerroristAbility && player.isAlive && !player.isImprisoned && showSecrets && (
             <span className="bg-purple-950 text-purple-400 border border-purple-800 text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-semibold">
               <AlertTriangle className="w-3 h-3 text-purple-400 animate-bounce" />
-              قابلیت تروریست
+              {t('playerCard.terroristTag')}
             </span>
           )}
         </div>
@@ -93,7 +94,7 @@ export default function PlayerCard({
           <button
             onClick={() => onRemovePlayer(player.id)}
             className="text-slate-500 hover:text-rose-400 p-1"
-            title="حذف بازیکن"
+            title={t('playerCard.removeTitle')}
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -104,17 +105,17 @@ export default function PlayerCard({
       <div className="mb-4">
         <h3 className="text-base font-bold text-white tracking-wide">{player.name}</h3>
         <div className="flex items-center gap-1.5 mt-1">
-          <span className="text-xs text-slate-400">نقش:</span>
+          <span className="text-xs text-slate-400">{t('playerCard.roleLabel')}</span>
           <span className={`text-xs font-bold ${PUBLIC_ROLES.includes(player.role) ? 'text-amber-400' : 'text-teal-400'}`}>
-            {roleInfo.nameFa}
+            {t(`roles.${player.role}.name`)}
           </span>
         </div>
         {/* Real identity indicator */}
         {showSecrets && (
           <div className="mt-1 flex items-center gap-1.5">
-            <span className="text-xs text-slate-400">هویت اصلی:</span>
+            <span className="text-xs text-slate-400">{t('playerCard.identityLabel')}</span>
             <span className={`text-xs font-bold ${isMason ? 'text-rose-400' : 'text-sky-400'}`}>
-              {isMason ? 'ماسون (اقلیت)' : 'شهروند (اکثریت)'}
+              {isMason ? t('playerCard.mason') : t('playerCard.citizen')}
             </span>
           </div>
         )}
@@ -124,44 +125,44 @@ export default function PlayerCard({
       {showSecrets && (
         <div className="mb-4 bg-slate-950/50 p-2.5 rounded-lg border border-slate-800 space-y-2.5">
           <div>
-            <label className="block text-[10px] text-slate-400 mb-1">تغییر انتساب نقش کابینه یا اصلی:</label>
+            <label className="block text-[10px] text-slate-400 mb-1">{t('playerCard.changeRoleLabel')}</label>
             <select
               value={player.role}
               onChange={(e) => onUpdateRole(player.id, e.target.value as RoleType)}
-              className="w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded p-1 focus:outline-none focus:border-amber-500 text-right"
+              className={`w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded p-1 focus:outline-none focus:border-amber-500 ${isRtl ? 'text-right' : 'text-left'}`}
             >
-              <option value="none">بدون نقش / شهروند ساده</option>
-              <optgroup label="کابینه دولتی">
-                <option value="president">رئیس‌جمهور</option>
-                {totalPlayers >= 10 && <option value="vice_president">معاون رئیس‌جمهور</option>}
-                <option value="mayor">شهردار</option>
-                <option value="judge">قاضی</option>
+              <option value="none">{t('roles.none.name')}</option>
+              <optgroup label={t('playerCard.groupCabinet')}>
+                <option value="president">{t('roles.president.name')}</option>
+                {totalPlayers >= 10 && <option value="vice_president">{t('roles.vice_president.name')}</option>}
+                <option value="mayor">{t('roles.mayor.name')}</option>
+                <option value="judge">{t('roles.judge.name')}</option>
               </optgroup>
-              <optgroup label="قدرت‌های مذهبی و فرعی">
-                <option value="pope">پاپ</option>
-                {totalPlayers >= 10 && <option value="priest">کشیش</option>}
+              <optgroup label={t('playerCard.groupReligious')}>
+                <option value="pope">{t('roles.pope.name')}</option>
+                {totalPlayers >= 10 && <option value="priest">{t('roles.priest.name')}</option>}
               </optgroup>
-              <optgroup label="سایر نقش‌های شهری">
-                <option value="doctor">دکتر</option>
-                {totalPlayers >= 12 && <option value="police">پلیس</option>}
-                <option value="detective">کارآگاه</option>
-                <option value="reporter">گزارشگر</option>
-                <option value="journalist">خبرنگار</option>
-                {totalPlayers > 8 && <option value="lawyer">وکیل</option>}
+              <optgroup label={t('playerCard.groupCity')}>
+                <option value="doctor">{t('roles.doctor.name')}</option>
+                {totalPlayers >= 12 && <option value="police">{t('roles.police.name')}</option>}
+                <option value="detective">{t('roles.detective.name')}</option>
+                <option value="reporter">{t('roles.reporter.name')}</option>
+                <option value="journalist">{t('roles.journalist.name')}</option>
+                {totalPlayers > 8 && <option value="lawyer">{t('roles.lawyer.name')}</option>}
               </optgroup>
             </select>
           </div>
 
           {onUpdateIdentity && (
             <div>
-              <label className="block text-[10px] text-slate-400 mb-1">تغییر هویت اصلی:</label>
+              <label className="block text-[10px] text-slate-400 mb-1">{t('playerCard.changeIdentityLabel')}</label>
               <select
                 value={player.identity}
                 onChange={(e) => onUpdateIdentity(player.id, e.target.value as 'citizen' | 'freemason')}
-                className="w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded p-1 focus:outline-none focus:border-amber-500 text-right"
+                className={`w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded p-1 focus:outline-none focus:border-amber-500 ${isRtl ? 'text-right' : 'text-left'}`}
               >
-                <option value="citizen">شهروند (اکثریت)</option>
-                <option value="freemason">فراماسون (اقلیت مطلع)</option>
+                <option value="citizen">{t('playerCard.identityCitizen')}</option>
+                <option value="freemason">{t('playerCard.identityMason')}</option>
               </select>
             </div>
           )}
@@ -182,12 +183,12 @@ export default function PlayerCard({
           {player.isAlive ? (
             <>
               <UserMinus className="w-3.5 h-3.5" />
-              کشتن بازیکن
+              {t('playerCard.kill')}
             </>
           ) : (
             <>
               <Heart className="w-3.5 h-3.5" />
-              زنده کردن
+              {t('playerCard.revive')}
             </>
           )}
         </button>
@@ -204,7 +205,7 @@ export default function PlayerCard({
               : 'bg-amber-950/40 text-amber-300 border-amber-900/50 hover:bg-amber-900/30'
           }`}
         >
-          {player.isImprisoned ? 'آزاد از زندان' : 'انتقال به زندان'}
+          {player.isImprisoned ? t('playerCard.release') : t('playerCard.imprison')}
         </button>
 
         {/* Shield status */}
@@ -222,12 +223,12 @@ export default function PlayerCard({
           {player.hasShield && !player.shieldBroken ? (
             <>
               <Shield className="w-3.5 h-3.5 text-teal-400 fill-teal-400/20" />
-              سپر فعال
+              {t('playerCard.shieldOn')}
             </>
           ) : (
             <>
               <ShieldAlert className="w-3.5 h-3.5 text-slate-500" />
-              اعطای سپر
+              {t('playerCard.shieldGive')}
             </>
           )}
         </button>
@@ -245,7 +246,7 @@ export default function PlayerCard({
                 : 'bg-slate-950 text-slate-500 border-slate-800 hover:bg-slate-800/20'
             }`}
           >
-            {player.hasTerroristAbility ? 'لغو تروریست' : 'تروریست کردن'}
+            {player.hasTerroristAbility ? t('playerCard.terroristOff') : t('playerCard.terroristOn')}
           </button>
         )}
       </div>

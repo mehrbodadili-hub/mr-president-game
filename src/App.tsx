@@ -4,6 +4,8 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageToggle from './components/LanguageToggle';
 import { Player, RoleType, GamePhase, GameLog, Cabinet, Identity } from './types';
 import { initializePlayers, calculateMasonCount, calculatePrisonCapacity, hasInitialShield, generateId, playTimerSound } from './utils';
 import { ROLE_DETAILS } from './constants';
@@ -54,6 +56,8 @@ const isDevMode =
     window.location.hostname.includes('ais-dev')));
 
 export default function App() {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language !== 'en';
   // Game Setup States
   const [playerInput, setPlayerInput] = useState<string>(() => {
     return localStorage.getItem('president_playerInput') || 'مهرداد, نیما, سپیده, آرمان, صبا, کیوان, بهار, رامین, رویا, سینا';
@@ -109,7 +113,7 @@ export default function App() {
       localStorage.setItem('president_isAuthenticated', 'true');
       setAuthError('');
     } else {
-      setAuthError('نام کاربری یا رمز عبور اشتباه است.');
+      setAuthError(t('auth.error'));
     }
   };
 
@@ -1995,13 +1999,14 @@ export default function App() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#050609] text-slate-100 flex flex-col items-center justify-center font-sans selection:bg-amber-500 selection:text-slate-900 overflow-hidden relative" dir="rtl">
+      <div className="min-h-screen bg-[#050609] text-slate-100 flex flex-col items-center justify-center font-sans selection:bg-amber-500 selection:text-slate-900 overflow-hidden relative" dir={isRtl ? 'rtl' : 'ltr'}>
         {/* Background Decorative Elements */}
         <div className="absolute top-0 inset-x-0 h-64 bg-gradient-to-b from-amber-500/10 to-transparent pointer-events-none"></div>
         <div className="absolute -top-32 -right-32 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="w-full max-w-md mx-auto z-10 px-6 animate-fadeIn">
+          <div className="flex justify-end mb-3"><LanguageToggle /></div>
           <div className="bg-[#0a0d14]/80 backdrop-blur-md border border-amber-500/20 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-50"></div>
             
@@ -2016,10 +2021,10 @@ export default function App() {
                 />
               </div>
               <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-l from-amber-200 via-amber-400 to-amber-600 tracking-tight font-sans">
-                سناریوی رئیس‌جمهور
+                {t('app.title')}
               </h1>
               <p className="text-sm font-semibold text-amber-500/70 mt-3 font-sans tracking-wide">
-                پنل مدیریت جامع و شب‌خوانی
+                {t('app.subtitle')}
               </p>
             </div>
 
@@ -2030,7 +2035,7 @@ export default function App() {
                 </div>
               )}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-400 mr-1 block" htmlFor="username">نام کاربری</label>
+                <label className="text-[11px] font-bold text-slate-400 mr-1 block" htmlFor="username">{t('auth.username')}</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <User className="h-4 w-4 text-slate-500" />
@@ -2042,14 +2047,14 @@ export default function App() {
                     onChange={(e) => setAuthUsername(e.target.value)}
                     dir="ltr"
                     className="w-full bg-[#050609] border border-slate-800 text-sm text-slate-200 rounded-xl p-3 focus:outline-none focus:border-amber-500/50 transition pl-10"
-                    placeholder="Username"
+                    placeholder={t('auth.username')}
                     required
                   />
                 </div>
               </div>
               
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-400 mr-1 block" htmlFor="password">رمز عبور</label>
+                <label className="text-[11px] font-bold text-slate-400 mr-1 block" htmlFor="password">{t('auth.password')}</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Lock className="h-4 w-4 text-slate-500" />
@@ -2061,7 +2066,7 @@ export default function App() {
                     onChange={(e) => setAuthPassword(e.target.value)}
                     dir="ltr"
                     className="w-full bg-[#050609] border border-slate-800 text-sm text-slate-200 rounded-xl p-3 focus:outline-none focus:border-amber-500/50 transition pl-10"
-                    placeholder="Password"
+                    placeholder={t('auth.password')}
                     required
                   />
                 </div>
@@ -2071,7 +2076,7 @@ export default function App() {
                 type="submit"
                 className="w-full bg-amber-600 hover:bg-amber-500 text-white font-black text-sm py-3.5 rounded-xl transition shadow-lg shadow-amber-900/20 mt-4 flex items-center justify-center gap-2"
               >
-                ورود به پنل مدیریت
+                {t('auth.submit')}
               </button>
             </form>
           </div>
@@ -2086,7 +2091,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050609] text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-900 overflow-x-hidden" dir="rtl">
+    <div className="min-h-screen bg-[#050609] text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-900 overflow-x-hidden" dir={isRtl ? 'rtl' : 'ltr'}>
       {/* Top Main Navigation Bar */}
       <header className="border-b border-amber-950/20 bg-[#0a0d14]/90 backdrop-blur sticky top-0 z-40 px-6 py-4 shadow-xl">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
@@ -2095,8 +2100,8 @@ export default function App() {
               <img src={coverImg} alt="Logo" className="w-full h-full object-contain" />
             </div>
             <div>
-              <h1 id="app-title" className="text-lg font-black text-white tracking-wide gold-glow-text">سناریویِ آقای رئیس‌جمهور</h1>
-              <p className="text-[10px] text-amber-500/80 font-bold tracking-tight">سامانه مدیریت و دستیار هوشمندِ گرداننده لژ</p>
+              <h1 id="app-title" className="text-lg font-black text-white tracking-wide gold-glow-text">{t('app.title')}</h1>
+              <p className="text-[10px] text-amber-500/80 font-bold tracking-tight">{t('app.subtitle')}</p>
             </div>
           </div>
 
@@ -2152,12 +2157,13 @@ export default function App() {
             )}
 
             {/* Logout Button */}
+            <LanguageToggle />
             <button
               onClick={handleLogout}
               className="bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-400 hover:text-red-400 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
-              خروج
+              {t('auth.logout')}
             </button>
 
             {/* Help & Rules Button and other controls have been moved to Footer */}
