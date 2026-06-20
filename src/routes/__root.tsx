@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import "../i18n";
+import { useTranslation } from "react-i18next";
 
 function NotFoundComponent() {
   return (
@@ -106,8 +108,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const lang =
+    typeof window !== "undefined"
+      ? localStorage.getItem("president_lang") || "fa"
+      : "fa";
+  const dir = lang === "en" ? "ltr" : "rtl";
   return (
-    <html lang="fa" dir="rtl">
+    <html lang={lang} dir={dir}>
       <head>
         <HeadContent />
       </head>
@@ -121,6 +128,12 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { i18n } = useTranslation();
+  useEffect(() => {
+    const dir = i18n.language === "en" ? "ltr" : "rtl";
+    document.documentElement.setAttribute("lang", i18n.language || "fa");
+    document.documentElement.setAttribute("dir", dir);
+  }, [i18n.language]);
 
   return (
     <QueryClientProvider client={queryClient}>
