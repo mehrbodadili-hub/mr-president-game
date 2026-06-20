@@ -1,0 +1,177 @@
+{
+  "app": {
+    "title": "Mr. President",
+    "subtitle": "Game Assistant"
+  },
+  "auth": {
+    "title": "Moderator Login",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign in",
+    "logout": "Log out",
+    "error": "Username or password is incorrect."
+  },
+  "language": {
+    "label": "Language",
+    "fa": "فارسی",
+    "en": "English",
+    "switchTo": "Switch to {{lang}}"
+  },
+  "tabs": {
+    "day": "Day / Game",
+    "logs": "Logs",
+    "guide": "Guide"
+  },
+  "common": {
+    "close": "Close",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "next": "Next",
+    "previous": "Previous",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "yes": "Yes",
+    "no": "No",
+    "unknown": "Unknown",
+    "dash": "—"
+  },
+  "roleTable": {
+    "title": "Role Reference & Power Rules",
+    "subtitle": "Day, night abilities and how each role is assigned in the Mr. President scenario",
+    "searchPlaceholder": "Search role...",
+    "col": {
+      "name": "Role",
+      "day": "Day Ability",
+      "night": "Night Ability",
+      "chooser": "Assigned By",
+      "shield": "Initial Shield"
+    },
+    "has": "Yes",
+    "noResults": "No roles match your search.",
+    "shieldRuleLabel": "Shield rule:",
+    "shieldRule": "The Pope, President, Mayor, and Judge each have a protective shield that saves them from the first night kill.",
+    "closeBtn": "Close guide"
+  },
+  "playerCard": {
+    "dead": "Killed",
+    "imprisoned": "Imprisoned (no vote)",
+    "alive": "Alive",
+    "freemasonTag": "Freemason #{{n}}",
+    "terroristTag": "Terrorist ability",
+    "removeTitle": "Remove player",
+    "roleLabel": "Role:",
+    "identityLabel": "True identity:",
+    "mason": "Mason (minority)",
+    "citizen": "Citizen (majority)",
+    "changeRoleLabel": "Change cabinet or main role:",
+    "changeIdentityLabel": "Change true identity:",
+    "groupCabinet": "Government Cabinet",
+    "groupReligious": "Religious & Secondary Powers",
+    "groupCity": "Other City Roles",
+    "identityCitizen": "Citizen (majority)",
+    "identityMason": "Freemason (informed minority)",
+    "kill": "Kill player",
+    "revive": "Revive",
+    "release": "Release from prison",
+    "imprison": "Send to prison",
+    "shieldOn": "Shield active",
+    "shieldGive": "Grant shield",
+    "terroristOff": "Remove terrorist",
+    "terroristOn": "Make terrorist"
+  },
+  "roles": {
+    "pope": {
+      "name": "Pope",
+      "dayAbility": "Can veto the President's choice or the Judge's execution verdict (once per day, every other day). Cannot be put on trial by a vote.",
+      "nightAbility": "Has a defensive shield against shooting or terrorist actions. After every daytime veto, a random terrorist ability is added to the city at night.",
+      "chooser": "Priest",
+      "description": "A church-linked special role that controls and overturns cabinet selections and execution decisions."
+    },
+    "priest": {
+      "name": "Priest",
+      "dayAbility": "—",
+      "nightAbility": "Each night can disable one role's ability (cannot target the same role two nights in a row).",
+      "chooser": "Chosen by the Pope",
+      "description": "Responsible for temporarily blocking and disabling other roles' night abilities."
+    },
+    "president": {
+      "name": "President",
+      "dayAbility": "Once per day can swap two roles. If a cabinet seat is empty, must fill it first with a role-less player (Judge has highest priority). Cannot be put on trial by a vote.",
+      "nightAbility": "Has a defensive shield against one shot or terrorist action.",
+      "chooser": "Vice President, Mayor, and Judge",
+      "description": "The city's executive head with the power to reshuffle roles and keep the cabinet stable."
+    },
+    "vice_president": {
+      "name": "Vice President",
+      "dayAbility": "In every court vote, his vote counts twice. If the President leaves the game, he becomes the successor.",
+      "nightAbility": "—",
+      "chooser": "Reporter and Journalist",
+      "description": "The President's right hand with double influence in court and the certain successor to the presidency."
+    },
+    "reporter": {
+      "name": "Reporter",
+      "dayAbility": "—",
+      "nightAbility": "Point at one person and learn what happened to them during the past night.",
+      "chooser": "—",
+      "description": "A truth-seeking observer who reveals the details of nightly events for any player."
+    },
+    "journalist": {
+      "name": "Journalist",
+      "dayAbility": "—",
+      "nightAbility": "Every other night can pick a past day or night phase and learn the true identity of anyone eliminated in that window.",
+      "chooser": "—",
+      "description": "An active journalist informed about the real identities of those killed or removed from the game."
+    },
+    "mayor": {
+      "name": "Mayor",
+      "dayAbility": "After the night outcomes and before the court vote, can declare a revolution and request a vote to replace the President. With a majority (half the city + 1), becomes the new President. If the vote fails, loses their role and is put on trial.",
+      "nightAbility": "Has a defensive shield against shooting or terrorist actions. After every nighttime revolution, a random terrorist ability is added to the city.",
+      "chooser": "Doctor, Police, and Detective",
+      "description": "Leader of political coups to overthrow the President and democratically seize executive power."
+    },
+    "doctor": {
+      "name": "Doctor",
+      "dayAbility": "—",
+      "nightAbility": "Each night saves one person from a mafia/police shot. Can also save themselves each night. Protection only affects nighttime elimination.",
+      "chooser": "—",
+      "description": "A devoted physician who protects citizens' fragile lives from the guns of the night."
+    },
+    "police": {
+      "name": "Police",
+      "dayAbility": "—",
+      "nightAbility": "Each night can shoot one person. After every night shot, a random terrorist ability is added to the city.",
+      "chooser": "—",
+      "description": "The citizens' armed power, taking nighttime shots at suspects."
+    },
+    "detective": {
+      "name": "Detective",
+      "dayAbility": "—",
+      "nightAbility": "Every other night can send one person directly to court for trial.",
+      "chooser": "—",
+      "description": "A law officer who, with sufficient evidence, sends suspects to court without a vote."
+    },
+    "judge": {
+      "name": "Judge",
+      "dayAbility": "Final verdict over court defendants (execution, prison, or pardon). Prison has 3 spots (prisoners cannot vote and are not counted, but keep their role). Cannot be put on trial by a vote.",
+      "nightAbility": "Has a defensive shield against shooting or terrorist actions.",
+      "chooser": "Lawyer",
+      "description": "The most powerful judicial arm of the game, issuing verdicts of acquittal, execution, or imprisonment."
+    },
+    "lawyer": {
+      "name": "Lawyer",
+      "dayAbility": "Before each verdict, can speak for 1 minute to defend the accused.",
+      "nightAbility": "—",
+      "chooser": "—",
+      "description": "A loyal jurist who works in court to defend the accused or sway verdicts."
+    },
+    "none": {
+      "name": "No role / Plain citizen",
+      "dayAbility": "Vote and try to identify the Freemasons.",
+      "nightAbility": "—",
+      "chooser": "—",
+      "description": "The unaware masses pursuing the goal of saving the city from the secretive Freemasons' grip."
+    }
+  }
+}
