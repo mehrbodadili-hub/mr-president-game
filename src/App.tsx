@@ -244,8 +244,8 @@ export default function App() {
     return saved ? saved === 'true' : false;
   });
   const [showConditionsModal, setShowConditionsModal] = useState<boolean>(false);
-  const [selectedTab, setSelectedTab] = useState<'day' | 'logs'>(() => {
-    return (localStorage.getItem('president_selectedTab') as 'day' | 'logs') || 'day';
+  const [selectedTab, setSelectedTab] = useState<'day' | 'logs' | 'guide'>(() => {
+    return (localStorage.getItem('president_selectedTab') as 'day' | 'logs' | 'guide') || 'day';
   });
   const [customLogo, setCustomLogo] = useState<string | null>(() => {
     return localStorage.getItem('president_customLogo') || null;
