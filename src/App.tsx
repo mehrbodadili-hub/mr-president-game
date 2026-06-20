@@ -4,6 +4,8 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageToggle from './components/LanguageToggle';
 import { Player, RoleType, GamePhase, GameLog, Cabinet, Identity } from './types';
 import { initializePlayers, calculateMasonCount, calculatePrisonCapacity, hasInitialShield, generateId, playTimerSound } from './utils';
 import { ROLE_DETAILS } from './constants';
@@ -54,6 +56,8 @@ const isDevMode =
     window.location.hostname.includes('ais-dev')));
 
 export default function App() {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language !== 'en';
   // Game Setup States
   const [playerInput, setPlayerInput] = useState<string>(() => {
     return localStorage.getItem('president_playerInput') || 'مهرداد, نیما, سپیده, آرمان, صبا, کیوان, بهار, رامین, رویا, سینا';
@@ -109,7 +113,7 @@ export default function App() {
       localStorage.setItem('president_isAuthenticated', 'true');
       setAuthError('');
     } else {
-      setAuthError('نام کاربری یا رمز عبور اشتباه است.');
+      setAuthError(t('auth.error'));
     }
   };
 
