@@ -43,7 +43,8 @@ import {
   LogOut
 } from 'lucide-react';
 
-const coverImg = new URL('./assets/images/regenerated_image_1780649811869.jpg', import.meta.url).href;
+import coverAsset from './assets/game_cover.jpg.asset.json';
+const coverImg = coverAsset.url;
 
 const isDevMode = 
   (import.meta as any).env?.DEV || 
