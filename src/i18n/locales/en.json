@@ -173,5 +173,168 @@
       "chooser": "—",
       "description": "The unaware masses pursuing the goal of saving the city from the secretive Freemasons' grip."
     }
+  },
+  "day0": {
+    "header": {
+      "stepLabel": "Step {{step}} of 9 setup phases",
+      "title": "Day Zero Assembly Setup"
+    },
+    "buttons": {
+      "prev": "Previous step",
+      "next": "Next step",
+      "finish": "Form cabinet and start night zero"
+    },
+    "step1": {
+      "title": "1. Secret reveal of hidden identities",
+      "intro": "The moderator must call players one by one and, by clicking the dedicated button, privately show them their hidden identity. Click the button again to hide the card immediately.",
+      "panelTitle": "⛪ Freemason Lodge moderator panel (moderator only)",
+      "quota": "The 29% quota requires exactly {{count}} freemasons. The rest are citizens.",
+      "currentCount": "Current freemasons in the assembly: {{count}}",
+      "checked": "✓ Read",
+      "freemasonLabel": "◄ Freemason ►",
+      "citizenLabel": "◄ Citizen ►",
+      "positionLabel": "Position:",
+      "positionNumber": "Number {{n}}",
+      "hide": "Hide",
+      "reveal": "Reveal identity",
+      "expelFromLodge": "⛪ Remove from lodge",
+      "joinLodge": "👤 Add to lodge",
+      "progress": "Identities checked: {{checked}} of {{total}} players"
+    },
+    "step2": {
+      "title": "1. Speaking order (first speaker)",
+      "intro": "At the start of day one, players take turns speaking in the day-zero discussion. You can choose the first speaker, or let the system pick randomly.",
+      "guideTitle": "Discussion phase and official selection guide",
+      "round1Label": "💬 Round 1 — Pope discussion (clockwise with challenges):",
+      "round1Body": "Speaking continues clockwise from the first speaker. Each speaker may issue one challenge (a separate speaking slot) to another player, and each player can only receive one challenge. The first speaker leads this round.",
+      "round2Label": "🔄 Round 2 — President discussion (counter-clockwise, no challenges):",
+      "round2Body": "For the presidential election, each player speaks again, this time counter-clockwise starting from the same first speaker, with no challenges. In effect, the first speaker becomes the last speaker of the presidential round.",
+      "candidacyLabel": "🗳️ Candidacy and final assembly vote:",
+      "candidacyBody": "After the defenses end, the assembly's first vote selects the top two candidates. They then hold a short back-and-forth debate, followed by the final runoff vote.",
+      "popeVetoLabel": "👑 Pope's veto right:",
+      "popeVetoBody": "The candidate with the most votes becomes President — unless the Pope vetoes (\"dislikes\") them. If the Pope vetoes, the runner-up (with fewer votes) becomes the final President.",
+      "randomBtn": "Pick random speaker",
+      "selected": "First speaker of day zero: {{name}}"
+    },
+    "step3": {
+      "title": "2. Pope election (assembly vote)",
+      "desc": "The player with the most votes in the day-zero assembly becomes the official Pope. Choose one player to assume the Pope's seat.",
+      "selected": "Pope appointed on day zero: {{name}}"
+    },
+    "step4": {
+      "title": "3. The Pope appoints a Priest",
+      "desc": "The elected Pope ({{pope}}) must now appoint one trusted player (other than themselves) as their personal Priest.",
+      "skip": "(No Priest — skip)",
+      "selected": "Game's High Priest: {{name}}"
+    },
+    "step5": {
+      "title": "4. Final candidate vote and cabinet formation (Presidency)",
+      "intro": "Here the final vote among the candidates takes place. The election proceeds officially as follows:",
+      "candidacyLabel": "🗳️ Two-person candidacy:",
+      "candidacyBody": "In the first assembly vote, the two players with the most votes become candidates.",
+      "debateLabel": "🗣️ Candidate back-and-forth debate:",
+      "debateBody": "The two candidates defend themselves through a short verbal exchange. A final runoff vote between them follows.",
+      "popeVetoLabel": "❌ Pope's veto right:",
+      "popeVetoBody": "The candidate with the most final-round votes becomes President — unless the Pope vetoes (\"dislikes\") them. If the Pope vetoes the first-ranked candidate, the runner-up (with fewer votes) directly takes the presidency.",
+      "finalNote": "Based on the assembly vote and any Pope veto, choose the final President from the list below:",
+      "selected": "Elected President: {{name}}",
+      "vetoTitle": "Pope's dislike-veto on the first-ranked President:",
+      "vetoActive": "Veto active",
+      "vetoInactive": "Inactive",
+      "vetoDesc": "If the Pope vetoed the first-ranked candidate, enable this. Activating it spreads vengeance through the city — a random player (preferring role-less players) becomes a terrorist in upcoming night phases.",
+      "vetoApply": "Apply Pope veto (assign random nighttime terrorist)",
+      "vetoCancel": "Cancel and disable Pope veto"
+    },
+    "step6": {
+      "title": "5. Presidential cabinet formation",
+      "desc": "To make the government official, the President must complete the cabinet. Identify the trusted officers below and assign role-less players to each seat.",
+      "vicePresident": "First Vice President:",
+      "selectVice": "Select Vice President...",
+      "mayor": "Active Mayor:",
+      "selectMayor": "Select Mayor...",
+      "judge": "Chief Judge:",
+      "selectJudge": "Select Chief Judge..."
+    },
+    "step7": {
+      "titlePres": "6. President's direct subgroup appointment ({{name}})",
+      "titleVice": "6. Vice President's subgroup appointment ({{name}})",
+      "fallbackPres": "President",
+      "fallbackVice": "Vice President",
+      "descPres": "The President must appoint the members under their authority — namely ",
+      "descVice": "The Vice President (or the President if there is no Vice) must appoint the members under their command — namely ",
+      "descReporter": "Reporter",
+      "descAnd": " and ",
+      "descJournalist": "Journalist",
+      "descTail": " — from the role-less players.",
+      "reporter": "Assembly Reporter:",
+      "journalist": "Game Journalist:",
+      "noReporter": "(optional) No Reporter",
+      "noJournalist": "(optional) No Journalist"
+    },
+    "step8": {
+      "title": "7. Mayor's subgroup appointment ({{name}})",
+      "fallbackMayor": "Mayor",
+      "desc1": "The active Mayor must appoint the members under their command — namely ",
+      "desc2": "Doctor, Police and Detective",
+      "desc3": " — from the role-less players.",
+      "doctor": "Active Doctor:",
+      "police": "Armed Police:",
+      "detective": "Official Detective:",
+      "noDoctor": "(optional) No Doctor",
+      "noPolice": "(optional) No Police",
+      "noDetective": "(optional) No Detective"
+    },
+    "step9": {
+      "title": "8. Chief Judge's subordinate appointment ({{name}})",
+      "fallbackJudge": "Judge",
+      "desc1": "The Chief Judge must appoint their legal arm — namely ",
+      "desc2": "the defense Lawyer",
+      "desc3": " — from the role-less players.",
+      "lawyer": "Assembly defense Lawyer:",
+      "noLawyer": "(optional) No Lawyer"
+    },
+    "alerts": {
+      "notAllChecked": "Some players haven't checked their hidden identity yet. Continue to the next step (first speaker selection)?",
+      "masonRatio": "The 29% freemason ratio is not respected!\n\nFor {{players}} players, exactly {{required}} freemasons are required.\nYou currently have {{current}} freemasons.\n\nPlease fix the freemason ratio in \"Reveal secrets\" mode.",
+      "selectSpeaker": "Please pick the first speaker of the game first.",
+      "selectPope": "Please choose the Pope.",
+      "selectPresident": "Please choose the elected President.",
+      "cabinetVice": "Please fill all cabinet seats (Vice President, Mayor and Judge).",
+      "cabinetNoVice": "Please fill all cabinet seats (Mayor and Judge)."
+    },
+    "secrets": {
+      "freemasonShort": "Freemason {{n}}",
+      "citizenShort": "Citizen"
+    },
+    "logs": {
+      "randomSpeaker": "Randomly, {{name}} was chosen as the first speaker of day zero.",
+      "manualMasons": "The moderator manually changed the freemason lodge composition.",
+      "speaker": "The main day-zero speaker role was handed to {{name}}.",
+      "pope": "{{name}} received the highest votes and was elected as the \"High Pope\".",
+      "priest": "The High Pope appointed {{name}} as the \"Priest\".",
+      "president": "After the national vote count, {{name}} took the seat of the Presidency.",
+      "reporterByVice": "The Vice President appointed {{name}} as the \"Reporter\".",
+      "reporterByPres": "The President appointed {{name}} as the \"Reporter\".",
+      "journalistByVice": "The Vice President appointed {{name}} as the \"Journalist\".",
+      "journalistByPres": "The President appointed {{name}} as the \"Journalist\".",
+      "doctor": "The active Mayor appointed {{name}} as the \"Doctor\".",
+      "police": "The active Mayor appointed {{name}} as the \"Police\".",
+      "detective": "The active Mayor appointed {{name}} as the \"Detective\".",
+      "lawyer": "The Chief Judge appointed {{name}} as the \"defense Lawyer\".",
+      "vetoOn": "The Pope used their veto right and \"disliked\" the top candidate. A wave of vengeance spread through the city — a random player will become a terrorist tonight.",
+      "vetoOff": "The Pope's veto was cancelled.",
+      "completionWithVice": "On day zero, the country was formed under a new government. President: {{president}}, Vice: {{vice}}, Mayor: {{mayor}}, Judge: {{judge}}.",
+      "completionNoVice": "On day zero, the country was formed under a new government. President: {{president}}, Mayor: {{mayor}}, Judge: {{judge}}.",
+      "viceSubgroupVice": "Vice President's subgroup: {{members}}",
+      "viceSubgroupPres": "President's subgroup: {{members}}",
+      "mayorSubgroup": "Mayor's subgroup: {{members}}",
+      "judgeSubgroup": "Chief Judge's subgroup: Lawyer ({{name}})",
+      "subReporter": "Reporter ({{name}})",
+      "subJournalist": "Journalist ({{name}})",
+      "subDoctor": "Doctor ({{name}})",
+      "subPolice": "Police ({{name}})",
+      "subDetective": "Detective ({{name}})",
+      "subSeparator": ", "
+    }
   }
 }
