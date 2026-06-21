@@ -850,29 +850,26 @@ export default function Day0Setup({
             <h3 className="text-base font-bold text-slate-100 flex items-center gap-2 mb-2">
               <User className="w-5 h-5 text-amber-500" />
               {players.length < 10 
-                ? `۶. انتصاب زیرگروه مستقیم رئیس‌جمهور (${players.find(p => p.id === presidentId)?.name || 'رئیس‌جمهور'})`
-                : `۶. انتصاب زیرگروه معاون اول رئیس‌جمهور (${players.find(p => p.id === viceId)?.name || 'معاون'})`
+                ? t('day0.step7.titlePres', { name: players.find(p => p.id === presidentId)?.name || t('day0.step7.fallbackPres') })
+                : t('day0.step7.titleVice', { name: players.find(p => p.id === viceId)?.name || t('day0.step7.fallbackVice') })
               }
             </h3>
             <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              {players.length < 10 
-                ? 'رئیس‌جمهور کشور موظف است اعضای تحت حاکمیت خود یعنی ' 
-                : 'معاون اول رئیس‌جمهور (یا رئیس‌جمهور در صورت نبود معاون اول) موظف است اعضای تحت امر خود یعنی '
-              }
-              <strong className="text-amber-400">گزارشگر</strong> و <strong className="text-amber-400">خبرنگار</strong> را از میان افراد فاقد نقش مجمع منصوب نماید.
+              {players.length < 10 ? t('day0.step7.descPres') : t('day0.step7.descVice')}
+              <strong className="text-amber-400">{t('day0.step7.descReporter')}</strong>{t('day0.step7.descAnd')}<strong className="text-amber-400">{t('day0.step7.descJournalist')}</strong>{t('day0.step7.descTail')}
             </p>
           </div>
 
           <div className="space-y-4">
             {/* Reporter */}
             <div className="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
-              <label className="block text-xs font-semibold text-slate-300 mb-2">گزارشگر مجمع:</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-2">{t('day0.step7.reporter')}</label>
               <select
                 value={reporterId}
                 onChange={(e) => handleSelectReporter(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-755 text-slate-200 text-xs rounded-lg p-2 focus:outline-none focus:border-amber-500"
               >
-                <option value="">(اختیاری) بدون گزارشگر</option>
+                <option value="">{t('day0.step7.noReporter')}</option>
                 {players
                   .filter((p) => p.role === 'none' || p.role === 'reporter')
                   .map((p) => (
@@ -885,13 +882,13 @@ export default function Day0Setup({
 
             {/* Journalist */}
             <div className="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
-              <label className="block text-xs font-semibold text-slate-300 mb-2">خبرنگار بازی:</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-2">{t('day0.step7.journalist')}</label>
               <select
                 value={journalistId}
                 onChange={(e) => handleSelectJournalist(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-755 text-slate-200 text-xs rounded-lg p-2 focus:outline-none focus:border-amber-500"
               >
-                <option value="">(اختیاری) بدون خبرنگار</option>
+                <option value="">{t('day0.step7.noJournalist')}</option>
                 {players
                   .filter((p) => p.role === 'none' || p.role === 'journalist')
                   .map((p) => (
@@ -910,23 +907,23 @@ export default function Day0Setup({
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-850">
             <h3 className="text-base font-bold text-slate-100 flex items-center gap-2 mb-2">
               <Award className="w-5 h-5 text-amber-500" />
-              ۷. انتصاب زیرگروه شهردار ({players.find(p => p.id === mayorId)?.name || 'شهردار'})
+              {t('day0.step8.title', { name: players.find(p => p.id === mayorId)?.name || t('day0.step8.fallbackMayor') })}
             </h3>
             <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              شهردار فعال موظف است اعضای تحت امر خود یعنی <strong className="text-amber-400">دکتر، پلیس و کارآگاه</strong> را از میان افراد فاقد نقش مجمع منصوب نماید.
+              {t('day0.step8.desc1')}<strong className="text-amber-400">{t('day0.step8.desc2')}</strong>{t('day0.step8.desc3')}
             </p>
           </div>
 
           <div className="space-y-4">
             {/* Doctor */}
             <div className="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
-              <label className="block text-xs font-semibold text-slate-300 mb-2">دکتر فعال:</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-2">{t('day0.step8.doctor')}</label>
               <select
                 value={doctorId}
                 onChange={(e) => handleSelectDoctor(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-755 text-slate-200 text-xs rounded-lg p-2 focus:outline-none focus:border-amber-500"
               >
-                <option value="">(اختیاری) بدون دکتر</option>
+                <option value="">{t('day0.step8.noDoctor')}</option>
                 {players
                   .filter((p) => p.role === 'none' || p.role === 'doctor')
                   .map((p) => (
@@ -940,13 +937,13 @@ export default function Day0Setup({
             {/* Police */}
             {players.length >= 12 && (
               <div className="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
-                <label className="block text-xs font-semibold text-slate-300 mb-2">پلیس مسلح:</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-2">{t('day0.step8.police')}</label>
                 <select
                   value={policeId}
                   onChange={(e) => handleSelectPolice(e.target.value)}
                   className="w-full bg-slate-900 border border-slate-755 text-slate-200 text-xs rounded-lg p-2 focus:outline-none focus:border-amber-500"
                 >
-                  <option value="">(اختیاری) بدون پلیس</option>
+                  <option value="">{t('day0.step8.noPolice')}</option>
                   {players
                     .filter((p) => p.role === 'none' || p.role === 'police')
                     .map((p) => (
@@ -960,13 +957,13 @@ export default function Day0Setup({
 
             {/* Detective */}
             <div className="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
-              <label className="block text-xs font-semibold text-slate-300 mb-2">کارآگاه رسمی:</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-2">{t('day0.step8.detective')}</label>
               <select
                 value={detectiveId}
                 onChange={(e) => handleSelectDetective(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-755 text-slate-200 text-xs rounded-lg p-2 focus:outline-none focus:border-amber-500"
               >
-                <option value="">(اختیاری) بدون کارآگاه</option>
+                <option value="">{t('day0.step8.noDetective')}</option>
                 {players
                   .filter((p) => p.role === 'none' || p.role === 'detective')
                   .map((p) => (
@@ -985,23 +982,23 @@ export default function Day0Setup({
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-850">
             <h3 className="text-base font-bold text-slate-100 flex items-center gap-2 mb-2">
               <Scale className="w-5 h-5 text-amber-500" />
-              ۸. انتصاب زیردست قاضی ارشد ({players.find(p => p.id === judgeId)?.name || 'قاضی'})
+              {t('day0.step9.title', { name: players.find(p => p.id === judgeId)?.name || t('day0.step9.fallbackJudge') })}
             </h3>
             <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              قاضی ارشد دادگستری موظف است بازوی حقوقی خود یعنی <strong className="text-amber-400">وکیل مدافع</strong> را از میان افراد فاقد نقش مجمع منصوب نماید.
+              {t('day0.step9.desc1')}<strong className="text-amber-400">{t('day0.step9.desc2')}</strong>{t('day0.step9.desc3')}
             </p>
           </div>
 
           <div className="space-y-4">
             {/* Lawyer */}
             <div className="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
-              <label className="block text-xs font-semibold text-slate-300 mb-2">وکیل مدافع مجمع:</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-2">{t('day0.step9.lawyer')}</label>
               <select
                 value={lawyerId}
                 onChange={(e) => handleSelectLawyer(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-755 text-slate-200 text-xs rounded-lg p-2 focus:outline-none focus:border-amber-500"
               >
-                <option value="">(اختیاری) بدون وکیل</option>
+                <option value="">{t('day0.step9.noLawyer')}</option>
                 {players
                   .filter((p) => p.role === 'none' || p.role === 'lawyer')
                   .map((p) => (
@@ -1026,16 +1023,16 @@ export default function Day0Setup({
               : 'bg-slate-800 text-slate-200 hover:bg-slate-750'
           }`}
         >
-          <ArrowRight className="w-4 h-4" />
-          مرحله قبل
+          {i18n.dir() === 'rtl' ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
+          {t('day0.buttons.prev')}
         </button>
 
         <button
           onClick={handleNextStep}
           className="bg-amber-600 hover:bg-amber-700 text-slate-950 font-black px-5 py-2.5 rounded-lg text-sm transition flex items-center gap-1.5"
         >
-          {step === lastStep ? 'تشکیل کابینه و شروع شب صفر' : 'مرحله بعد'}
-          {step === lastStep ? <Check className="w-5 h-5" /> : <ArrowLeft className="w-4 h-4" />}
+          {step === lastStep ? t('day0.buttons.finish') : t('day0.buttons.next')}
+          {step === lastStep ? <Check className="w-5 h-5" /> : (i18n.dir() === 'rtl' ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />)}
         </button>
       </div>
     </div>
