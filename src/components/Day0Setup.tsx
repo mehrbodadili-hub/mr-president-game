@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { Player, RoleType } from '../types';
-import { ROLE_DETAILS } from '../constants';
+import { useTranslation } from 'react-i18next';
 import { calculateMasonCount } from '../utils';
 import { User, Volume2, ShieldCheck, Scale, Award, ArrowLeft, ArrowRight, Check, Eye, EyeOff, ThumbsDown, Skull } from 'lucide-react';
 import { CollapsibleGuide } from './CollapsibleGuide';
@@ -27,6 +27,7 @@ export default function Day0Setup({
   onCompleteDay0,
   onUpdatePlayers,
 }: Day0SetupProps) {
+  const { t, i18n } = useTranslation();
   const [step, setStep] = useState(1);
   const lastStep = players.length === 8 ? 8 : 9;
   const [revealedPlayerId, setRevealedPlayerId] = useState<string | null>(null);
@@ -86,7 +87,7 @@ export default function Day0Setup({
     const randomIdx = Math.floor(Math.random() * players.length);
     const selectedPlayer = players[randomIdx];
     setSpeakerId(selectedPlayer.id);
-    onLogEvent(`به صورت تصادفی، ${selectedPlayer.name} به عنوان اولین سخنران روز صفر انتخاب شد.`, 'info');
+    onLogEvent(t('day0.logs.randomSpeaker', { name: selectedPlayer.name }), 'info');
   };
 
   const handleToggleIdentity = (playerId: string) => {
@@ -111,7 +112,7 @@ export default function Day0Setup({
     }
 
     onUpdatePlayers(updatedPlayers);
-    onLogEvent(`گرداننده به صورت دستی ترکیب لژ فراماسونری مجمع را تغییر داد.`, 'system');
+    onLogEvent(t('day0.logs.manualMasons'), 'system');
   };
 
   const handleSetMasonOrder = (playerId: string, newNumber: number) => {
@@ -133,7 +134,7 @@ export default function Day0Setup({
   const handleNextStep = () => {
     if (step === 1) {
       if (!showSecrets && checkedIds.size < players.length) {
-        if (!confirm('هنوز برخی از بازیکنان هویت مخفی خود را بررسی نکرده‌اند. آیا مایلید به مرحله بعد (انتخاب سخنران اول) بروید؟')) {
+        if (!confirm(t('day0.alerts.notAllChecked'))) {
           return;
         }
       }
@@ -141,22 +142,22 @@ export default function Day0Setup({
       const requiredMasons = calculateMasonCount(players.length);
       const currentMasons = players.filter(p => p.identity === 'freemason').length;
       if (currentMasons !== requiredMasons) {
-        alert(`نسبت ۲۹٪ فراماسون‌ها رعایت نشده است!\n\nبرای بازی با ${players.length} بازیکن، دقیقاً باید ${requiredMasons} فراماسون در بازی حضور داشته باشد.\nشما در حال حاضر ${currentMasons} فراماسون مشخص کرده‌اید.\n\nلطفاً در «حالت اسرار عیان» نسبت فراماسون‌ها را اصلاح فرمایید.`);
+        alert(t('day0.alerts.masonRatio', { players: players.length, required: requiredMasons, current: currentMasons }));
         return;
       }
     }
     if (step === 2 && !speakerId) {
-      alert('لطفاً ابتدا سخنران اول بازی را انتخاب کنید.');
+      alert(t('day0.alerts.selectSpeaker'));
       return;
     }
     if (step === 3 && !popeId) {
-      alert('لطفاً پاپ منتخب بازی را انتخاب کنید.');
+      alert(t('day0.alerts.selectPope'));
       return;
     }
     // Step 4 (Priest) is now optional
     
     if (step === 5 && !presidentId) {
-      alert('لطفاً رئیس‌جمهور منتخب ملّت را انتخاب کنید.');
+      alert(t('day0.alerts.selectPresident'));
       return;
     }
 
@@ -165,8 +166,8 @@ export default function Day0Setup({
       if ((requiresVice && !viceId) || !mayorId || !judgeId) {
         alert(
           requiresVice
-            ? 'لطفاً تمام جایگاه‌های کابینه (معاون، شهردار و قاضی) را پر کنید.'
-            : 'لطفاً تمام جایگاه‌های کابینه (شهردار و قاضی) را پر کنید.'
+            ? t('day0.alerts.cabinetVice')
+            : t('day0.alerts.cabinetNoVice')
         );
         return;
       }
