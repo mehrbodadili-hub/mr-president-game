@@ -686,26 +686,22 @@ export default function Day0Setup({
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-850">
             <h3 className="text-base font-bold text-slate-100 flex items-center gap-2 mb-2">
               <Award className="w-5 h-5 text-amber-500" />
-              ۴. مجمع رأی‌گیری نهایی کاندیداها و تشکیل دولت (ریاست‌جمهوری)
+              {t('day0.step5.title')}
             </h3>
             <div className="text-xs text-slate-400 space-y-2.5 leading-relaxed">
-              <p>
-                در این مرحله، مجمع رأی‌گیری نهایی مابین کاندیداهای کاندید شده آغاز می‌شود. فرآیند انتخابات به شیوه رسمی زیر تعیین تکلیف می‌گردد:
-              </p>
+              <p>{t('day0.step5.intro')}</p>
               <div className="bg-amber-500/5 p-3 rounded-lg border border-amber-500/10 space-y-1.5 text-[11px]">
                 <p>
-                  🗳️ <strong className="text-amber-400">کاندیداتوری دو نفره:</strong> در رأی‌گیری اول مجمع، دو نفر که بیشترین رأی را کسب کرده‌اند به عنوان کاندیدا نامزد می‌شوند.
+                  <strong className="text-amber-400">{t('day0.step5.candidacyLabel')}</strong> {t('day0.step5.candidacyBody')}
                 </p>
                 <p>
-                  🗣️ <strong className="text-amber-400">گفتمان رفت‌وبرگشت کاندیداها:</strong> این دو نفر وارد دفاع شده و یک دورِ کوتاه رفت‌وبرگشت کلامی مدافعه مابین خود برگزار می‌کنند. سپس رأی‌گیری نهایی بین آنان انجام خواهد شد.
+                  <strong className="text-amber-400">{t('day0.step5.debateLabel')}</strong> {t('day0.step5.debateBody')}
                 </p>
                 <p className="font-semibold text-rose-400">
-                  ❌ <strong className="text-rose-400">حق وتوی پاپ اعظم:</strong> کاندیدایی که بیشترین آرای دور نهایی را به نام خود ثبت کند رئیس‌جمهور مجمع می‌گردد؛ مشروط بر اینکه پاپ او را وتو و «دیس‌لایک» نکند. در صورت دیس‌لایک پاپ روی منتخب اول، رقیب وی (کاندیدای صاحب آرای کمتر) مستقیماً کرسی ریاست‌جمهوری را تصاحب کرده و رئیس‌جمهور قطعی خواهد بود.
+                  <strong className="text-rose-400">{t('day0.step5.popeVetoLabel')}</strong> {t('day0.step5.popeVetoBody')}
                 </p>
               </div>
-              <p className="text-[10px] font-bold text-amber-500/80 mt-1">
-                لطفاً متناسب با رأی‌گیری مجمع و حق وتوی احتمالی پاپ، رئیس‌جمهور نهایی را از فهرست زیر برگزینید:
-              </p>
+              <p className="text-[10px] font-bold text-amber-500/80 mt-1">{t('day0.step5.finalNote')}</p>
             </div>
           </div>
 
@@ -717,7 +713,7 @@ export default function Day0Setup({
                   key={p.id}
                   type="button"
                   onClick={() => handleSelectPresident(p.id)}
-                  className={`py-2 px-3 rounded-lg text-xs font-semibold text-right transition border flex items-center justify-between gap-1.5 ${
+                  className={`py-2 px-3 rounded-lg text-xs font-semibold text-start transition border flex items-center justify-between gap-1.5 ${
                     presidentId === p.id
                       ? 'bg-amber-500 text-slate-950 border-amber-400'
                       : 'bg-slate-950/40 border-slate-800 text-slate-300 hover:border-slate-700'
@@ -731,7 +727,7 @@ export default function Day0Setup({
 
           {currentPresident && (
             <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-3 rounded-lg text-xs font-semibold text-center mt-3">
-              رئیس جمهور منتخب: <span className="font-bold underline">{currentPresident.name}</span>
+              {t('day0.step5.selected', { name: currentPresident.name })}
             </div>
           )}
 
@@ -740,28 +736,26 @@ export default function Day0Setup({
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
                 <ThumbsDown className="w-4 h-4 text-rose-500" />
-                حق وتوی دیس‌لایک توسط پاپ اعظم بر رئیس‌جمهور منتخب اول:
+                {t('day0.step5.vetoTitle')}
               </span>
               <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${
                 popeVetoed 
                   ? 'bg-rose-950/50 text-rose-400 border border-rose-500/30' 
                   : 'bg-slate-900 text-slate-500 border border-slate-800'
               }`}>
-                {popeVetoed ? 'وتو فعال است' : 'غیرفعال'}
+                {popeVetoed ? t('day0.step5.vetoActive') : t('day0.step5.vetoInactive')}
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              اگر پاپ اعظم کاندیدای رتبه اول (رئیس‌جمهور) را وتو کرده است، این دکمه را فعال کنید. فعال‌سازی این دکمه با دمیدن روح کینه در مجمع، باعث گمارده شدن تصادفی یک تروریست انتقام‌جو از بین بازیکنان (با اولویت افراد فاقد نقش) در فازهای شب پیش رو می‌گردد.
-            </p>
+            <p className="text-[11px] text-slate-400 leading-relaxed">{t('day0.step5.vetoDesc')}</p>
             <button
               type="button"
               onClick={() => {
                 const newValue = !popeVetoed;
                 setPopeVetoed(newValue);
                 if (newValue) {
-                  onLogEvent('پاپ اعظم با استفاده از حق وتوی خود، کاندیدای برتر مجمع را وتو (دیس‌لایک) کرد. غبار کینه بر شهر دمیده شد و یک نفر در شب به صورت تصادفی تروریست خواهد شد.', 'system');
+                  onLogEvent(t('day0.logs.vetoOn'), 'system');
                 } else {
-                  onLogEvent('وتوی پاپ اعظم لغو گردید.', 'system');
+                  onLogEvent(t('day0.logs.vetoOff'), 'system');
                 }
               }}
               className={`w-full py-3 px-4 rounded-xl text-xs font-black transition duration-200 border flex items-center justify-center gap-2 cursor-pointer ${
@@ -771,7 +765,7 @@ export default function Day0Setup({
               }`}
             >
               <Skull className={`w-4 h-4 ${popeVetoed ? 'text-rose-400 animate-pulse' : 'text-slate-400'}`} />
-              {popeVetoed ? 'لغو و غیرفعال‌سازی وتوی پاپ' : 'اعمال وتو و دیس‌لایک پاپ اعظم (تخصیص تروریست تصادفی در شب)'}
+              {popeVetoed ? t('day0.step5.vetoCancel') : t('day0.step5.vetoApply')}
             </button>
           </div>
         </div>
@@ -782,25 +776,22 @@ export default function Day0Setup({
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-850">
             <h3 className="text-base font-bold text-slate-100 flex items-center gap-2 mb-2">
               <Scale className="w-5 h-5 text-amber-500" />
-              ۵. تشکیل کابینه ریاست‌جمهوری
+              {t('day0.step6.title')}
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              رئیس‌جمهور جهت حیات قانونی دولت خود می‌بایست کابینه را تکمیل کند.
-              افسران معتمد مابقی را مشخص کرده و افراد فاقد نقش را متناسب با جایگاه‌های زیر منتسب کنید.
-            </p>
+            <p className="text-xs text-slate-400 leading-relaxed font-medium">{t('day0.step6.desc')}</p>
           </div>
 
           <div className="space-y-4">
             {/* Vice President */}
             {players.length >= 10 && (
               <div className="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
-                <label className="block text-xs font-semibold text-slate-300 mb-2">معاون اول رئیس‌جمهور:</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-2">{t('day0.step6.vicePresident')}</label>
                 <select
                   value={viceId}
                   onChange={(e) => handleSelectVice(e.target.value)}
                   className="w-full bg-slate-900 border border-slate-755 text-slate-200 text-xs rounded-lg p-2 focus:outline-none focus:border-amber-500"
                 >
-                  <option value="">انتخاب معاون...</option>
+                  <option value="">{t('day0.step6.selectVice')}</option>
                   {players
                     .filter((p) => (p.role === 'none' || p.role === 'vice_president') && p.id !== presidentId && p.id !== popeId && p.id !== priestId && p.id !== mayorId && p.id !== judgeId)
                     .map((p) => (
@@ -814,13 +805,13 @@ export default function Day0Setup({
 
             {/* Mayor */}
             <div className="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
-              <label className="block text-xs font-semibold text-slate-300 mb-2">شهردار فعال شهر:</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-2">{t('day0.step6.mayor')}</label>
               <select
                 value={mayorId}
                 onChange={(e) => handleSelectMayor(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-755 text-slate-200 text-xs rounded-lg p-2 focus:outline-none focus:border-amber-500"
               >
-                <option value="">انتخاب شهردار...</option>
+                <option value="">{t('day0.step6.selectMayor')}</option>
                 {players
                   .filter((p) => (p.role === 'none' || p.role === 'mayor') && p.id !== presidentId && p.id !== popeId && p.id !== priestId && p.id !== viceId && p.id !== judgeId)
                   .map((p) => (
@@ -833,13 +824,13 @@ export default function Day0Setup({
 
             {/* Judge */}
             <div className="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
-              <label className="block text-xs font-semibold text-slate-300 mb-2">قاضی ارشد دادگستری:</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-2">{t('day0.step6.judge')}</label>
               <select
                 value={judgeId}
                 onChange={(e) => handleSelectJudge(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-756 text-slate-200 text-xs rounded-lg p-2 focus:outline-none focus:border-amber-500"
               >
-                <option value="">انتخاب قاضی ارشد...</option>
+                <option value="">{t('day0.step6.selectJudge')}</option>
                 {players
                   .filter((p) => (p.role === 'none' || p.role === 'judge') && p.id !== presidentId && p.id !== popeId && p.id !== priestId && p.id !== viceId && p.id !== mayorId)
                   .map((p) => (
