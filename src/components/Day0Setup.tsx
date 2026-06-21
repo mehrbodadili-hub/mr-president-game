@@ -394,11 +394,11 @@ export default function Day0Setup({
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-850 rounded-2xl p-6 shadow-2xl max-w-3xl w-full mx-auto text-right text-slate-200" dir="rtl">
+    <div className="bg-slate-900 border border-slate-850 rounded-2xl p-6 shadow-2xl max-w-3xl w-full mx-auto text-start text-slate-200" dir={i18n.dir()}>
       {/* Step Header */}
       <div className="mb-6 border-b border-slate-800 pb-4 flex flex-col items-center md:items-start text-center md:text-right">
-        <span className="text-sm font-bold text-amber-500 uppercase tracking-widest block mb-2">گام {step} از ۹ فاز آغازین</span>
-        <h2 className="text-2xl font-black text-white leading-tight">ترتیبات قانونی مجمع روز صفر</h2>
+        <span className="text-sm font-bold text-amber-500 uppercase tracking-widest block mb-2">{t('day0.header.stepLabel', { step })}</span>
+        <h2 className="text-2xl font-black text-white leading-tight">{t('day0.header.title')}</h2>
       </div>
 
       {/* Step Contents */}
@@ -407,10 +407,10 @@ export default function Day0Setup({
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-850">
             <h3 className="text-base font-bold text-slate-100 flex items-center gap-2 mb-2">
               <Eye className="w-5 h-5 text-amber-500 animate-pulse" />
-              ۱. خوانش محرمانه هویت‌های پنهان مجمع
+              {t('day0.step1.title')}
             </h3>
             <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              گرداننده موظف است بازیکنان را به ترتیب یا تک‌به‌تک صدا کرده و با کلیک روی دکمه مخصوص، هویت مخفی آنها را در خلوت به ایشان نشان دهد. دکمه را دوباره فشار دهید یا رها کنید تا کارت سریعاً مخفی شود.
+              {t('day0.step1.intro')}
             </p>
           </div>
 
@@ -419,13 +419,13 @@ export default function Day0Setup({
             <div className="bg-rose-950/15 border border-rose-900/30 p-3.5 rounded-xl text-xs space-y-2">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div>
-                  <span className="font-extrabold text-rose-400 block text-right">⛪ پنل هدایت لژ فراماسونری (مختص گرداننده)</span>
-                  <span className="text-[10px] text-slate-400 block text-right mt-0.5">
-                    حد نصاب ۲۹٪ مجمع برابر با <strong className="text-rose-420 font-bold">{calculateMasonCount(players.length)} فراماسون</strong> است. مابقی اعضا شهروند خواهند بود.
+                  <span className="font-extrabold text-rose-400 block text-start">{t('day0.step1.panelTitle')}</span>
+                  <span className="text-[10px] text-slate-400 block text-start mt-0.5">
+                    {t('day0.step1.quota', { count: calculateMasonCount(players.length) })}
                   </span>
                 </div>
                 <span className="text-[10px] font-bold bg-rose-950 border border-rose-900/50 px-2 py-1 rounded text-rose-300">
-                  فراماسون‌های فعلی مجمع: {players.filter(p => p.identity === 'freemason').length} نفر
+                  {t('day0.step1.currentCount', { count: players.filter(p => p.identity === 'freemason').length })}
                 </span>
               </div>
             </div>
@@ -453,7 +453,7 @@ export default function Day0Setup({
                     <span className="text-xs font-bold text-slate-200 block mb-1">{p.name}</span>
                     {isChecked && !isRevealed && (
                       <span className="text-[9px] font-semibold text-emerald-400 bg-emerald-950/30 px-1.5 py-0.5 rounded border border-emerald-900/20 transition">
-                        ✓ خوانده شد
+                        {t('day0.step1.checked')}
                       </span>
                     )}
                   </div>
@@ -463,10 +463,10 @@ export default function Day0Setup({
                       <div className="p-2 rounded-lg bg-slate-950 border border-slate-800 mb-2 animate-fadeIn py-1.5">
                         {p.identity === 'freemason' ? (
                           <div>
-                            <span className="text-xs font-black text-rose-400 block">◄ فراماسون ►</span>
+                            <span className="text-xs font-black text-rose-400 block">{t('day0.step1.freemasonLabel')}</span>
                             {showSecrets ? (
                               <div className="mt-1 flex items-center justify-center gap-1">
-                                <span className="text-[9px] text-rose-300">جایگاه:</span>
+                                <span className="text-[9px] text-rose-300">{t('day0.step1.positionLabel')}</span>
                                 <select 
                                   value={p.masonNumber} 
                                   onChange={(e) => handleSetMasonOrder(p.id, parseInt(e.target.value))}
@@ -478,11 +478,11 @@ export default function Day0Setup({
                                 </select>
                               </div>
                             ) : (
-                              <span className="text-[10px] font-bold text-rose-300 block font-mono">شماره {p.masonNumber}</span>
+                              <span className="text-[10px] font-bold text-rose-300 block font-mono">{t('day0.step1.positionNumber', { n: p.masonNumber })}</span>
                             )}
                           </div>
                         ) : (
-                          <span className="text-xs font-black text-sky-400 block">◄ شهروند ►</span>
+                          <span className="text-xs font-black text-sky-400 block">{t('day0.step1.citizenLabel')}</span>
                         )}
                       </div>
                       {!showSecrets && (
@@ -491,7 +491,7 @@ export default function Day0Setup({
                           className="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] py-1 rounded font-bold transition flex items-center justify-center gap-1 cursor-pointer"
                         >
                           <EyeOff className="w-3 h-3 text-slate-300" />
-                          پنهان کردن
+                          {t('day0.step1.hide')}
                         </button>
                       )}
                     </div>
@@ -508,7 +508,7 @@ export default function Day0Setup({
                       className="w-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] py-1.5 rounded font-bold transition flex items-center justify-center gap-1 cursor-pointer"
                     >
                       <Eye className="w-3.5 h-3.5 text-amber-500" />
-                      رویت هویت
+                      {t('day0.step1.reveal')}
                     </button>
                   )}
 
@@ -522,7 +522,7 @@ export default function Day0Setup({
                           : 'bg-sky-950/40 border-sky-805/50 text-sky-400 hover:bg-sky-900/40'
                       }`}
                     >
-                      {p.identity === 'freemason' ? '⛪ عزل از لژ' : '👤 عضویت لژ'}
+                      {p.identity === 'freemason' ? t('day0.step1.expelFromLodge') : t('day0.step1.joinLodge')}
                     </button>
                   )}
                 </div>
@@ -531,7 +531,7 @@ export default function Day0Setup({
           </div>
 
           <div className="bg-[#050810] p-3 rounded-lg border border-slate-850 text-center text-xs">
-            بررسی هویت‌ها: <span className="text-amber-400 font-bold font-mono">{checkedIds.size}</span> از <span className="text-slate-300 font-bold font-mono">{players.length}</span> بازیکن
+            {t('day0.step1.progress', { checked: checkedIds.size, total: players.length })}
           </div>
         </div>
       )}
