@@ -182,7 +182,12 @@ export default function Day0Setup({
       const mayorName = players.find(p => p.id === mayorId)?.name || '';
       const judgeName = players.find(p => p.id === judgeId)?.name || '';
       const presName = players.find(p => p.id === presidentId)?.name || '';
-      onLogEvent(`کشور در روز صفر با حاکمیت جدید تشکیل شد. رئیس‌جمهور: ${presName}، ${players.length >= 10 ? `معاون: ${viceName}، ` : ''}شهردار: ${mayorName}، قاضی: ${judgeName}.`, 'system');
+      onLogEvent(
+        players.length >= 10
+          ? t('day0.logs.completionWithVice', { president: presName, vice: viceName, mayor: mayorName, judge: judgeName })
+          : t('day0.logs.completionNoVice', { president: presName, mayor: mayorName, judge: judgeName }),
+        'system'
+      );
 
       const reporterName = players.find(p => p.id === reporterId)?.name || '';
       const journalistName = players.find(p => p.id === journalistId)?.name || '';
@@ -191,27 +196,28 @@ export default function Day0Setup({
       const detectiveName = players.find(p => p.id === detectiveId)?.name || '';
       const lawyerName = players.find(p => p.id === lawyerId)?.name || '';
 
+      const sep = t('day0.logs.subSeparator');
       const viceSub = [
-        reporterName ? `گزارشگر (${reporterName})` : '',
-        journalistName ? `خبرنگار (${journalistName})` : ''
-      ].filter(Boolean).join('، ');
+        reporterName ? t('day0.logs.subReporter', { name: reporterName }) : '',
+        journalistName ? t('day0.logs.subJournalist', { name: journalistName }) : ''
+      ].filter(Boolean).join(sep);
       if (viceSub) {
         onLogEvent(
           players.length >= 10 
-            ? `زیرگروه معاون اول: ${viceSub}` 
-            : `زیرگروه رئیس‌جمهور: ${viceSub}`, 
+            ? t('day0.logs.viceSubgroupVice', { members: viceSub })
+            : t('day0.logs.viceSubgroupPres', { members: viceSub }),
           'system'
         );
       }
 
       const mayorSub = [
-        doctorName ? `دکتر (${doctorName})` : '',
-        policeName ? `پلیس (${policeName})` : '',
-        detectiveName ? `کارآگاه (${detectiveName})` : ''
-      ].filter(Boolean).join('، ');
-      if (mayorSub) onLogEvent(`زیرگروه شهردار: ${mayorSub}`, 'system');
+        doctorName ? t('day0.logs.subDoctor', { name: doctorName }) : '',
+        policeName ? t('day0.logs.subPolice', { name: policeName }) : '',
+        detectiveName ? t('day0.logs.subDetective', { name: detectiveName }) : ''
+      ].filter(Boolean).join(sep);
+      if (mayorSub) onLogEvent(t('day0.logs.mayorSubgroup', { members: mayorSub }), 'system');
 
-      if (lawyerName && lastStep === 9) onLogEvent(`زیرگروه قاضی ارشد: وکیل (${lawyerName})`, 'system');
+      if (lawyerName && lastStep === 9) onLogEvent(t('day0.logs.judgeSubgroup', { name: lawyerName }), 'system');
 
       onCompleteDay0(speakerId, popeVetoed);
       return;
@@ -237,7 +243,7 @@ export default function Day0Setup({
   // Helper selectors
   const handleSelectSpeaker = (id: string) => {
     setSpeakerId(id);
-    onLogEvent(`سخنران اصلی روز صفر به ${players.find(p => p.id === id)?.name} واگذار شد.`, 'info');
+    onLogEvent(t('day0.logs.speaker', { name: players.find(p => p.id === id)?.name }), 'info');
   };
 
   const handleSelectPope = (id: string) => {
@@ -247,7 +253,7 @@ export default function Day0Setup({
 
     setPopeId(id);
     onSetRole(id, 'pope');
-    onLogEvent(`${players.find(p => p.id === id)?.name} با کسب حداکثر آرا به عنوان «پاپ مقتدر» انتخاب شد.`, 'vote');
+    onLogEvent(t('day0.logs.pope', { name: players.find(p => p.id === id)?.name }), 'vote');
   };
 
   const handleSelectPriest = (id: string) => {
@@ -257,7 +263,7 @@ export default function Day0Setup({
     setPriestId(id);
     if (id) {
       onSetRole(id, 'priest');
-      onLogEvent(`پاپ بزرگ، بازیکن ${players.find(p => p.id === id)?.name} را به عنوان «کشیش» منصوب کرد.`, 'system');
+      onLogEvent(t('day0.logs.priest', { name: players.find(p => p.id === id)?.name }), 'system');
     }
   };
 
@@ -267,7 +273,7 @@ export default function Day0Setup({
 
     setPresidentId(id);
     onSetRole(id, 'president');
-    onLogEvent(`با شمارش آرای ملی، ${players.find(p => p.id === id)?.name} کرسی «ریاست جمهوری» را تکیه زد.`, 'vote');
+    onLogEvent(t('day0.logs.president', { name: players.find(p => p.id === id)?.name }), 'vote');
   };
 
   const handleSelectVice = (id: string) => {
@@ -301,8 +307,8 @@ export default function Day0Setup({
     setReporterId(id);
     if (id) {
       onSetRole(id, 'reporter');
-      const assigner = players.length >= 10 ? 'معاون رئیس‌جمهور' : 'رئیس‌جمهور';
-      onLogEvent(`${assigner}، بازیکن ${players.find(p => p.id === id)?.name} را به عنوان «گزارشگر» منصوب کرد.`, 'system');
+      const key = players.length >= 10 ? 'day0.logs.reporterByVice' : 'day0.logs.reporterByPres';
+      onLogEvent(t(key, { name: players.find(p => p.id === id)?.name }), 'system');
     }
   };
 
@@ -313,8 +319,8 @@ export default function Day0Setup({
     setJournalistId(id);
     if (id) {
       onSetRole(id, 'journalist');
-      const assigner = players.length >= 10 ? 'معاون رئیس‌جمهور' : 'رئیس‌جمهور';
-      onLogEvent(`${assigner}، بازیکن ${players.find(p => p.id === id)?.name} را به عنوان «خبرنگار» منصوب کرد.`, 'system');
+      const key = players.length >= 10 ? 'day0.logs.journalistByVice' : 'day0.logs.journalistByPres';
+      onLogEvent(t(key, { name: players.find(p => p.id === id)?.name }), 'system');
     }
   };
 
@@ -325,7 +331,7 @@ export default function Day0Setup({
     setDoctorId(id);
     if (id) {
       onSetRole(id, 'doctor');
-      onLogEvent(`شهردار فعال، بازیکن ${players.find(p => p.id === id)?.name} را به عنوان «دکتر» منصوب کرد.`, 'system');
+      onLogEvent(t('day0.logs.doctor', { name: players.find(p => p.id === id)?.name }), 'system');
     }
   };
 
@@ -336,7 +342,7 @@ export default function Day0Setup({
     setPoliceId(id);
     if (id) {
       onSetRole(id, 'police');
-      onLogEvent(`شهردار فعال، بازیکن ${players.find(p => p.id === id)?.name} را به عنوان «پلیس» منصوب کرد.`, 'system');
+      onLogEvent(t('day0.logs.police', { name: players.find(p => p.id === id)?.name }), 'system');
     }
   };
 
@@ -347,7 +353,7 @@ export default function Day0Setup({
     setDetectiveId(id);
     if (id) {
       onSetRole(id, 'detective');
-      onLogEvent(`شهردار فعال، بازیکن ${players.find(p => p.id === id)?.name} را به عنوان «کارآگاه» منصوب کرد.`, 'system');
+      onLogEvent(t('day0.logs.detective', { name: players.find(p => p.id === id)?.name }), 'system');
     }
   };
 
@@ -358,7 +364,7 @@ export default function Day0Setup({
     setLawyerId(id);
     if (id) {
       onSetRole(id, 'lawyer');
-      onLogEvent(`قاضی مقتدر، بازیکن ${players.find(p => p.id === id)?.name} را به عنوان «وکیل مدافع» منصوب کرد.`, 'system');
+      onLogEvent(t('day0.logs.lawyer', { name: players.find(p => p.id === id)?.name }), 'system');
     }
   };
 
