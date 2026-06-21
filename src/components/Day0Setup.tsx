@@ -541,31 +541,24 @@ export default function Day0Setup({
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-850">
             <h3 className="text-base font-bold text-slate-100 flex items-center gap-2 mb-2">
               <Volume2 className="w-5 h-5 text-amber-500" />
-              ۱. غائله نوبت صحبـت (سر صحبت)
+              {t('day0.step2.title')}
             </h3>
             <div className="text-xs text-slate-400 space-y-3 leading-relaxed">
-              <p>
-                در ابتدای روز اول بازی، هر یک از بازیکنان به نوبت در چالش‌های گفتگوی روز صفر شرکت می‌کنند. 
-                شما می‌توانید شخص مورد نظر را به عنوان شروع‌کننده (سر صحبت) انتخاب کرده یا اجازه دهید سیستم به صورت کاملاً تصادفی نفر اول را مشخص کند.
-              </p>
+              <p>{t('day0.step2.intro')}</p>
 
-              <CollapsibleGuide title="راهنمای فاز گفتگو و انتخاب مقامات" defaultOpen={false}>
+              <CollapsibleGuide title={t('day0.step2.guideTitle')} defaultOpen={false}>
                 <div className="space-y-2 text-[11px] leading-relaxed text-slate-300 w-full pl-2">
                   <p>
-                    💬 <strong className="text-amber-400">دُور اول - مجمع گفتگو پاپ (جهت ساعت‌گرد با چالش):</strong> 
-                    جهتِ صحبت مابقی اعضا مستقیماً در جهت ساعت‌گرد ادامه خواهد یافت. هر بازیکنِ در حال صحبت می‌تواند یک چالش (نوبت صحبت مجزا) به فرد دیگر تقدیم کند و هر فرد فقط یک چالش می‌تواند دریافت کند. فردی که سر صحبت انتخاب شده، در این دور، <strong>سر صحبت</strong> مجمع گفتگو خواهد بود.
+                    <strong className="text-amber-400">{t('day0.step2.round1Label')}</strong> {t('day0.step2.round1Body')}
                   </p>
                   <p>
-                    🔄 <strong className="text-amber-400">دُور دوم - مجمع گفتگو رئیس‌جمهور (پادساعت‌گرد بدون چالش):</strong> 
-                    برای انتخاب رئیس‌جمهور، هر یک از بازیکنان مجدداً یک‌بار نوبت گفتگو خواهند داشت، اما این بار گفتگو به صورت <strong>پادساعت‌گرد (خلاف جهت ساعت‌گرد)</strong> از همان شخصِ سر صحبت آغاز می‌شود و در طول آن هیچ چالشی رد و بدل نمی‌گردد. به عبارتی، فردی که سر صحبت انتخاب شده است، در جریان این دور برای ریاست‌جمهوری <strong>ته صحبت (آخرین نفر)</strong> مجمع خواهد بود.
+                    <strong className="text-amber-400">{t('day0.step2.round2Label')}</strong> {t('day0.step2.round2Body')}
                   </p>
                   <p>
-                    🗳️ <strong className="text-amber-400">پروسه کاندیداتوری و رأی‌گیری نهایی مجمع:</strong> 
-                    پس از پایان نوبت‌های مدافعه، رأی‌گیری اول مجمع برگزار شده و دو کاندیدا با بیشترین آرا معین می‌شوند. این دو با هم یک گفتگوی رفت‌وبرگشت دوطرفه برگزار می‌کنند و در نهایت رأی‌گیری قطعی صورت می‌پذیرد.
+                    <strong className="text-amber-400">{t('day0.step2.candidacyLabel')}</strong> {t('day0.step2.candidacyBody')}
                   </p>
                   <p className="text-rose-400 font-semibold bg-rose-950/20 p-2 rounded border border-rose-500/20 mt-2">
-                    👑 <strong className="text-rose-400">حق وتوی پاپ اعظم:</strong> 
-                    کاندیدای صاحب رأی بیشتر رئیس‌جمهور می‌گردد؛ مگر اینکه پاپ او را وتو و «دیس‌لایک» نماید. در صورت وتوی گستاخانه پاپ، کاندیدای رقیب (صاحب آرای کمتر) مستقیماً رئیس‌جمهور قطعی مجمع خواهد شد.
+                    <strong className="text-rose-400">{t('day0.step2.popeVetoLabel')}</strong> {t('day0.step2.popeVetoBody')}
                   </p>
                 </div>
               </CollapsibleGuide>
@@ -577,7 +570,7 @@ export default function Day0Setup({
               onClick={handleRandomSpeaker}
               className="bg-amber-950/20 text-amber-400 border border-amber-800/50 hover:bg-amber-900/40 text-xs font-bold px-4 py-2.5 rounded-lg transition"
             >
-              انتخاب سخنران تصادفی
+              {t('day0.step2.randomBtn')}
             </button>
           </div>
 
@@ -586,7 +579,7 @@ export default function Day0Setup({
               <button
                 key={p.id}
                 onClick={() => handleSelectSpeaker(p.id)}
-                className={`py-2 px-3 rounded-lg text-xs font-semibold text-right transition border flex items-center justify-between gap-1.5 ${
+                className={`py-2 px-3 rounded-lg text-xs font-semibold text-start transition border flex items-center justify-between gap-1.5 ${
                   speakerId === p.id
                     ? 'bg-amber-500 text-slate-950 border-amber-400'
                     : 'bg-slate-950/40 border-slate-800 text-slate-300 hover:border-slate-700'
@@ -600,7 +593,7 @@ export default function Day0Setup({
 
           {currentSpeaker && (
             <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-3 rounded-lg text-xs font-semibold text-center mt-3">
-              نخستین سخنران روز صفر: <span className="font-bold underline">{currentSpeaker.name}</span>
+              {t('day0.step2.selected', { name: currentSpeaker.name })}
             </div>
           )}
         </div>
@@ -611,12 +604,9 @@ export default function Day0Setup({
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-850">
             <h3 className="text-base font-bold text-slate-100 flex items-center gap-2 mb-2">
               <ShieldCheck className="w-5 h-5 text-amber-500" />
-              ۲. انتخابات پاپ اعظم (رای‌گیری مجمع)
+              {t('day0.step3.title')}
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              هر بازیکن که بیشترین آرای دور صفر مجمع را به خود اختصاص دهد، به عنوان نقش رسمی پاپ انتخاب می‌شود.
-              یکی از بازیکنان را برای دریافت جایگاه پاپ انتخاب کنید.
-            </p>
+            <p className="text-xs text-slate-400 leading-relaxed">{t('day0.step3.desc')}</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-4">
@@ -624,7 +614,7 @@ export default function Day0Setup({
               <button
                 key={p.id}
                 onClick={() => handleSelectPope(p.id)}
-                className={`py-2 px-3 rounded-lg text-xs font-semibold text-right transition border flex items-center justify-between gap-1.5 ${
+                className={`py-2 px-3 rounded-lg text-xs font-semibold text-start transition border flex items-center justify-between gap-1.5 ${
                   popeId === p.id
                     ? 'bg-amber-500 text-slate-950 border-amber-400'
                     : 'bg-slate-950/40 border-slate-800 text-slate-300 hover:border-slate-700'
@@ -638,7 +628,7 @@ export default function Day0Setup({
 
           {currentPope && (
             <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-3 rounded-lg text-xs font-semibold text-center mt-3">
-              پاپ منصوب روز صفر: <span className="font-bold underline">{currentPope.name}</span>
+              {t('day0.step3.selected', { name: currentPope.name })}
             </div>
           )}
         </div>
@@ -649,11 +639,9 @@ export default function Day0Setup({
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-850">
             <h3 className="text-base font-bold text-slate-100 flex items-center gap-2 mb-2">
               <User className="w-5 h-5 text-amber-500" />
-              ۳. انتصاب کشیش توسط پاپ مقتدر
+              {t('day0.step4.title')}
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              پاپ منتخب ({currentPope?.name}) اینک باید یکی از بازیکنان وفادار (غیر از خودش) را به عنوان کشیش معتمد خود منصوب کند.
-            </p>
+            <p className="text-xs text-slate-400 leading-relaxed">{t('day0.step4.desc', { pope: currentPope?.name || '' })}</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-4">
@@ -665,7 +653,7 @@ export default function Day0Setup({
                   : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-slate-200'
               }`}
             >
-              (بدون کشیش - رد شدن)
+              {t('day0.step4.skip')}
             </button>
             {players
               .filter((p) => p.id !== popeId)
@@ -673,7 +661,7 @@ export default function Day0Setup({
                 <button
                   key={p.id}
                   onClick={() => handleSelectPriest(p.id)}
-                  className={`py-2 px-3 rounded-lg text-xs font-semibold text-right transition border flex items-center justify-between gap-1.5 ${
+                  className={`py-2 px-3 rounded-lg text-xs font-semibold text-start transition border flex items-center justify-between gap-1.5 ${
                     priestId === p.id
                       ? 'bg-amber-500 text-slate-950 border-amber-400'
                       : 'bg-slate-950/40 border-slate-800 text-slate-300 hover:border-slate-700'
@@ -687,7 +675,7 @@ export default function Day0Setup({
 
           {currentPriest && (
             <div className="bg-teal-500/10 border border-teal-500/20 text-teal-400 p-3 rounded-lg text-xs font-semibold text-center mt-3 font-semibold">
-              کشیش بزرگ بازی: <span className="font-bold underline">{currentPriest.name}</span>
+              {t('day0.step4.selected', { name: currentPriest.name })}
             </div>
           )}
         </div>
