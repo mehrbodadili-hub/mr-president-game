@@ -370,8 +370,8 @@ export default function Day0Setup({
   const renderSecretsLabel = (p: Player) => {
     if (!showSecrets) return null;
     const isMason = p.identity === 'freemason';
-    const roleText = p.role !== 'none' ? ` / ${ROLE_DETAILS[p.role].nameFa}` : '';
-    const label = isMason ? `فراماسون ${p.masonNumber}` : 'شهروند';
+    const roleText = p.role !== 'none' ? ` / ${t(`roles.${p.role}.name`)}` : '';
+    const label = isMason ? t('day0.secrets.freemasonShort', { n: p.masonNumber }) : t('day0.secrets.citizenShort');
     return (
       <span className={`text-[10px] font-bold ${isMason ? 'text-rose-400' : 'text-sky-400'}`}>
         ({label}{roleText})
@@ -382,8 +382,8 @@ export default function Day0Setup({
   const getSecretsOptionLabel = (p: Player) => {
     if (!showSecrets) return '';
     const isMason = p.identity === 'freemason';
-    const roleText = p.role !== 'none' ? ` / ${ROLE_DETAILS[p.role].nameFa}` : '';
-    const label = isMason ? `فراماسون ${p.masonNumber}` : 'شهروند';
+    const roleText = p.role !== 'none' ? ` / ${t(`roles.${p.role}.name`)}` : '';
+    const label = isMason ? t('day0.secrets.freemasonShort', { n: p.masonNumber }) : t('day0.secrets.citizenShort');
     return ` (${label}${roleText})`;
   };
 
