@@ -19,6 +19,7 @@ import ChaosPhase from './components/ChaosPhase';
 import SearchManager from './components/SearchManager';
 import SpeakingTimer from './components/SpeakingTimer';
 import { ConditionsModal } from './components/ConditionsModal';
+import { tl } from './i18n';
 import {
   Users,
   UserPlus,
@@ -60,7 +61,7 @@ export default function App() {
   const isRtl = i18n.language !== 'en';
   // Game Setup States
   const [playerInput, setPlayerInput] = useState<string>(() => {
-    return localStorage.getItem('president_playerInput') || 'مهرداد, نیما, سپیده, آرمان, صبا, کیوان, بهار, رامین, رویا, سینا';
+    return localStorage.getItem('president_playerInput') || tl('مهرداد, نیما, سپیده, آرمان, صبا, کیوان, بهار, رامین, رویا, سینا', 'Mehrdad, Nima, Sepideh, Arman, Saba, Kayvan, Bahar, Ramin, Roya, Sina');
   });
   const [players, setPlayers] = useState<Player[]>(() => {
     const saved = localStorage.getItem('president_players');
@@ -157,7 +158,7 @@ export default function App() {
         eliminatedId = targetIds[0];
       } else {
         isTie = true;
-        tiedNames = targetIds.map(id => players.find(p => p.id === id)?.name || 'ناشناس');
+        tiedNames = targetIds.map(id => players.find(p => p.id === id)?.name || tl('ناشناس', 'ناشناس'));
         // Randomly choose
         eliminatedId = targetIds[Math.floor(Math.random() * targetIds.length)];
       }
@@ -165,7 +166,7 @@ export default function App() {
       setChaosModalData({
         isTie,
         tiedNames,
-        eliminatedName: players.find(p => p.id === eliminatedId)?.name || 'ناشناس',
+        eliminatedName: players.find(p => p.id === eliminatedId)?.name || tl('ناشناس', 'ناشناس'),
         eliminatedId
       });
     }
@@ -180,9 +181,9 @@ export default function App() {
     );
     
     if (data.isTie) {
-      handleLogEvent(`💀 به دلیل تساوی آرا بین [${data.tiedNames.join('، ')}]، سیستم به طور تصادفی «${data.eliminatedName}» را هدف قرار داد و حذف کرد.`, 'kill');
+      handleLogEvent(tl(`💀 به دلیل تساوی آرا بین [${data.tiedNames.join('، ')}]، سیستم به طور تصادفی «${data.eliminatedName}» را هدف قرار داد و حذف کرد.`, `💀 to دلیل تساوی votes بین [${data.tiedNames.join('، ')}], سیستم randomly "${data.eliminatedName}" را target قرار داد and remove کرد.`), 'kill');
     } else {
-      handleLogEvent(`💀 بر اساس حداکثر آرای اجباری در فاز آشوب، «${data.eliminatedName}» هدف قرار گرفت و کشته شد.`, 'kill');
+      handleLogEvent(tl(`💀 بر اساس حداکثر آرای اجباری در فاز آشوب، «${data.eliminatedName}» هدف قرار گرفت و کشته شد.`, `💀 on اساس max آvote اجباری in phase chaos, "${data.eliminatedName}" target قرار گرفت and killed شد.`), 'kill');
     }
 
     setChaosModalData(null);
@@ -194,7 +195,7 @@ export default function App() {
         const shuffled = [...remainingActivePlayers].sort(() => Math.random() - 0.5).map(p => p.id);
         setChaosSpeakerOrder(shuffled);
         setChaosVotes({});
-        handleLogEvent(`نبرد آشوب ادامه دارد... رأی‌گیری مجدد آغار شد.`, 'system');
+        handleLogEvent(tl(`نبرد آشوب ادامه دارد... رأی‌گیری مجدد آغار شد.`, `نبرد chaos continue has... voting مجدد آغار شد.`), 'system');
       }
     }, 100);
   };
@@ -631,7 +632,7 @@ export default function App() {
           })
         );
         handleLogEvent(
-          `🚨 مجمع اضطراری آشوب دایر گردید! شمار بازماندگان فعال مجمع به لایحه اضطراریِ ${chaosThreshold} نفر رسید. زندانیان از بازی حذف و کلیه حقوق مدنی باطل شدند. فاز آشوب مستقر گردید!`,
+          tl(`🚨 مجمع اضطراری آشوب دایر گردید! شمار بازماندگان فعال مجمع به لایحه اضطراریِ ${chaosThreshold} نفر رسید. زندانیان از بازی حذف و کلیه حقوق مدنی باطل شدند. فاز آشوب مستقر گردید!`, `🚨 assembly emergency chaos دایر گردید! شمار survivors active assembly to لایحه emergencyِ ${chaosThreshold} نفر رسید. prisoners from game remove and کلیه حقوق civil باطل شدند. phase chaos مستقر گردید!`),
           'system'
         );
       }
@@ -659,7 +660,7 @@ export default function App() {
         );
         setCabinet((prev) => ({ ...prev, presidentId: vp.id, vicePresidentId: null }));
         handleLogEvent(
-          `🚨 جانشینی مقام ریاست جمهوری! با شهادت رئیس‌جمهور، معاون ایشان «${vp.name}» رسماً به عنوان رئیس‌جمهور جدید مجمع سوگند یاد کرد.`,
+          tl(`🚨 جانشینی مقام ریاست جمهوری! با شهادت رئیس‌جمهور، معاون ایشان «${vp.name}» رسماً به عنوان رئیس‌جمهور جدید مجمع سوگند یاد کرد.`, `🚨 succession office presidency! with شهادت President, Vice President ایشان "${vp.name}" رسماً to عنوان President new assembly oath یاد کرد.`),
           'system'
         );
         return;
@@ -678,7 +679,7 @@ export default function App() {
         );
         setCabinet((prev) => ({ ...prev, presidentId: mayor.id, mayorId: null }));
         handleLogEvent(
-          `🚨 جانشینی اضطراری ریاست جمهوری! با فوت رئیس‌جمهور و معاون مجمع، شهردار مقتدر «${mayor.name}» عهده‌دار کرسی ریاست جمهوری گردید.`,
+          tl(`🚨 جانشینی اضطراری ریاست جمهوری! با فوت رئیس‌جمهور و معاون مجمع، شهردار مقتدر «${mayor.name}» عهده‌دار کرسی ریاست جمهوری گردید.`, `🚨 succession emergency presidency! with death President and Vice President assembly, Mayor مقتدر "${mayor.name}" عهده‌دار کرسی presidency گردید.`),
           'system'
         );
         return;
@@ -704,12 +705,12 @@ export default function App() {
           judgeId: prev.judgeId === randomPlayer.id ? null : prev.judgeId
         }));
         handleLogEvent(
-          `🚨 انتصاب اضطراری و تصادفی ریاست جمهوری! به علت فوت کادر ارشد مجمع، قرعه حاکمیت مجمع به صورت رندوم به نام بازیکن «${randomPlayer.name}» درآمد.`,
+          tl(`🚨 انتصاب اضطراری و تصادفی ریاست جمهوری! به علت فوت کادر ارشد مجمع، قرعه حاکمیت مجمع به صورت رندوم به نام بازیکن «${randomPlayer.name}» درآمد.`, `🚨 appointment emergency and random presidency! to علت death کادر ارشد assembly, قرعه sovereignty assembly to صورت رنtwoم to name player "${randomPlayer.name}" درآمد.`),
           'system'
         );
       } else {
         handleLogEvent(
-          `⚠️ فروپاشی حاکمیت اجرایی مجمع! کادر ارشد مجمع اعم از رئیس‌جمهور، معاون، شهردار تماماً مرده‌اند. به علت حفظ تفکیک قوا، امکان انتصاب پاپ، کشیش، قاضی یا زندانی در جایگاه ریاست‌جمهوری نیست. مجمع بدون قوه مجریه می‌ماند!`,
+          tl(`⚠️ فروپاشی حاکمیت اجرایی مجمع! کادر ارشد مجمع اعم از رئیس‌جمهور، معاون، شهردار تماماً مرده‌اند. به علت حفظ تفکیک قوا، امکان انتصاب پاپ، کشیش، قاضی یا زندانی در جایگاه ریاست‌جمهوری نیست. مجمع بدون قوه مجریه می‌ماند!`, `⚠️ فروپاشی sovereignty executive assembly! کادر ارشد assembly اعم from President, Vice President, Mayor تماماً dead‌اند. to علت حفظ تفکیک قوا, امکان appointment Pope, Priest, Judge or prisoner in position presidency نیست. assembly without قوه مجریه می‌ماند!`),
           'system'
         );
       }
@@ -733,7 +734,7 @@ export default function App() {
         })
       );
       handleLogEvent(
-        `🚨 جانشینی عالی پاپ اعظم! با فقدان پاپ اعظم، کشیشِ مجمع «${priest.name}» ردای سرخ پاپ اعظم را به دوش افکند.`,
+        tl(`🚨 جانشینی عالی پاپ اعظم! با فقدان پاپ اعظم، کشیشِ مجمع «${priest.name}» ردای سرخ پاپ اعظم را به دوش افکند.`, `🚨 succession عالی High Pope! with فقدان High Pope, Priestِ assembly "${priest.name}" ردای سرخ High Pope را to twoش افکند.`),
         'system'
       );
     }
@@ -778,7 +779,7 @@ export default function App() {
   const handleDevSetupAndJump = (targetPhase: GamePhase) => {
     let currentPlayers = [...players];
     if (currentPlayers.length === 0) {
-      const defaultNames = ['مهرداد', 'نیما', 'سپیده', 'آرمان', 'صبا', 'کیوان', 'بهار', 'رامین', 'رویا', 'سینا'];
+      const defaultNames = [tl('مهرداد', 'Mehrdad'), tl('نیما', 'Nima'), tl('سپیده', 'Sepideh'), tl('آرمان', 'Arman'), tl('صبا', 'Saba'), tl('کیوان', 'Kayvan'), tl('بهار', 'Bahar'), tl('رامین', 'Ramin'), tl('رویا', 'Roya'), tl('سینا', 'Sina')];
       currentPlayers = initializePlayers(defaultNames);
     }
 
@@ -857,11 +858,11 @@ export default function App() {
     });
 
     handleLogEvent(`[توسعه] تغییر وضعیت با موفقیت انجام شد. فاز فعلی: ${
-      targetPhase === 'setup' ? 'ثبت‌نام' :
-      targetPhase === 'day0' ? 'روز صفر' :
-      targetPhase === 'night0' ? 'شب صفر' :
-      targetPhase === 'day' ? 'روز' :
-      targetPhase === 'chaos' ? 'آشوب' : 'شب'
+      targetPhase === 'setup' ? tl('ثبت‌نام', 'register') :
+      targetPhase === 'day0' ? tl('روز صفر', 'Day Zero') :
+      targetPhase === 'night0' ? tl('شب صفر', 'Night Zero') :
+      targetPhase === 'day' ? tl('روز', 'day') :
+      targetPhase === 'chaos' ? tl('آشوب', 'chaos') : tl('شب', 'night')
     }`, 'system');
   };
 
@@ -933,7 +934,7 @@ export default function App() {
 
   // Reset function
   const handleResetGame = (force = false) => {
-    if (force || !window.confirm || confirm('آیا مایلید این بازی را ریست کرده و بازی جدیدی شروع کنید؟')) {
+    if (force || !window.confirm || confirm(tl('آیا مایلید این بازی را ریست کرده و بازی جدیدی شروع کنید؟', 'آیا مایلید this game را reset کرده and new gameی start کنید?'))) {
       // Clear localStorage keys
       const keys = [
         'president_players',
@@ -1000,11 +1001,11 @@ export default function App() {
       .filter((name) => name.length > 0);
 
     if (names.length < 8) {
-      alert('بازی آقای رئیس‌جمهور حداقل نیاز به ۸ بازیکن دارد و برای تعداد کمتر مجمع رسمی تشکیل نمی‌شود.');
+      alert(tl('بازی آقای رئیس‌جمهور حداقل نیاز به ۸ بازیکن دارد و برای تعداد کمتر مجمع رسمی تشکیل نمی‌شود.', 'game آقای President min نیاز to 8 player has and بvote count کمتر assembly رسمی تشکیل نمی‌شود.'));
       return;
     }
     if (names.length > 30) {
-      alert('تعداد بازیکنان مجمع حاکمیتی جهت پایداری و ثبات قوانین نباید بیش از ۳۰ نفر باشد.');
+      alert(tl('تعداد بازیکنان مجمع حاکمیتی جهت پایداری و ثبات قوانین نباید بیش از ۳۰ نفر باشد.', 'count players governing assembly جهت stability and stability rules نmust بیش from 30 نفر باشد.'));
       return;
     }
 
@@ -1017,7 +1018,7 @@ export default function App() {
     
     // Add logging
     const masonCount = calculateMasonCount(names.length);
-    const customLogMsg = `بازی با حضور ${names.length} بازیکن آغاز شد. ${masonCount} فراماسون (بر پایه حد نصاب قانونی ۲۹٪) به طور مخفیانه وارد لژ شدند.`;
+    const customLogMsg = tl(`بازی با حضور ${names.length} بازیکن آغاز شد. ${masonCount} فراماسون (بر پایه حد نصاب قانونی ۲۹٪) به طور مخفیانه وارد لژ شدند.`, `game with presence ${names.length} player begin شد. ${masonCount} Freemason (on پایه حد نصاب ruleی 29٪) to طور hiddenانه وارد lodge شدند.`);
     
     // Explicit manual push
     const startLog: GameLog = {
@@ -1059,7 +1060,7 @@ export default function App() {
           // Log the terrorist assignment
           setTimeout(() => {
             handleLogEvent(
-              `[وتوی پاپ اعظم] به واسطه حق ابطال تصمیمات مجمع توسط پاپ اعظم بر صندلی ریاست‌جمهوری، هسته‌های خشونت‌امیز فعال شدند! بازیکن «${chosen.name}» به صورت کاملاً پنهانی به عنوان «تروریست مجمع» انتصاب گردید.`,
+              tl(`[وتوی پاپ اعظم] به واسطه حق ابطال تصمیمات مجمع توسط پاپ اعظم بر صندلی ریاست‌جمهوری، هسته‌های خشونت‌امیز فعال شدند! بازیکن «${chosen.name}» به صورت کاملاً پنهانی به عنوان «تروریست مجمع» انتصاب گردید.`, `[veto High Pope] to واسطه حق ابطال تصمیمات assembly توسط High Pope on seat presidency, هسته‌های خشونت‌امیز active شدند! player "${chosen.name}" to صورت fully covertly to عنوان "terrorist assembly" appointment گردید.`),
               'ability'
             );
           }, 100);
@@ -1072,7 +1073,7 @@ export default function App() {
     setSelectedTab('logs');
     handleLogEvent(
       `مجمع روز صفر تشکیل و کابینه منصوب شد. اینک وارد فاز «شب صفر» می‌شویم. فراماسون‌ها بیدار شده و ۳۰ ثانیه دیالوگ آغازین دارند.${
-        isVetoed ? ' (توجه: حق وتوی پاپ اعظم فعال شده و تروریست مخفی گمارده شد)' : ''
+        isVetoed ? tl(' (توجه: حق وتوی پاپ اعظم فعال شده و تروریست مخفی گمارده شد)', '(note: حق veto High Pope active شده and terrorist hidden assigned شد)') : ''
       }`,
       'system'
     );
@@ -1082,7 +1083,7 @@ export default function App() {
   const handleStartDay1 = () => {
     setGamePhase('day');
     setSelectedTab('day');
-    handleLogEvent(`شب صفر به پایان رسید. خرق فجر! وارد روز اول بازی می‌شویم. گفتگو آزاد آغاز می‌گردد.`, 'system');
+    handleLogEvent(tl(`شب صفر به پایان رسید. خرق فجر! وارد روز اول بازی می‌شویم. گفتگو آزاد آغاز می‌گردد.`, `Night Zero to end رسید. خرق فجر! وارد day اول game می‌شویم. discussion آزاد begin می‌گردد.`), 'system');
   };
 
   // Player action handlers
@@ -1094,7 +1095,7 @@ export default function App() {
     if (newRole !== 'none') {
       const existingHolder = players.find(p => p.role === newRole && p.id !== id);
       if (existingHolder) {
-        handleLogEvent(`سمتِ «${ROLE_DETAILS[newRole].nameFa}» از بازیکن ${existingHolder.name} سلب شد.`, 'system');
+        handleLogEvent(tl(`سمتِ «${ROLE_DETAILS[newRole].nameFa}» از بازیکن ${existingHolder.name} سلب شد.`, `سمتِ "${ROLE_DETAILS[newRole].nameFa}" from player ${existingHolder.name} سلب شد.`), 'system');
       }
     }
 
@@ -1119,7 +1120,7 @@ export default function App() {
       })
     );
 
-    handleLogEvent(`جایگاه نقش بازیکن «${targetPlayer.name}» به «${ROLE_DETAILS[newRole].nameFa}» ارتقا یافت.`, 'system');
+    handleLogEvent(tl(`جایگاه نقش بازیکن «${targetPlayer.name}» به «${ROLE_DETAILS[newRole].nameFa}» ارتقا یافت.`, `position role player "${targetPlayer.name}" to "${ROLE_DETAILS[newRole].nameFa}" ارتقا یافت.`), 'system');
   };
 
   const handleUpdatePlayerIdentity = (id: string, newIdentity: Identity) => {
@@ -1146,8 +1147,8 @@ export default function App() {
       })
     );
 
-    const identityName = newIdentity === 'freemason' ? 'فراماسون' : 'شهروند ساده';
-    handleLogEvent(`هویت اصلی بازیکن «${targetPlayer.name}» به «${identityName}» تغییر یافت.`, 'system');
+    const identityName = newIdentity === 'freemason' ? tl('فراماسون', 'Freemason') : tl('شهروند ساده', 'citizen plain');
+    handleLogEvent(tl(`هویت اصلی بازیکن «${targetPlayer.name}» به «${identityName}» تغییر یافت.`, `identity اصلی player "${targetPlayer.name}" to "${identityName}" change یافت.`), 'system');
   };
 
   const handleAddPlayer = (name: string) => {
@@ -1166,14 +1167,14 @@ export default function App() {
       terroristUsed: false,
     };
     setPlayers((prev) => [...prev, newPlayer]);
-    handleLogEvent(`بازیکن جدید «${name}» با موفقیت به بازی دعوت شد.`, 'system');
+    handleLogEvent(tl(`بازیکن جدید «${name}» با موفقیت به بازی دعوت شد.`, `new player "${name}" with successfulیت to game دعوت شد.`), 'system');
   };
 
   const handleRemovePlayer = (id: string) => {
     const targetPlayer = players.find(p => p.id === id);
     if (!targetPlayer) return;
     setPlayers((prev) => prev.filter(p => p.id !== id));
-    handleLogEvent(`بازیکن «${targetPlayer.name}» از مجمع بازی حذف شد.`, 'system');
+    handleLogEvent(tl(`بازیکن «${targetPlayer.name}» از مجمع بازی حذف شد.`, `player "${targetPlayer.name}" from open assemblyی remove شد.`), 'system');
   };
 
   const handleTogglePlayerAlive = (id: string) => {
@@ -1181,7 +1182,7 @@ export default function App() {
       prev.map((p) => {
         if (p.id === id) {
           const nextState = !p.isAlive;
-          handleLogEvent(`بازیکن «${p.name}» ${nextState ? 'زنده شد و به جریان بازی بازگشت.' : 'مرد و به خاک سپرده شد.'}`, nextState ? 'system' : 'kill');
+          handleLogEvent(tl(`بازیکن «${p.name}» ${nextState ? tl('زنده شد و به جریان بازی بازگشت.', 'alive شد and to جریان game بازگشت.') : tl('مرد و به خاک سپرده شد.', 'مرد and to خاک shieldده شد.')}`, `player "${p.name}" ${nextState ? tl('زنده شد و به جریان بازی بازگشت.', 'alive شد and to جریان game بازگشت.') : tl('مرد و به خاک سپرده شد.', 'مرد and to خاک shieldده شد.')}`), nextState ? 'system' : 'kill');
           return { ...p, isAlive: nextState };
         }
         return p;
@@ -1197,7 +1198,7 @@ export default function App() {
     if (!target) return;
 
     if (!target.isImprisoned && prisonerCount >= 3) {
-      alert('ظرفیت قانونی زندان قاضی حداکثر ۳ نفر است و هم‌اینک کاملاً پر می‌باشد!');
+      alert(tl('ظرفیت قانونی زندان قاضی حداکثر ۳ نفر است و هم‌اینک کاملاً پر می‌باشد!', 'ظرفیت ruleی prison Judge max 3 نفر است and هم‌اینک fully پر می‌باشد!'));
       return;
     }
 
@@ -1206,7 +1207,7 @@ export default function App() {
         if (p.id === id) {
           const nextState = !p.isImprisoned;
           handleLogEvent(
-            `بازیکن «${p.name}» توسط دادرسی قاضی ${nextState ? 'به سلول انفرادی زندان منتقل و حق رای او تعلیق شد.' : 'از بند زندان آزاد شد.'}`,
+            tl(`بازیکن «${p.name}» توسط دادرسی قاضی ${nextState ? tl('به سلول انفرادی زندان منتقل و حق رای او تعلیق شد.', 'to cell solitary prison منتقل and حق vote او تعلیق شد.') : tl('از بند زندان آزاد شد.', 'from بند prison آزاد شد.')}`, `player "${p.name}" توسط دادرسی Judge ${nextState ? tl('به سلول انفرادی زندان منتقل و حق رای او تعلیق شد.', 'to cell solitary prison منتقل and حق vote او تعلیق شد.') : tl('از بند زندان آزاد شد.', 'from بند prison آزاد شد.')}`),
             'system'
           );
           if (nextState) {
@@ -1232,7 +1233,7 @@ export default function App() {
         if (p.id === id) {
           const hadActiveShield = p.hasShield && !p.shieldBroken;
           handleLogEvent(
-            `سپر امنیتی بازیکن «${p.name}» توسط گرداننده ${hadActiveShield ? 'باطل شد.' : 'شارژ و فعال گردید.'}`,
+            tl(`سپر امنیتی بازیکن «${p.name}» توسط گرداننده ${hadActiveShield ? tl('باطل شد.', 'باطل شد.') : tl('شارژ و فعال گردید.', 'شارژ and active گردید.')}`, `security shield player "${p.name}" توسط moderator ${hadActiveShield ? tl('باطل شد.', 'باطل شد.') : tl('شارژ و فعال گردید.', 'شارژ and active گردید.')}`),
             'protect'
           );
           return {
@@ -1252,7 +1253,7 @@ export default function App() {
         if (p.id === id) {
           const nextState = !p.hasTerroristAbility;
           handleLogEvent(
-            `گرداننده قابلیت بمب تروریست را برای «${p.name}» ${nextState ? 'فعال کرد.' : 'غیر فعال نمود.'}`,
+            tl(`گرداننده قابلیت بمب تروریست را برای «${p.name}» ${nextState ? tl('فعال کرد.', 'active کرد.') : tl('غیر فعال نمود.', 'غیر active نمود.')}`, `moderator قابلیت bomb terrorist را بvote "${p.name}" ${nextState ? tl('فعال کرد.', 'active کرد.') : tl('غیر فعال نمود.', 'غیر active نمود.')}`),
             'ability'
           );
           return { ...p, hasTerroristAbility: nextState, hasTerroristAbilityCycle: nextState ? cycleNumber + 1 : undefined };
@@ -1303,14 +1304,14 @@ export default function App() {
     // Exception: If Judge role is vacant, it MUST be filled (mandatory under all circumstances)
     if (vacantRoles.includes('judge')) {
       if (showFeedback) {
-        alert('⚠️ نقش خالی قاضی تالار مجمع الزامی است! رئیس‌جمهور باید ابتدا جانشین قاضی مقتول را تعیین تکلیف کند.');
+        alert(tl('⚠️ نقش خالی قاضی تالار مجمع الزامی است! رئیس‌جمهور باید ابتدا جانشین قاضی مقتول را تعیین تکلیف کند.', '⚠️ role خالی Judge assembly hall mandatory است! President must ابتدا successor Judge killed را decide کند.'));
       }
       return false;
     }
 
     if (vacantRoles.includes('mayor')) {
       if (showFeedback) {
-        alert('⚠️ نقش خالی شهردار الزامی است! رئیس‌جمهور باید جانشین شهردار را تعیین تکلیف کند.');
+        alert(tl('⚠️ نقش خالی شهردار الزامی است! رئیس‌جمهور باید جانشین شهردار را تعیین تکلیف کند.', '⚠️ role خالی Mayor mandatory است! President must successor Mayor را decide کند.'));
       }
       return false;
     }
@@ -1322,7 +1323,7 @@ export default function App() {
       const mandatoryVacant = vacantRoles.filter(r => r !== 'priest' && r !== 'pope');
       if (mandatoryVacant.length > 0) {
         if (showFeedback) {
-          alert('⚠️ رئیس‌جمهور موظف است نقش‌های خالی مجمع را با شهروندان بدون نقش جایگزین کند. لطفاً ابتدا نقش یا نقش‌های خالی را واگذار بفرمایید.');
+          alert(tl('⚠️ رئیس‌جمهور موظف است نقش‌های خالی مجمع را با شهروندان بدون نقش جایگزین کند. لطفاً ابتدا نقش یا نقش‌های خالی را واگذار بفرمایید.', '⚠️ President موظف است roles خالی assembly را with citizens without role جایگزین کند. Please ابتدا role or roles خالی را واگذار بفرمایید.'));
         }
         return false;
       }
@@ -1335,7 +1336,7 @@ export default function App() {
   const handlePopeAssignNewPriest = (newPriestId: string) => {
     const nominee = players.find((p) => p.id === newPriestId);
     if (!nominee || !nominee.isAlive) {
-      alert('لطفاً یک بازیکن زنده را به عنوان کشیش جدید انتخاب فرمایید.');
+      alert(tl('لطفاً یک بازیکن زنده را به عنوان کشیش جدید انتخاب فرمایید.', 'Please a player alive را to عنوان Priest new select فرمایید.'));
       return;
     }
 
@@ -1353,7 +1354,7 @@ export default function App() {
     );
 
     handleLogEvent(
-      `پاپ مقتدر با صدور فرمان معنوی، بازیکن زنده «${nominee.name}» را به مقام کشیش جدید مجمع منصوب فرمود.`,
+      tl(`پاپ مقتدر با صدور فرمان معنوی، بازیکن زنده «${nominee.name}» را به مقام کشیش جدید مجمع منصوب فرمود.`, `Pope مقتدر with issue order معنوی, player alive "${nominee.name}" را to office Priest new assembly appointed فرمود.`),
       'system'
     );
   };
@@ -1362,7 +1363,7 @@ export default function App() {
   const handlePresidentAssignNewPope = (newPopeId: string) => {
     const nominee = players.find((p) => p.id === newPopeId);
     if (!nominee || !nominee.isAlive) {
-      alert('لطفاً یک بازیکن زنده جهت جانشینی مقام پاپ انتخاب نمایید.');
+      alert(tl('لطفاً یک بازیکن زنده جهت جانشینی مقام پاپ انتخاب نمایید.', 'Please a player alive جهت succession office Pope select نمایید.'));
       return;
     }
 
@@ -1380,7 +1381,7 @@ export default function App() {
     );
 
     handleLogEvent(
-      `به دلیل فوت همزمان پاپ و کشیش، رئیس‌جمهور مجمع بازیکن زنده «${nominee.name}» را به مقام پاپ اعظم منصوب نمود.`,
+      tl(`به دلیل فوت همزمان پاپ و کشیش، رئیس‌جمهور مجمع بازیکن زنده «${nominee.name}» را به مقام پاپ اعظم منصوب نمود.`, `to دلیل death همزمان Pope and Priest, President open assemblyیکن alive "${nominee.name}" را to office High Pope appointed نمود.`),
       'system'
     );
   };
@@ -1388,7 +1389,7 @@ export default function App() {
   const handleManualAssignPresident = (newPresidentId: string, assignerName: string) => {
     const nominee = players.find(p => p.id === newPresidentId);
     if (!nominee || !nominee.isAlive) {
-      alert('لطفاً یک بازیکن زنده برگزینید.');
+      alert(tl('لطفاً یک بازیکن زنده برگزینید.', 'Please a player alive choose.'));
       return;
     }
     
@@ -1405,7 +1406,7 @@ export default function App() {
       mayorId: prev.mayorId === newPresidentId ? null : prev.mayorId,
       judgeId: prev.judgeId === newPresidentId ? null : prev.judgeId
     }));
-    handleLogEvent(`🚨 تعیین ریاست جمهوری جدید! با غیاب رئیس‌جمهور و فوت معاونان، به فرمان عالیِ ${assignerName}، بازیکن زنده «${nominee.name}» به کرسی ریاست منصوب شد.`, 'system');
+    handleLogEvent(tl(`🚨 تعیین ریاست جمهوری جدید! با غیاب رئیس‌جمهور و فوت معاونان، به فرمان عالیِ ${assignerName}، بازیکن زنده «${nominee.name}» به کرسی ریاست منصوب شد.`, `🚨 set presidency new! with غیاب President and death Vice Presidentان, to order عالیِ ${assignerName}, player alive "${nominee.name}" to کرسی ریاست appointed شد.`), 'system');
   };
 
   // President Fill Vacant Role (Rule 3 priority and Vacant Judge Priority)
@@ -1413,19 +1414,19 @@ export default function App() {
     if (presidentSwappedToday) {
       const vacantRoles = getVacantRoles();
       if (!vacantRoles.includes(role)) {
-        alert('رئیس‌جمهور قبلاً قابلیت جابه‌جایی/پر کردن نقش‌های خود را در این فاز روز خرج کرده است.');
+        alert(tl('رئیس‌جمهور قبلاً قابلیت جابه‌جایی/پر کردن نقش‌های خود را در این فاز روز خرج کرده است.', 'President قبلاً قابلیت swap/پر کردن roles خود را in this day phase خرج کرده است.'));
         return;
       }
     }
     const valPlayer = players.find((p) => p.id === pId);
     if (!valPlayer || !valPlayer.isAlive) {
-      alert('لطفاً یک بازیکن زنده برگزینید.');
+      alert(tl('لطفاً یک بازیکن زنده برگزینید.', 'Please a player alive choose.'));
       return;
     }
 
     const vacantRoles = getVacantRoles();
     if (!vacantRoles.includes(role)) {
-      alert('این نقش هم‌اکنون خالی نیست یا در بازی وجود ندارد.');
+      alert(tl('این نقش هم‌اکنون خالی نیست یا در بازی وجود ندارد.', 'this role هم‌اکنون خالی نیست or in game exists lacks.'));
       return;
     }
 
@@ -1451,9 +1452,9 @@ export default function App() {
     );
 
     setPresidentSwappedToday(true);
-    const oldRoleMsg = oldRoleOfPlayer !== 'none' ? `دارای منصب والای «${ROLE_DETAILS[oldRoleOfPlayer].nameFa}»` : 'بدون منصب';
+    const oldRoleMsg = oldRoleOfPlayer !== 'none' ? tl(`دارای منصب والای «${ROLE_DETAILS[oldRoleOfPlayer].nameFa}»`, `داvote منصب والای "${ROLE_DETAILS[oldRoleOfPlayer].nameFa}"`) : tl('بدون منصب', 'without منصب');
     handleLogEvent(
-      `رئیس‌جمهور نقش خالیِ «${ROLE_DETAILS[role].nameFa}» را به شهروند زنده ${oldRoleMsg} به نام «${valPlayer.name}» تفویض نمود.`,
+      tl(`رئیس‌جمهور نقش خالیِ «${ROLE_DETAILS[role].nameFa}» را به شهروند زنده ${oldRoleMsg} به نام «${valPlayer.name}» تفویض نمود.`, `President role خالیِ "${ROLE_DETAILS[role].nameFa}" را to citizen alive ${oldRoleMsg} to name "${valPlayer.name}" تفویض نمود.`),
       'ability'
     );
   };
@@ -1461,7 +1462,7 @@ export default function App() {
   // President role Swap
   const handlePresidentSwapRoles = (p1Id: string, p2Id: string) => {
     if (presidentSwappedToday) {
-      alert('رئیس‌جمهور قبلاً قابلیت جابه‌جایی نقش‌های خود را در این فاز روز خرج کرده است.');
+      alert(tl('رئیس‌جمهور قبلاً قابلیت جابه‌جایی نقش‌های خود را در این فاز روز خرج کرده است.', 'President قبلاً قابلیت swap roles خود را in this day phase خرج کرده است.'));
       return;
     }
 
@@ -1469,7 +1470,7 @@ export default function App() {
     const p2 = players.find((p) => p.id === p2Id);
 
     if (!p1 || !p2 || p1Id === p2Id) {
-      alert('لطفاً دو بازیکن متمایز را جهت تعویض نقش برگزینید.');
+      alert(tl('لطفاً دو بازیکن متمایز را جهت تعویض نقش برگزینید.', 'Please two player متمایز را جهت swap role choose.'));
       return;
     }
 
@@ -1478,7 +1479,7 @@ export default function App() {
 
     // We do not swap the president's own role!
     if (r1 === 'president' || r2 === 'president') {
-      alert('رئیس‌جمهور نمی‌تواند نقش خودش را با شخص دیگری جایگزین کند.');
+      alert(tl('رئیس‌جمهور نمی‌تواند نقش خودش را با شخص دیگری جایگزین کند.', 'President cannot role خودش را with شخص دیگری جایگزین کند.'));
       return;
     }
 
@@ -1486,7 +1487,7 @@ export default function App() {
 
     // Role 2 and roleless priorities (Rule 2 and Rule 3)
     if (r1 === 'pope' || r2 === 'pope' || r1 === 'priest' || r2 === 'priest') {
-      alert('رئیس‌جمهور مجاز به تغییر یا تعویض نقش‌های مقدس پاپ و کشیش نمی‌باشد.');
+      alert(tl('رئیس‌جمهور مجاز به تغییر یا تعویض نقش‌های مقدس پاپ و کشیش نمی‌باشد.', 'President مجاز to change or swap roles مقدس Pope and Priest نمی‌باشد.'));
       return;
     }
 
@@ -1525,7 +1526,7 @@ export default function App() {
 
     setPresidentSwappedToday(true);
     handleLogEvent(
-      `ریاست جمهوری فرمان عالی جابه‌جایی را امضا کرد: نقش‌های «${p1.name}» (${ROLE_DETAILS[r1].nameFa}) و «${p2.name}» (${ROLE_DETAILS[r2].nameFa}) با یکدیگر معاوضه گشتند.`,
+      tl(`ریاست جمهوری فرمان عالی جابه‌جایی را امضا کرد: نقش‌های «${p1.name}» (${ROLE_DETAILS[r1].nameFa}) و «${p2.name}» (${ROLE_DETAILS[r2].nameFa}) با یکدیگر معاوضه گشتند.`, `presidency order عالی swap را امضا کرد: roles "${p1.name}" (${ROLE_DETAILS[r1].nameFa}) and "${p2.name}" (${ROLE_DETAILS[r2].nameFa}) with یکدیگر معاوضه گشتند.`),
       'ability'
     );
   };
@@ -1541,21 +1542,21 @@ export default function App() {
       setPlayers((prev) =>
         prev.map((p) => (p.id === chosen.id ? { ...p, hasTerroristAbility: true, hasTerroristAbilityCycle: cycleNumber + 1 } : p))
       );
-      handleLogEvent(`به جهت ابطال تصمیمات قانونی مجمع توسط پاپ مصلح، قابلیت تروریست تصادفی جدید به بازیکن «${chosen.name}» اهدا شد.`, 'ability');
+      handleLogEvent(tl(`به جهت ابطال تصمیمات قانونی مجمع توسط پاپ مصلح، قابلیت تروریست تصادفی جدید به بازیکن «${chosen.name}» اهدا شد.`, `to جهت ابطال تصمیمات ruleی assembly توسط Pope مصلح, قابلیت terrorist random new to player "${chosen.name}" اهدا شد.`), 'ability');
     }
   };
 
   const handleVetoRevolution = () => {
     if (cycleNumber < 1 || gamePhase !== 'day') {
-      alert('وتوی پاپ فقط از روز اول به بعد در فاز گفتگو فعال است.');
+      alert(tl('وتوی پاپ فقط از روز اول به بعد در فاز گفتگو فعال است.', 'veto Pope only from day اول to بعد in phase discussion active است.'));
       return;
     }
     if (popeVetoCooldown > 0) {
-      alert('وتوی پاپ در دوره خنک‌سازی (یک روز در میان) به سر می‌برد.');
+      alert(tl('وتوی پاپ در دوره خنک‌سازی (یک روز در میان) به سر می‌برد.', 'veto Pope in roundه خنک‌سازی (a day in میان) to سر می‌برد.'));
       return;
     }
     if (!revolutionToVeto) {
-      alert('هیچ انقلاب موفقی امروز رخ نداده است تا وتو شود.');
+      alert(tl('هیچ انقلاب موفقی امروز رخ نداده است تا وتو شود.', 'no revolution successfulی امday رخ نداده است until veto شود.'));
       return;
     }
 
@@ -1573,7 +1574,7 @@ export default function App() {
     );
 
     handleLogEvent(
-      `کلیسای پاپ دخالت کرد! پاپ اعظم مجمع لایحه انقلاب شهردار را باطل اعلام نمود. مقام رئیس‌جمهور و شهردار به جایگاه پیشین خود بازگشتند.`,
+      tl(`کلیسای پاپ دخالت کرد! پاپ اعظم مجمع لایحه انقلاب شهردار را باطل اعلام نمود. مقام رئیس‌جمهور و شهردار به جایگاه پیشین خود بازگشتند.`, `کلیسای Pope دخالت کرد! High Pope assembly لایحه Mayor revolution را باطل اعلام نمود. office President and Mayor to position پیشین خود بازگشتند.`),
       'ability'
     );
 
@@ -1584,15 +1585,15 @@ export default function App() {
 
   const handleVetoCourtExecution = () => {
     if (cycleNumber < 1 || gamePhase !== 'day') {
-      alert('وتوی پاپ فقط از روز اول به بعد در فاز گفتگو فعال است.');
+      alert(tl('وتوی پاپ فقط از روز اول به بعد در فاز گفتگو فعال است.', 'veto Pope only from day اول to بعد in phase discussion active است.'));
       return;
     }
     if (popeVetoCooldown > 0) {
-      alert('وتوی پاپ در دوره خنک‌سازی (یک روز در میان) به سر می‌برد.');
+      alert(tl('وتوی پاپ در دوره خنک‌سازی (یک روز در میان) به سر می‌برد.', 'veto Pope in roundه خنک‌سازی (a day in میان) to سر می‌برد.'));
       return;
     }
     if (!courtExecutionToVeto) {
-      alert('هیچ رای اعدام دادگاهی امروز صادر نشده است تا وتو شود.');
+      alert(tl('هیچ رای اعدام دادگاهی امروز صادر نشده است تا وتو شود.', 'no vote execution courtی امday issued نشده است until veto شود.'));
       return;
     }
 
@@ -1604,7 +1605,7 @@ export default function App() {
     );
 
     handleLogEvent(
-      `کلیسای پاپ دخالت کرد! حکم اعدام اعلام شده قاضی دادگاه برای بازیکن «${target.name}» توسط پاپ اعظم ابطال و متهم بخشیده شد.`,
+      tl(`کلیسای پاپ دخالت کرد! حکم اعدام اعلام شده قاضی دادگاه برای بازیکن «${target.name}» توسط پاپ اعظم ابطال و متهم بخشیده شد.`, `کلیسای Pope دخالت کرد! verdict execution اعلام شده Judge court بvote player "${target.name}" توسط High Pope ابطال and defendant بخشیده شد.`),
       'ability'
     );
 
@@ -1615,15 +1616,15 @@ export default function App() {
 
   const handleVetoPrisonerExecution = () => {
     if (cycleNumber < 1 || gamePhase !== 'day') {
-      alert('وتوی پاپ فقط از روز اول به بعد در فاز گفتگو فعال است.');
+      alert(tl('وتوی پاپ فقط از روز اول به بعد در فاز گفتگو فعال است.', 'veto Pope only from day اول to بعد in phase discussion active است.'));
       return;
     }
     if (popeVetoCooldown > 0) {
-      alert('وتوی پاپ در دوره خنک‌سازی (یک روز در میان) به سر می‌برد.');
+      alert(tl('وتوی پاپ در دوره خنک‌سازی (یک روز در میان) به سر می‌برد.', 'veto Pope in roundه خنک‌سازی (a day in میان) to سر می‌برد.'));
       return;
     }
     if (!prisonerExecutionToVeto) {
-      alert('هیچ رای اعدام زندانی امروز صادر نشده است تا وتو شود.');
+      alert(tl('هیچ رای اعدام زندانی امروز صادر نشده است تا وتو شود.', 'no vote execution prisoner امday issued نشده است until veto شود.'));
       return;
     }
 
@@ -1635,7 +1636,7 @@ export default function App() {
     );
 
     handleLogEvent(
-      `کلیسای پاپ دخالت کرد! حکم اعدام زندانیِ بندِ تالار «${target.name}» توسط پاپ اعظم ابطال گردید و ایشان در سلول زنده باقی ماند.`,
+      tl(`کلیسای پاپ دخالت کرد! حکم اعدام زندانیِ بندِ تالار «${target.name}» توسط پاپ اعظم ابطال گردید و ایشان در سلول زنده باقی ماند.`, `کلیسای Pope دخالت کرد! verdict execution prisonerِ بندِ hall "${target.name}" توسط High Pope ابطال گردید and ایشان in cell alive باقی ماند.`),
       'ability'
     );
 
@@ -1647,7 +1648,7 @@ export default function App() {
   // Mayor Revolution
   const handleMayorRevolution = (success: boolean) => {
     if (mayorRevoltedToday) {
-      alert('شهردار قبلاً در این دوره درخواست ائتلاف یا کودتا داده است.');
+      alert(tl('شهردار قبلاً در این دوره درخواست ائتلاف یا کودتا داده است.', 'Mayor قبلاً in this roundه درخواست ائتلاف or coup داده است.'));
       return;
     }
 
@@ -1655,7 +1656,7 @@ export default function App() {
     const mayor = players.find((p) => p.role === 'mayor');
 
     if (!president || !mayor) {
-      alert('رئیس‌جمهور یا شهردار در حیات قانونی نیستند تا مجمع انقلاب شکل گیرد.');
+      alert(tl('رئیس‌جمهور یا شهردار در حیات قانونی نیستند تا مجمع انقلاب شکل گیرد.', 'President or Mayor in حیات ruleی نیستند until assembly revolution شکل گیرد.'));
       return;
     }
 
@@ -1678,7 +1679,7 @@ export default function App() {
         setCourtSelectedPlayers((prev) => [...prev, president.id]);
       }
       handleLogEvent(
-        `کودتای بهار! شهردار «${mayor.name}» با موفقیت رئیس‌جمهور «${president.name}» را خلع کرد و رئیس‌جمهور جدید شد. رئیس سابق خلع سلاح گردید و به عنوان متهم به دادگاه معرفی شد!`,
+        tl(`کودتای بهار! شهردار «${mayor.name}» با موفقیت رئیس‌جمهور «${president.name}» را خلع کرد و رئیس‌جمهور جدید شد. رئیس سابق خلع سلاح گردید و به عنوان متهم به دادگاه معرفی شد!`, `coupی Bahar! Mayor "${mayor.name}" with successfulیت President "${president.name}" را خلع کرد and President new شد. رئیس سابق خلع سلاح گردید and to عنوان defendant to court معرفی شد!`),
         'ability'
       );
     } else {
@@ -1695,7 +1696,7 @@ export default function App() {
         setCourtSelectedPlayers((prev) => [...prev, mayor.id]);
       }
       handleLogEvent(
-        `انقلاب شهرداری شکست خورد! بازیکن «${mayor.name}» لایسنس شهرداری را از دست داد و به تالار متهمین دادگاه (ورودی دادگاه) معرفی شد.`,
+        tl(`انقلاب شهرداری شکست خورد! بازیکن «${mayor.name}» لایسنس شهرداری را از دست داد و به تالار متهمین دادگاه (ورودی دادگاه) معرفی شد.`, `Mayor revolution شکست خورد! player "${mayor.name}" لایسنس Mayorی را from دست داد and to hall defendantین court (enterی court) معرفی شد.`),
         'system'
       );
     }
@@ -1710,14 +1711,14 @@ export default function App() {
       setPlayers((prev) =>
         prev.map((p) => (p.id === chosen.id ? { ...p, hasTerroristAbility: true, hasTerroristAbilityCycle: cycleNumber + 1 } : p))
       );
-      handleLogEvent(`به سبب هرج‌ومرج ناشی از انقلاب در مجمع، بمب و توانایی تروریست تصادفی جدید به بازیکن «${chosen.name}» منتقل شد.`, 'ability');
+      handleLogEvent(tl(`به سبب هرج‌ومرج ناشی از انقلاب در مجمع، بمب و توانایی تروریست تصادفی جدید به بازیکن «${chosen.name}» منتقل شد.`, `to سبب هرج‌ومرج ناشی from revolution in assembly, bomb and توانایی terrorist random new to player "${chosen.name}" منتقل شد.`), 'ability');
     }
   };
 
   // Execute verdict on an already imprisoned player (pardon or execute) - Rule 9
   const handleExecutePrisonerVerdict = (targetId: string, verdict: 'pardon' | 'execute') => {
     if (prisonerVerdictGivenToday) {
-      alert('قاضی امروز پیش‌تر یک حکم (اعدام یا عفو) برای زندانی‌ها صادر کرده است. هر روز فقط یک حکم برای زندان قابل صدور است.');
+      alert(tl('قاضی امروز پیش‌تر یک حکم (اعدام یا عفو) برای زندانی‌ها صادر کرده است. هر روز فقط یک حکم برای زندان قابل صدور است.', 'Judge امday پیش‌تر a verdict (execution or pardon) بvote prisoner‌ها issued کرده است. each day only a verdict بvote prison قابل issue است.'));
       return;
     }
 
@@ -1725,7 +1726,7 @@ export default function App() {
     if (!target || !target.isImprisoned) return;
 
     if (target.imprisonedAtCycle === cycleNumber) {
-      alert('این شخص به تازگی (همین امروز) به زندان افتاده است و نمی‌توان امروز برای او حکمی صادر کرد.');
+      alert(tl('این شخص به تازگی (همین امروز) به زندان افتاده است و نمی‌توان امروز برای او حکمی صادر کرد.', 'this شخص to تازگی (همین امday) to prison افتاده است and نcan امday بvote او verdictی issued کرد.'));
       return;
     }
 
@@ -1733,11 +1734,11 @@ export default function App() {
 
     if (verdict === 'pardon') {
       setPlayers((prev) => prev.map((p) => (p.id === targetId ? { ...p, isImprisoned: false } : p)));
-      handleLogEvent(`فرمان عفو قاضی! زندانیِ بندِ تالار «${target.name}» مورد عفو واقع شد و آزاد گردید.`, 'system');
+      handleLogEvent(tl(`فرمان عفو قاضی! زندانیِ بندِ تالار «${target.name}» مورد عفو واقع شد و آزاد گردید.`, `order pardon Judge! prisonerِ بندِ hall "${target.name}" item pardon واقع شد and آزاد گردید.`), 'system');
     } else if (verdict === 'execute') {
       setPlayers((prev) => prev.map((p) => (p.id === targetId ? { ...p, isAlive: false, isImprisoned: false } : p)));
       setPrisonerExecutionToVeto(targetId);
-      handleLogEvent(`اعدام انقلابی در بند! حکم مرگ قطعی زندانیِ غائب «${target.name}» صادر گردید و گیوتین فرود آمد.`, 'kill');
+      handleLogEvent(tl(`اعدام انقلابی در بند! حکم مرگ قطعی زندانیِ غائب «${target.name}» صادر گردید و گیوتین فرود آمد.`, `execution revolutionی in بند! verdict death قطعی prisonerِ غائب "${target.name}" issued گردید and گیوتین فرود آمد.`), 'kill');
     }
   };
 
@@ -1746,7 +1747,7 @@ export default function App() {
     courtSelectedPlayers.forEach((id) => {
       const p = players.find((x) => x.id === id);
       if (p) {
-        handleLogEvent(`فرمان عفو دسته‌جمعی قاضی! متهم مجمع «${p.name}» با موفقیت بخشیده شد.`, 'system');
+        handleLogEvent(tl(`فرمان عفو دسته‌جمعی قاضی! متهم مجمع «${p.name}» با موفقیت بخشیده شد.`, `order pardon دسته‌جمعی Judge! defendant assembly "${p.name}" with successfulیت بخشیده شد.`), 'system');
       }
     });
     setCourtSelectedPlayers([]);
@@ -1758,13 +1759,13 @@ export default function App() {
     if (!target) return;
 
     if (verdict === 'pardon') {
-      handleLogEvent(`قاضی دادگاه حکم تبرئه تام‌الاختیار بازیکن «${target.name}» را صادر کرد.`, 'system');
+      handleLogEvent(tl(`قاضی دادگاه حکم تبرئه تام‌الاختیار بازیکن «${target.name}» را صادر کرد.`, `Judge court verdict تبرئه تام‌الauthority player "${target.name}" را issued کرد.`), 'system');
       // Remove only this person from nominees
       setCourtSelectedPlayers((prev) => prev.filter((id) => id !== targetId));
     } else if (verdict === 'jail') {
       const currentPrisCount = players.filter((p) => p.isImprisoned && p.id !== targetId && p.isAlive).length;
       if (currentPrisCount >= prisonCapacity) {
-        alert(`امکان زندانی کردن متهم وجود ندارد! ظرفیت سلول زندان قاضی (${prisonCapacity} نفر) کاملاً تکمیله.`);
+        alert(tl(`امکان زندانی کردن متهم وجود ندارد! ظرفیت سلول زندان قاضی (${prisonCapacity} نفر) کاملاً تکمیله.`, `امکان prisoner کردن defendant exists lacks! ظرفیت cell prison Judge (${prisonCapacity} نفر) fully تکمیله.`));
         return;
       }
       setPlayers((prev) =>
@@ -1777,14 +1778,14 @@ export default function App() {
         judgeId: prev.judgeId === targetId ? null : prev.judgeId,
       }));
       setCourtExecutedToday(true);
-      handleLogEvent(`محکمه زندان! قاضی، بازیکن «${target.name}» را راهی بند صغیر زندان کشید و سمت او منحل گشت.`, 'system');
+      handleLogEvent(tl(`محکمه زندان! قاضی، بازیکن «${target.name}» را راهی بند صغیر زندان کشید و سمت او منحل گشت.`, `مverdictه prison! Judge, player "${target.name}" را راهی بند صغیر prison کشید and سمت او منحل گشت.`), 'system');
 
       // Auto-pardon alternative nominee (only one person can get sentenced!)
       const others = courtSelectedPlayers.filter((id) => id !== targetId);
       others.forEach((id) => {
         const p = players.find((x) => x.id === id);
         if (p) {
-          handleLogEvent(`به جهت صدور حکم بر متهم دیگر، بازیکن «${p.name}» مشمول عفو مستمر گردید و آزاد شد.`, 'system');
+          handleLogEvent(tl(`به جهت صدور حکم بر متهم دیگر، بازیکن «${p.name}» مشمول عفو مستمر گردید و آزاد شد.`, `to جهت issue verdict on defendant دیگر, player "${p.name}" مشمول pardon مستمر گردید and آزاد شد.`), 'system');
         }
       });
       setCourtSelectedPlayers([]);
@@ -1794,14 +1795,14 @@ export default function App() {
       );
       setCourtExecutionToVeto(targetId);
       setCourtExecutedToday(true);
-      handleLogEvent(`حکم اعدام! گیوتین بر گلوی بازیکن «${target.name}» فرود آمد.`, 'kill');
+      handleLogEvent(tl(`حکم اعدام! گیوتین بر گلوی بازیکن «${target.name}» فرود آمد.`, `verdict execution! گیوتین on گلوی player "${target.name}" فرود آمد.`), 'kill');
 
       // Auto-pardon alternative nominee
       const others = courtSelectedPlayers.filter((id) => id !== targetId);
       others.forEach((id) => {
         const p = players.find((x) => x.id === id);
         if (p) {
-          handleLogEvent(`به جهت صدور حکم بر متهم دیگر، بازیکن «${p.name}» مشمول عفو مستمر گردید و آزاد شد.`, 'system');
+          handleLogEvent(tl(`به جهت صدور حکم بر متهم دیگر، بازیکن «${p.name}» مشمول عفو مستمر گردید و آزاد شد.`, `to جهت issue verdict on defendant دیگر, player "${p.name}" مشمول pardon مستمر گردید and آزاد شد.`), 'system');
         }
       });
       setCourtSelectedPlayers([]);
@@ -1844,7 +1845,7 @@ export default function App() {
         hasTerroristAbility = false;
         hasTerroristAbilityCycle = undefined;
         setTimeout(() => {
-          handleLogEvent(`زمان استفاده از بمب به پایان رسید؛ قابلیت انتحاری تروریست برای «${p.name}» ابطال و ملغا گردید.`, 'system');
+          handleLogEvent(tl(`زمان استفاده از بمب به پایان رسید؛ قابلیت انتحاری تروریست برای «${p.name}» ابطال و ملغا گردید.`, `زمان استفاده from bomb to end رسید; قابلیت suicide terrorist بvote "${p.name}" ابطال and ملغا گردید.`), 'system');
         }, 50);
       }
       
@@ -1853,7 +1854,7 @@ export default function App() {
         hasTerroristAbility = true;
         hasTerroristAbilityCycle = cycleNumber + 1;
         setTimeout(() => {
-          handleLogEvent(`به واسطه خشونت و آثار شلیک پلیس در شب گذشته، قابلیت تروریست (با مهلت امشب و فردا روز) مخفیانه به بازیکن «${p.name}» منتقل گردید.`, 'ability');
+          handleLogEvent(tl(`به واسطه خشونت و آثار شلیک پلیس در شب گذشته، قابلیت تروریست (با مهلت امشب و فردا روز) مخفیانه به بازیکن «${p.name}» منتقل گردید.`, `to واسطه خشونت and آثار shot Police in night گذشته, قابلیت terrorist (with مهلت امnight and فردا day) hiddenانه to player "${p.name}" منتقل گردید.`), 'ability');
         }, 150);
       }
       
@@ -1875,7 +1876,7 @@ export default function App() {
 
     setGamePhase('night');
     setSelectedTab('logs');
-    handleLogEvent(`آفتاب غروب کرد! فاز گفتگو بسته شد و مأموریت خطیر شبانه دور ${cycleNumber} آغاز می‌شود.`, 'system');
+    handleLogEvent(tl(`آفتاب غروب کرد! فاز گفتگو بسته شد و مأموریت خطیر شبانه دور ${cycleNumber} آغاز می‌شود.`, `آفتاب غروب کرد! phase discussion بسته شد and مأموریت خطیر nightانه round ${cycleNumber} begin می‌شود.`), 'system');
   };
 
   // Complete Night actions - compile results
@@ -1904,7 +1905,7 @@ export default function App() {
     if (results.policeShotOccurred) {
       nextPending++;
       setTimeout(() => {
-        handleLogEvent(`تک‌تیرانداز پلیس امشب شات خود را خالی کرد؛ قابلیت ترور ناشی از این خشونت در شروع شب بعد به یک تروریست واگذار خواهد شد.`, 'system');
+        handleLogEvent(tl(`تک‌تیرانداز پلیس امشب شات خود را خالی کرد؛ قابلیت ترور ناشی از این خشونت در شروع شب بعد به یک تروریست واگذار خواهد شد.`, `تک‌shotانداز Police امnight شات خود را خالی کرد; قابلیت ترور ناشی from this خشونت in start night بعد to a terrorist واگذار خواهد شد.`), 'system');
       }, 120);
     }
 
@@ -1979,7 +1980,7 @@ export default function App() {
       return unique.slice(0, 2); // Maximum of 2 nominees in the court
     });
 
-    handleLogEvent(`بیدارباش! خورشید دور جدید فروزان شد. نتایج رویدادهای شب گذشته بروی تابلوی اعلانات قرار گرفت.`, 'system');
+    handleLogEvent(tl(`بیدارباش! خورشید دور جدید فروزان شد. نتایج رویدادهای شب گذشته بروی تابلوی اعلانات قرار گرفت.`, `awakeباش! خورشید round new فdayان شد. results رویدادهای night گذشته بروی تابلوی اعلانات قرار گرفت.`), 'system');
   };
 
   // Clear night outputs popup
@@ -2084,7 +2085,7 @@ export default function App() {
 
         {/* Footer Credit */}
         <div className="fixed bottom-4 left-4 text-[10px] text-slate-600 font-bold tracking-wider z-20">
-          طراحی و توسعه توسط مهربد عدیلی و سعید نوری
+          {tl('طراحی و توسعه توسط مهربد عدیلی و سعید نوری', 'طراحی and توسعه توسط مهربد عدیلی and سعید نوری')}
         </div>
       </div>
     );
@@ -2121,7 +2122,7 @@ export default function App() {
                   }`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full bg-white ${executionMode === 'STRICT' ? 'animate-pulse' : 'opacity-60'}`}></span>
-                  سخت‌گیرانه
+                  {tl('سخت‌گیرانه', 'سخت‌گیرانه')}
                 </button>
                 <button
                   id="mode-controlled-btn"
@@ -2136,7 +2137,7 @@ export default function App() {
                   }`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full bg-white ${executionMode === 'CONTROLLED' ? 'animate-pulse' : 'opacity-60'}`}></span>
-                  کنترل‌شده
+                  {tl('کنترل‌شده', 'کنترل‌شده')}
                 </button>
                 <button
                   id="mode-creative-btn"
@@ -2151,7 +2152,7 @@ export default function App() {
                   }`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full bg-white ${executionMode === 'CREATIVE' ? 'animate-pulse' : 'opacity-60'}`}></span>
-                  خلاقانه
+                  {tl('خلاقانه', 'خلاقانه')}
                 </button>
               </div>
             )}
@@ -2171,10 +2172,10 @@ export default function App() {
               <>
                 {/* Phase badge */}
                 <span className="bg-slate-950 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-800 text-xs font-bold font-mono">
-                  {gamePhase === 'day0' && 'روز صفر'}
-                  {gamePhase === 'night0' && 'شب صفر'}
-                  {gamePhase === 'day' && `روز ${cycleNumber}`}
-                  {gamePhase === 'night' && `شب ${cycleNumber}`}
+                  {gamePhase === 'day0' && tl('روز صفر', 'Day Zero')}
+                  {gamePhase === 'night0' && tl('شب صفر', 'Night Zero')}
+                  {gamePhase === 'day' && tl(`روز ${cycleNumber}`, `day ${cycleNumber}`)}
+                  {gamePhase === 'night' && tl(`شب ${cycleNumber}`, `night ${cycleNumber}`)}
                 </span>
               </>
             )}
@@ -2198,15 +2199,15 @@ export default function App() {
               executionMode === 'STRICT' ? 'bg-red-500' : executionMode === 'CONTROLLED' ? 'bg-amber-500' : 'bg-emerald-500'
             }`}></span>
           </span>
-          <span className="opacity-70 font-black">قانون حاکم:</span>
+          <span className="opacity-70 font-black">{tl('قانون حاکم:', 'rule حاکم:')}</span>
           {executionMode === 'STRICT' && (
-            <span>«اگر گفته نشده، وجود ندارد». هرگونه خلاقیت یا امکانات ناخواسته‌ای غیرفعال و ممنوع است.</span>
+            <span>{tl('«اگر گفته نشده، وجود ندارد». هرگونه خلاقیت یا امکانات ناخواسته‌ای غیرفعال و ممنوع است.', 'tl("اگر گفته نشده, exists lacks", "اگر گفته نشده, exists lacks"). هرگونه خلاقیت or امکانات ناخواسته‌ای inactive and ممنوع است.')}</span>
           )}
           {executionMode === 'CONTROLLED' && (
-            <span>تنها گزینه‌های تاییدشده و توسعه محدود مجاز است. هر نوع نوآوری مستقل به تایید نیاز دارد.</span>
+            <span>{tl('تنها گزینه‌های تاییدشده و توسعه محدود مجاز است. هر نوع نوآوری مستقل به تایید نیاز دارد.', 'only option‌های confirmشده and توسعه محtwoد مجاز است. each نوع نوآوری مستقل to confirm نیاز has.')}</span>
           )}
           {executionMode === 'CREATIVE' && (
-            <span>ایده‌پردازی و ایجاد گزینه‌های آزمایشی نوآورانه آزاد است.</span>
+            <span>{tl('ایده‌پردازی و ایجاد گزینه‌های آزمایشی نوآورانه آزاد است.', 'ایده‌پردازی and ایجاد option‌های آزمایشی نوآورانه آزاد است.')}</span>
           )}
         </div>
       )}
@@ -2223,21 +2224,21 @@ export default function App() {
                  <Skull className="w-10 h-10 text-rose-500 animate-pulse" />
                </div>
                <h2 className="text-2xl font-black text-rose-500 tracking-tight mb-4">
-                 نتیجه رأی‌گیری اجباری شهر
+                 {tl('نتیجه رأی‌گیری اجباری شهر', 'result voting اجباری city')}
                </h2>
                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 mb-6">
                  {chaosModalData.isTie ? (
                    <>
-                     <p className="text-sm font-bold text-amber-500 mb-2">تساوی آرا بین بازیکنان:</p>
+                     <p className="text-sm font-bold text-amber-500 mb-2">{tl('تساوی آرا بین بازیکنان:', 'تساوی votes بین players:')}</p>
                      <p className="text-sm text-slate-300 mb-4 bg-slate-900/50 p-3 rounded-lg border border-slate-800">
                        {chaosModalData.tiedNames.join('، ')}
                      </p>
-                     <p className="text-xs text-rose-400 font-bold mb-1">قرعه مرگ از سمت سیستم برای:</p>
+                     <p className="text-xs text-rose-400 font-bold mb-1">{tl('قرعه مرگ از سمت سیستم برای:', 'قرعه death from سمت سیستم بvote:')}</p>
                      <p className="text-xl font-black text-white">{chaosModalData.eliminatedName}</p>
                    </>
                  ) : (
                    <>
-                     <p className="text-xs text-rose-400 font-bold mb-1">فرد انتخاب شده جهت خروج اجباری:</p>
+                     <p className="text-xs text-rose-400 font-bold mb-1">{tl('فرد انتخاب شده جهت خروج اجباری:', 'فرد select شده جهت exit اجباری:')}</p>
                      <p className="text-xl font-black text-white mb-2">{chaosModalData.eliminatedName}</p>
                    </>
                  )}
@@ -2246,7 +2247,7 @@ export default function App() {
                  onClick={handleApplyChaosResult}
                  className="w-full bg-rose-700 hover:bg-rose-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition"
                >
-                 اعمال حذف و ادامه
+                 {tl('اعمال حذف و ادامه', 'اعمال remove and continue')}
                </button>
             </div>
           </div>
@@ -2269,22 +2270,22 @@ export default function App() {
               </div>
 
               <h2 className="text-3xl font-black text-white tracking-tight mb-2">
-                {winStatus === 'freemason' ? 'پیدایش نظم نوین: فراماسون‌ها پیروز شدند!' : 'عدالت الهی: شهروندان پیروز شدند!'}
+                {winStatus === 'freemason' ? tl('پیدایش نظم نوین: فراماسون‌ها پیروز شدند!', 'پیدایش نظم نوین: Freemasons پیday شدند!') : tl('عدالت الهی: شهروندان پیروز شدند!', 'عدالت الهی: citizens پیday شدند!')}
               </h2>
               <p className="text-xs text-slate-400 leading-relaxed mb-6">
                 {winStatus === 'freemason'
-                  ? 'برابری آرای غاصبانه برقرار شد. فراماسون‌های مقتدر توانستند ارکان دولت و ریاست جمهوری را در این نبرد سیاسی تصاحب کنند.'
-                  : 'تلاش‌ها ثمر داد. آخرین نطفه نفوذی‌های فراماسونری توسط قانون قوی و آگاهی مدنی شهر کشف، زندانی یا تیرباران گردید.'}
+                  ? tl('برابری آرای غاصبانه برقرار شد. فراماسون‌های مقتدر توانستند ارکان دولت و ریاست جمهوری را در این نبرد سیاسی تصاحب کنند.', 'برابری آvote غاSabaنه برقرار شد. Freemasons مقتدر توانستند ارکان government and presidency را in this نبرد political تصاحب کنند.')
+                  : tl('تلاش‌ها ثمر داد. آخرین نطفه نفوذی‌های فراماسونری توسط قانون قوی و آگاهی مدنی شهر کشف، زندانی یا تیرباران گردید.', 'تلاش‌ها ثمر داد. آخرین نطفه infiltrationی‌های Freemasonری توسط rule قوی and آگاهی civil city کشف, prisoner or shotباران گردید.')}
               </p>
 
               <div className="bg-slate-950 p-4 border border-slate-850 rounded-xl mb-6 text-right">
-                <h4 className="text-xs font-bold text-slate-300 mb-2">وضعیت زنده مانده‌ها:</h4>
+                <h4 className="text-xs font-bold text-slate-300 mb-2">{tl('وضعیت زنده مانده‌ها:', 'وضعیت alive مانده‌ها:')}</h4>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   {players.filter(p => p.isAlive).map(p => (
                     <div key={p.id} className="flex justify-between p-1.5 border-b border-slate-900 text-slate-400">
                       <span>{p.name}</span>
                       <span className={p.identity === 'freemason' ? 'text-rose-400' : 'text-sky-400 font-semibold'}>
-                        {p.identity === 'freemason' ? 'فراماسون' : 'شهروند'} ({(ROLE_DETAILS[p.role] || ROLE_DETAILS['none']).nameFa})
+                        {p.identity === 'freemason' ? tl('فراماسون', 'Freemason') : tl('شهروند', 'citizen')} ({(ROLE_DETAILS[p.role] || ROLE_DETAILS['none']).nameFa})
                       </span>
                     </div>
                   ))}
@@ -2295,7 +2296,7 @@ export default function App() {
                 onClick={() => handleResetGame(true)}
                 className="bg-amber-600 hover:bg-amber-700 text-slate-950 font-black px-6 py-3 rounded-xl text-sm transition shadow-lg shadow-amber-600/10"
               >
-                راهبری و شروع بازی مجدد
+                {tl('راهبری و شروع بازی مجدد', 'راهبری and start game مجدد')}
               </button>
             </div>
           </div>
@@ -2314,20 +2315,20 @@ export default function App() {
               />
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-black text-white text-center mb-1 tracking-tight">آماده‌سازی لژ و مجمع آغازین</h2>
+            <h2 className="text-xl sm:text-2xl font-black text-white text-center mb-1 tracking-tight">{tl('آماده‌سازی لژ و مجمع آغازین', 'آماده‌سازی lodge and assembly beginین')}</h2>
             <p className="text-xs text-slate-400 text-center mb-6">
-              جهت تقسیم هویت‌های ۲۹ درصدی و سازمان‌دهی لژ فراماسونری، اسامی بازیکنان مجمع را وارد نمایید.
+              {tl('جهت تقسیم هویت‌های ۲۹ درصدی و سازمان‌دهی لژ فراماسونری، اسامی بازیکنان مجمع را وارد نمایید.', 'جهت تقسیم identities 29 درصدی and سازمان‌دهی lodge Freemasonری, اسامی players assembly را وارد نمایید.')}
             </p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-amber-500/80 mb-2">اسامی بازیکنان مجمع (جداشده با ویرگول فارسی «،»):</label>
+                <label className="block text-xs font-bold text-amber-500/80 mb-2">{tl('اسامی بازیکنان مجمع (جداشده با ویرگول فارسی «،»):', 'اسامی players assembly (جداشده with ویرگول Persian ","):')}</label>
                 <textarea
                   value={playerInput}
                   onChange={(e) => setPlayerInput(e.target.value)}
                   rows={3}
                   className="w-full bg-[#04060a] text-slate-100 border border-slate-800 focus:border-amber-500 rounded-xl p-4 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500 leading-relaxed text-right"
-                  placeholder="مثال: مهرداد، نیما، سپیده، آرمان، صبا، کیوان، بهار، رامین، رویا، سینا..."
+                  placeholder={tl("مثال: مهرداد، نیما، سپیده، آرمان، صبا، کیوان، بهار، رامین، رویا، سینا...", "مثال: Mehrdad, Nima, Sepideh, Arman, Saba, Kayvan, Bahar, Ramin, Roya, Sina...")}
                 />
               </div>
 
@@ -2338,10 +2339,10 @@ export default function App() {
                   محاسبه قانونی حد نصاب مجمع (۲۹٪):
                 </h4>
                 <p className="text-[11px] text-slate-400 leading-relaxed text-right">
-                  طبق پیوست اساس‌نامه مجمع، تعداد اعضای لژ فراماسونری دقیقاً ۲۹ درصد کل جمعیت مجمع خواهد بود. اعداد اعشاری برتر از ۰.۵۰ رو به بالا و کمتر رو به پایین گرد می‌شوند.
+                  {tl('طبق پیوست اساس‌نامه مجمع، تعداد اعضای لژ فراماسونری دقیقاً ۲۹ درصد کل جمعیت مجمع خواهد بود. اعداد اعشاری برتر از ۰.۵۰ رو به بالا و کمتر رو به پایین گرد می‌شوند.', 'طبق پیوست اساس‌nameه assembly, count اعضای lodge Freemasonری دقیقاً 29 درصد کل جمعیت assembly خواهد بود. اعداد اعشاری برتر from 0.50 رو to بالا and کمتر رو to پایین گرد می‌شوند.')}
                 </p>
                 <div className="mt-3 text-xs font-semibold text-slate-300 bg-[#04060a] p-2.5 rounded-lg border border-slate-900 flex justify-between items-center">
-                  <span>تعداد اعضای مخفی لژ با این جمعیت:</span>
+                  <span>{tl('تعداد اعضای مخفی لژ با این جمعیت:', 'count اعضای hidden lodge with this جمعیت:')}</span>
                   <span className="text-rose-400 bg-rose-950/30 border border-rose-900/40 px-2.5 py-0.5 rounded font-mono font-bold">
                     {calculateMasonCount(
                       playerInput
@@ -2349,40 +2350,40 @@ export default function App() {
                         .map((n) => n.trim())
                         .filter((n) => n.length > 0).length
                     )}{' '}
-                    نفر فراماسون
+                    {tl('نفر فراماسون', 'نفر Freemason')}
                   </span>
                 </div>
               </div>
 
               {/* Collapsible Rules and Demographic Requirements */}
               <div className="space-y-2">
-                <CollapsibleGuide title="قوانین توازن و الزامات جمعیتی (الزامات شروع مجمع)" defaultOpen={false}>
+                <CollapsibleGuide title={tl("قوانین توازن و الزامات جمعیتی (الزامات شروع مجمع)", "rules balance and الزامات جمعیتی (الزامات start assembly)")} defaultOpen={false}>
                   <div className="space-y-3 pt-2 text-right text-xs text-slate-400 leading-relaxed font-sans" dir="rtl">
                     <p className="font-semibold text-slate-300">
-                      قوانین و حضور نقش‌ها در مجمع بر اساس <strong className="text-amber-500">تعداد بازیکنان در شروع بازی</strong> تنظیم شده و هرگونه تغییر جمعیت در حین بازی تأثیری بر این مسئولیت‌ها نخواهد گذاشت:
+                      قوانین و حضور نقش‌ها در مجمع بر اساس <strong className="text-amber-500">{tl('تعداد بازیکنان در شروع بازی', 'count players in start game')}</strong> تنظیم شده و هرگونه تغییر جمعیت در حین بازی تأثیری بر این مسئولیت‌ها نخواهد گذاشت:
                     </p>
                     
                     <div className="space-y-2.5">
                       <div className="bg-slate-950/50 p-2.5 rounded-lg border border-slate-850">
-                        <span className="font-black text-teal-400 block mb-0.5">👥 جمعیت ۸ تا ۱۱ نفر:</span>
+                        <span className="font-black text-teal-400 block mb-0.5">{tl('👥 جمعیت ۸ تا ۱۱ نفر:', '👥 جمعیت 8 until 11 نفر:')}</span>
                         <ul className="list-disc list-inside space-y-1 text-[11px] font-semibold text-slate-400 pr-1">
-                          <li>حق رای معاون اول ملغی و به ۱ رای تقلیل می‌یابد.</li>
-                          <li>نقش <strong className="text-slate-200">پلیس مسلح</strong> به‌طور کامل از مجمع حذف می‌شود.</li>
+                          <li>{tl('حق رای معاون اول ملغی و به ۱ رای تقلیل می‌یابد.', 'حق vote Vice President ملغی and to 1 vote تقلیل می‌یابد.')}</li>
+                          <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('پلیس مسلح', 'Police مسلح')}</strong>{tl(' به‌طور کامل از مجمع حذف می‌شود.', 'به‌طور کامل from assembly remove می‌شود.')}</li>
                         </ul>
                       </div>
 
                       <div className="bg-slate-950/50 p-2.5 rounded-lg border border-slate-850">
-                        <span className="font-black text-teal-400 block mb-0.5">👥 جمعیت ۸ و ۹ نفر:</span>
+                        <span className="font-black text-teal-400 block mb-0.5">{tl('👥 جمعیت ۸ و ۹ نفر:', '👥 جمعیت 8 and 9 نفر:')}</span>
                         <ul className="list-disc list-inside space-y-1 text-[11px] font-semibold text-slate-400 pr-1">
-                          <li>نقش <strong className="text-slate-200">معاون اول</strong> حذف گردیده و فرآیند انتصاب رده‌های تحت امر وی (خبرنگار و گزارشگر) مستقیماً توسط خود <strong className="text-slate-200">رئیس‌جمهور</strong> در فاز روز صفر صورت می‌گیرد.</li>
-                          <li>نقش <strong className="text-slate-200">کشیش</strong> به‌طور کامل از بازی حذف گردیده و شب صفر او نادیده گرفته می‌شود.</li>
+                          <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('معاون اول', 'Vice President')}</strong>{tl(' حذف گردیده و فرآیند انتصاب رده‌های تحت امر وی (خبرنگار و گزارشگر) مستقیماً توسط خود ', 'remove گردیده and فرآیند appointment رده‌های تحت امر وی (Journalist and Reporter) مستقیماً توسط خود')}<strong className="text-slate-200">{tl('رئیس‌جمهور', 'President')}</strong>{tl(' در فاز روز صفر صورت می‌گیرد.', 'in phase Day Zero صورت می‌گیرد.')}</li>
+                          <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('کشیش', 'Priest')}</strong>{tl(' به‌طور کامل از بازی حذف گردیده و شب صفر او نادیده گرفته می‌شود.', 'به‌طور کامل from game remove گردیده and Night Zero او نادیده گرفته می‌شود.')}</li>
                         </ul>
                       </div>
 
                       <div className="bg-slate-950/50 p-2.5 rounded-lg border border-slate-850">
-                        <span className="font-black text-teal-400 block mb-0.5">👥 جمعیت ۸ نفر:</span>
+                        <span className="font-black text-teal-400 block mb-0.5">{tl('👥 جمعیت ۸ نفر:', '👥 جمعیت 8 نفر:')}</span>
                         <ul className="list-disc list-inside space-y-1 text-[11px] font-semibold text-slate-400 pr-1">
-                          <li>نقش <strong className="text-slate-200">وکیل مدافع</strong> حذف شده و انتصابی برای آن صورت نخواهد پذیرفت.</li>
+                          <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('وکیل مدافع', 'defense Lawyer')}</strong>{tl(' حذف شده و انتصابی برای آن صورت نخواهد پذیرفت.', 'remove شده and appointmentی بvote that صورت نخواهد پذیرفت.')}</li>
                         </ul>
                       </div>
                     </div>
@@ -2395,7 +2396,7 @@ export default function App() {
                 className="w-full bg-amber-600 hover:bg-amber-700 text-slate-950 font-black py-4 rounded-xl text-xs sm:text-sm transition duration-200 shadow-lg shadow-amber-600/10 flex items-center justify-center gap-2"
               >
                 <Users className="w-5 h-5" />
-                توزیع قرعه و شروع سناریوی مجمع
+                {tl('توزیع قرعه و شروع سناریوی مجمع', 'توزیع قرعه and start سناریوی assembly')}
               </button>
             </div>
           </div>
@@ -2419,14 +2420,14 @@ export default function App() {
             <div className="w-16 h-16 rounded-full bg-rose-950/20 text-rose-500 border border-rose-900/40 flex items-center justify-center mx-auto mb-4 animate-pulse">
               <Moon className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-black text-rose-400 mb-2">سکوت محض! بیدارباش شب صفر</h2>
+            <h2 className="text-xl font-black text-rose-400 mb-2">{tl('سکوت محض! بیدارباش شب صفر', 'سکوت محض! awakeباش Night Zero')}</h2>
             <p className="text-xs text-slate-300 leading-relaxed mb-6">
-              هم‌اینک گرداننده فرمان بیدار شدن را به فراماسون‌های بازی می‌دهد.
-              آن‌ها به مدت ۳۰ ثانیه معارفه و به چشمان یکدیگر نگاه می‌کنند تا هم‌رزمان خود در شهر را شناسایی کنند.
+              {tl('هم‌اینک گرداننده فرمان بیدار شدن را به فراماسون‌های بازی می‌دهد.', 'هم‌اینک moderator order awake شدن را to Freemasons game می‌دهد.')}
+              {tl('آن‌ها به مدت ۳۰ ثانیه معارفه و به چشمان یکدیگر نگاه می‌کنند تا هم‌رزمان خود در شهر را شناسایی کنند.', 'آن‌ها to مدت 30 ثانیه معارفه and to چشمان یکدیگر نگاه می‌کنند until هم‌رزمان خود in city را شناسایی کنند.')}
             </p>
 
             <div className="bg-slate-950/50 p-4 border border-slate-850 rounded-xl mb-6 text-right">
-              <h4 className="text-xs font-bold text-rose-300 mb-2">اسامی لژ فراماسونری امشب:</h4>
+              <h4 className="text-xs font-bold text-rose-300 mb-2">{tl('اسامی لژ فراماسونری امشب:', 'اسامی lodge Freemasonری امnight:')}</h4>
               <div className="space-y-1.5">
                 {players
                   .filter((p) => p.identity === 'freemason')
@@ -2443,7 +2444,7 @@ export default function App() {
               onClick={handleStartDay1}
               className="bg-amber-600 hover:bg-amber-700 text-slate-950 font-black px-6 py-3 rounded-lg text-xs transition flex items-center gap-1.5 mx-auto"
             >
-              پایان شب صفر و اعلام آغاز صبح اول
+              {tl('پایان شب صفر و اعلام آغاز صبح اول', 'End night صفر and اعلام begin صبح اول')}
               <Sun className="w-4 h-4" />
             </button>
           </div>
@@ -2464,7 +2465,7 @@ export default function App() {
                   </div>
                   <div>
                     <h3 className="text-xs font-bold text-slate-300">
-                      وضعیت پکیج جاری: {gamePhase === 'chaos' ? 'مرحله اضطراری آشوب شهر' : gamePhase === 'day' ? 'فاز روز دگردیسی گفتگو' : 'فاز خواب و عملیات‌های شبانه'}
+                      وضعیت پکیج جاری: {gamePhase === 'chaos' ? tl('مرحله اضطراری آشوب شهر', 'stage emergency chaos city') : gamePhase === 'day' ? tl('فاز روز دگردیسی گفتگو', 'day phase دگردیسی discussion') : tl('فاز خواب و عملیات‌های شبانه', 'phase خواب and operation‌های nightانه')}
                     </h3>
                     <p className="text-[10px] text-slate-500 mt-0.5">
                       تعداد فعال و زنده مجمع: {players.filter((p) => p.isAlive && !p.isImprisoned).length} نفر | فراماسون‌های آزاد زنده: {players.filter((p) => p.identity === 'freemason' && p.isAlive && !p.isImprisoned).length} نفر
@@ -2474,14 +2475,14 @@ export default function App() {
 
                 {gamePhase === 'chaos' ? (
                   <div className="text-xs text-rose-400 font-bold bg-rose-955/20 px-3 py-1.5 border border-rose-900/40 rounded-lg animate-pulse">
-                    شهر در وضعیت آشوب قرار دارد
+                    {tl('شهر در وضعیت آشوب قرار دارد', 'city in وضعیت chaos قرار has')}
                   </div>
                 ) : gamePhase === 'day' ? (
                   <button
                     onClick={handleBeginNight}
                     className="bg-indigo-955/20 text-indigo-400 border border-indigo-900/40 hover:bg-indigo-900/20 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1"
                   >
-                    گذراندن روز و بستن مجمـع
+                    {tl('گذراندن روز و بستن مجمـع', 'گذراندن day and close مجم-ع')}
                     <Moon className="w-4 h-4 text-indigo-400" />
                   </button>
                 ) : (
@@ -2519,27 +2520,27 @@ export default function App() {
                       onClick={handleAcknowledgeNightOutputs}
                       className="text-[11px] bg-teal-950 px-2 py-1 rounded text-slate-350 border border-teal-900"
                     >
-                      تایید و بستن جدول
+                      {tl('تایید و بستن جدول', 'confirm and close جtwoل')}
                     </button>
                   </div>
 
                   <div className="space-y-2 text-xs">
                     {/* Deaths */}
                     <div>
-                      <span className="font-bold text-slate-300">کشته‌شدگان شب: </span>
+                      <span className="font-bold text-slate-300">{tl('کشته‌شدگان شب: ', 'killed‌شدگان night:')}</span>
                       {nightResults.deaths.length > 0 ? (
                         <span className="text-red-400 font-semibold bg-red-955 border border-red-900 px-2 py-0.5 rounded">
                           {nightResults.deaths.map(id => players.find(p => p.id === id)?.name).join('، ')}
                         </span>
                       ) : (
-                        <span className="text-emerald-400 font-semibold bg-emerald-955 border border-emerald-900 px-2 py-0.5 rounded">خوشبختانه شبی آرام و بدون هیچ کشته‌ای سپری شد.</span>
+                        <span className="text-emerald-400 font-semibold bg-emerald-955 border border-emerald-900 px-2 py-0.5 rounded">{tl('خوشبختانه شبی آرام و بدون هیچ کشته‌ای سپری شد.', 'خوnightختانه nightی votesم and without no killed‌ای shieldی شد.')}</span>
                       )}
                     </div>
 
                     {/* Shield Breaks */}
                     {nightResults.shieldBreaks.length > 0 && (
                       <div>
-                        <span className="font-bold text-slate-300">سپرشِکسته‌ها: </span>
+                        <span className="font-bold text-slate-300">{tl('سپرشِکسته‌ها: ', 'shieldشِکسته‌ها:')}</span>
                         <span className="text-amber-400 font-semibold">
                           {nightResults.shieldBreaks.map(id => players.find(p => p.id === id)?.name).join('، ')} (جان سپر نجاتشان داد)
                         </span>
@@ -2550,7 +2551,7 @@ export default function App() {
                     {nightResults.courtNominees.length > 0 && (
                       <div className="space-y-2">
                         <div>
-                          <span className="font-bold text-slate-300">ورودی‌های مستقیم دادگاه: </span>
+                          <span className="font-bold text-slate-300">{tl('ورودی‌های مستقیم دادگاه: ', 'enterی‌های مستقیم court:')}</span>
                           <span className="text-indigo-400 font-semibold">
                             {nightResults.courtNominees.map(id => players.find(p => p.id === id)?.name).join('، ')} (توسط حکم کارآگاه)
                           </span>
@@ -2558,10 +2559,10 @@ export default function App() {
                         <div className="p-2.5 bg-amber-950/25 border border-amber-900/35 rounded-xl space-y-1 text-right">
                           <div className="flex items-center gap-1.5 font-extrabold text-[#f59e0b] text-[9.5px]">
                             <Zap className="w-3 h-3 text-amber-400 animate-pulse animate-duration-1000" />
-                            <span>ابلاغ قانون مجمع به بازیکنان (توسط گرداننده):</span>
+                            <span>{tl('ابلاغ قانون مجمع به بازیکنان (توسط گرداننده):', 'ابلاغ rule assembly to players (توسط moderator):')}</span>
                           </div>
                           <p className="text-[9px] text-[#e2e8f0] leading-relaxed font-semibold">
-                            📢 <strong className="text-amber-300 font-extrabold">توجه:</strong> با صدور عفو، زندان یا لایحه مرگ برای یک متهم، کاندیدای دیگر تالار به صورت خودکار تبرئه تام‌الاختیار می‌گردد.
+                            📢 <strong className="text-amber-300 font-extrabold">{tl('توجه:', 'note:')}</strong> با صدور عفو، زندان یا لایحه مرگ برای یک متهم، کاندیدای دیگر تالار به صورت خودکار تبرئه تام‌الاختیار می‌گردد.
                           </p>
                         </div>
                       </div>
@@ -2570,7 +2571,7 @@ export default function App() {
                     {/* Terrorists newly added */}
                     {nightResults.terroristsAdded.length > 0 && (
                       <div>
-                        <span className="font-bold text-slate-300">تروریست‌های اتفاقی شب: </span>
+                        <span className="font-bold text-slate-300">{tl('تروریست‌های اتفاقی شب: ', 'terrorists اتفاقی night:')}</span>
                         <span className="text-purple-400 font-semibold bg-purple-955 border border-purple-900 px-2 py-0.5 rounded">
                           {nightResults.terroristsAdded.map(id => players.find(p => p.id === id)?.name).join('، ')}
                         </span>
@@ -2614,18 +2615,18 @@ export default function App() {
                     لیست زنده و مرگ بازیکنان مجمع ({players.length} نفر)
                   </h3>
                   <span className="text-[11px] text-slate-500">
-                    برای تغییر نقش به حالت «اسرار عیان» بروید.
+                    {tl('برای تغییر نقش به حالت «اسرار عیان» بروید.', 'بvote change role to حالت "اسرار عیان" بروید.')}
                   </span>
                 </div>
 
                 {showSecrets && (
                   <div className="mb-6 p-4 bg-slate-900/40 border border-slate-800/80 rounded-xl shadow-lg flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                     <div className="flex-1 text-right" dir="rtl">
-                      <span className="text-[10px] font-bold text-amber-500 block mb-1">➕ اضافه کردن بازیکن جدید به مجمع</span>
+                      <span className="text-[10px] font-bold text-amber-500 block mb-1">{tl('➕ اضافه کردن بازیکن جدید به مجمع', '➕ اضافه کردن new player to assembly')}</span>
                       <input
                         type="text"
                         id="new-player-name-input"
-                        placeholder="نام بازیکن جدید را بنویسید..."
+                        placeholder={tl("نام بازیکن جدید را بنویسید...", "name new player را بنویسید...")}
                         className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/25 transition duration-200 text-right"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
@@ -2647,7 +2648,7 @@ export default function App() {
                       className="sm:self-end bg-amber-600 hover:bg-amber-500 text-slate-950 font-black px-4 py-2 rounded-lg text-xs transition duration-200 flex items-center justify-center gap-1 shadow-md shadow-amber-950/10"
                     >
                       <UserPlus className="w-3.5 h-3.5" />
-                      افزودن بازیکن جدید
+                      {tl('افزودن بازیکن جدید', 'افزودن new player')}
                     </button>
                   </div>
                 )}
@@ -2684,7 +2685,7 @@ export default function App() {
                     }`}
                   >
                     <Scale className="w-4 h-4" />
-                    احکام کابینه روز
+                    {tl('احکام کابینه روز', 'احکام cabinet day')}
                   </button>
                 )}
                 <button
@@ -2694,7 +2695,7 @@ export default function App() {
                   }`}
                 >
                   <Clock className="w-4 h-4" />
-                  وقایع مکتوب مجمع
+                  {tl('وقایع مکتوب مجمع', 'وقایع مکتوب assembly')}
                 </button>
               </div>
 
@@ -2710,7 +2711,7 @@ export default function App() {
                       <div className="flex items-center justify-between border-b border-slate-900 pb-2 mb-3">
                         <h4 className="text-xs font-black text-slate-300 flex items-center gap-1.5">
                           <Award className="w-4 h-4 text-amber-400 animate-pulse" />
-                          تشکیلات کابینه دولتی مستقر:
+                          {tl('تشکیلات کابینه دولتی مستقر:', 'تشکیلات cabinet governmentی مستقر:')}
                         </h4>
                         <span className="text-[9px] bg-slate-900 border border-slate-800 text-slate-400 font-mono px-2 py-0.5 rounded-full">
                           روز {cycleNumber}
@@ -2718,53 +2719,53 @@ export default function App() {
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-[11px]">
                         <div className="p-2 bg-slate-904/60 rounded-lg border border-slate-900/50">
-                          <span className="block text-slate-500 font-bold">رئیس جمهور:</span>
+                          <span className="block text-slate-500 font-bold">{tl('رئیس جمهور:', 'President:')}</span>
                           <span className={`font-extrabold text-xs ${cabinet.presidentId ? 'text-amber-400' : 'text-slate-600'}`}>
-                            {cabinet.presidentId ? players.find((p) => p.id === cabinet.presidentId)?.name : 'بدون تصدی (فوت)'}
+                            {cabinet.presidentId ? players.find((p) => p.id === cabinet.presidentId)?.name : tl('بدون تصدی (فوت)', 'without تصدی (death)')}
                           </span>
                         </div>
                         <div className="p-2 bg-slate-904/60 rounded-lg border border-slate-900/50">
                           {players.length < 10 ? (
                             <>
-                              <span className="block text-slate-500 font-bold">معاون اول:</span>
-                              <span className="text-slate-600 italic">حذف شده در شروع</span>
+                              <span className="block text-slate-500 font-bold">{tl('معاون اول:', 'Vice President:')}</span>
+                              <span className="text-slate-600 italic">{tl('حذف شده در شروع', 'remove شده in start')}</span>
                             </>
                           ) : (
                             <>
-                              <span className="block text-slate-500 font-bold">معاون اول ({players.length < 12 ? '۱ رای' : '۲ رای'}):</span>
+                              <span className="block text-slate-500 font-bold">معاون اول ({players.length < 12 ? tl('۱ رای', '1 vote') : tl('۲ رای', '2 vote')}):</span>
                               <span className={`font-semibold ${cabinet.vicePresidentId ? 'text-slate-300' : 'text-slate-600'}`}>
-                                {cabinet.vicePresidentId ? players.find((p) => p.id === cabinet.vicePresidentId)?.name : 'بدون تصدی'}
+                                {cabinet.vicePresidentId ? players.find((p) => p.id === cabinet.vicePresidentId)?.name : tl('بدون تصدی', 'without تصدی')}
                               </span>
                             </>
                           )}
                         </div>
                         <div className="p-2 bg-slate-904/60 rounded-lg border border-slate-900/50">
-                          <span className="block text-slate-500 font-bold">شهردار مجمع:</span>
+                          <span className="block text-slate-500 font-bold">{tl('شهردار مجمع:', 'Mayor assembly:')}</span>
                           <span className={`font-semibold ${cabinet.mayorId ? 'text-slate-300' : 'text-slate-600'}`}>
-                            {cabinet.mayorId ? players.find((p) => p.id === cabinet.mayorId)?.name : 'بدون تصدی'}
+                            {cabinet.mayorId ? players.find((p) => p.id === cabinet.mayorId)?.name : tl('بدون تصدی', 'without تصدی')}
                           </span>
                         </div>
                         <div className="p-2 bg-slate-904/60 rounded-lg border border-slate-900/50">
-                          <span className="block text-slate-500 font-bold">قاضی تالار:</span>
+                          <span className="block text-slate-500 font-bold">{tl('قاضی تالار:', 'Judge hall:')}</span>
                           <span className={`font-semibold ${cabinet.judgeId ? 'text-slate-300' : 'text-slate-600'}`}>
-                            {cabinet.judgeId ? players.find((p) => p.id === cabinet.judgeId)?.name : 'بدون تصدی'}
+                            {cabinet.judgeId ? players.find((p) => p.id === cabinet.judgeId)?.name : tl('بدون تصدی', 'without تصدی')}
                           </span>
                         </div>
                       </div>
                       
-                      <CollapsibleGuide title="ساختار کابینه و مسئولین منصوب" defaultOpen={false}>
+                      <CollapsibleGuide title={tl("ساختار کابینه و مسئولین منصوب", "ساختار cabinet and مسئولین appointed")} defaultOpen={false}>
                           <div className="space-y-3 pt-2">
                               <div className="border border-slate-700/30 rounded-lg p-2 bg-slate-900/50">
-                                  <p className="font-bold text-xs text-amber-400 mb-1">دستیاران معاون رئیس‌جمهور:</p>
-                                  <p className="text-[10px] text-slate-400">گزارشگر: {players.find(p => p.role === 'reporter')?.name || 'نامشخص'} | خبرنگار: {players.find(p => p.role === 'journalist')?.name || 'نامشخص'}</p>
+                                  <p className="font-bold text-xs text-amber-400 mb-1">{tl('دستیاران معاون رئیس‌جمهور:', 'assistantان Vice President President:')}</p>
+                                  <p className="text-[10px] text-slate-400">گزارشگر: {players.find(p => p.role === 'reporter')?.name || tl('نامشخص', 'nameشخص')} | خبرنگار: {players.find(p => p.role === 'journalist')?.name || tl('نامشخص', 'nameشخص')}</p>
                               </div>
                               <div className="border border-slate-700/30 rounded-lg p-2 bg-slate-900/50">
-                                  <p className="font-bold text-xs text-rose-400 mb-1">دستیاران قاضی:</p>
-                                  <p className="text-[10px] text-slate-400">وکیل: {players.find(p => p.role === 'lawyer')?.name || 'نامشخص'}</p>
+                                  <p className="font-bold text-xs text-rose-400 mb-1">{tl('دستیاران قاضی:', 'assistantان Judge:')}</p>
+                                  <p className="text-[10px] text-slate-400">وکیل: {players.find(p => p.role === 'lawyer')?.name || tl('نامشخص', 'nameشخص')}</p>
                               </div>
                               <div className="border border-slate-700/30 rounded-lg p-2 bg-slate-900/50">
-                                  <p className="font-bold text-xs text-sky-400 mb-1">دستیاران شهردار:</p>
-                                  <p className="text-[10px] text-slate-400">دکتر: {players.find(p => p.role === 'doctor')?.name || 'نامشخص'} | پلیس: {players.find(p => p.role === 'police')?.name || 'نامشخص'} | کارآگاه: {players.find(p => p.role === 'detective')?.name || 'نامشخص'}</p>
+                                  <p className="font-bold text-xs text-sky-400 mb-1">{tl('دستیاران شهردار:', 'assistantان Mayor:')}</p>
+                                  <p className="text-[10px] text-slate-400">دکتر: {players.find(p => p.role === 'doctor')?.name || tl('نامشخص', 'nameشخص')} | پلیس: {players.find(p => p.role === 'police')?.name || tl('نامشخص', 'nameشخص')} | کارآگاه: {players.find(p => p.role === 'detective')?.name || tl('نامشخص', 'nameشخص')}</p>
                               </div>
                           </div>
                       </CollapsibleGuide>
@@ -2773,12 +2774,12 @@ export default function App() {
                     {/* ASSISTANT STEPPER */}
                     <div className="bg-amber-950/10 border border-amber-900/20 p-2.5 rounded-xl flex items-center justify-between gap-1.5 overflow-x-auto scrollbar-none">
                       {[
-                        { title: 'حوادث', id: 1 },
-                        { title: 'تروریست', id: 2 },
-                        { title: 'انقلاب', id: 3 },
-                        { title: 'ریاست', id: 4 },
-                        { title: 'دفاعیه', id: 5 },
-                        { title: 'احکام', id: 6 }
+                        { title: tl('حوادث', 'حوادث'), id: 1 },
+                        { title: tl('تروریست', 'terrorist'), id: 2 },
+                        { title: tl('انقلاب', 'revolution'), id: 3 },
+                        { title: tl('ریاست', 'ریاست'), id: 4 },
+                        { title: tl('دفاعیه', 'defense'), id: 5 },
+                        { title: tl('احکام', 'احکام'), id: 6 }
                       ].map((stp) => {
                         const isCurrent = currentDayStep === stp.id;
                         const isDone = currentDayStep > stp.id;
@@ -2811,11 +2812,11 @@ export default function App() {
                     {/* STEP 1: NIGHT EVENTS AND EMERGENCIES (حوادث و گزارش‌های شب) */}
                     {currentDayStep === 1 && (
                       <div className="space-y-4 animate-fadeIn">
-                        <CollapsibleGuide title="گام ۱ از ۷: اعلام حوادث دیشب مجمع" defaultOpen={false}>
+                        <CollapsibleGuide title={tl("گام ۱ از ۷: اعلام حوادث دیشب مجمع", "step 1 from 7: اعلام حوادث دیnight assembly")} defaultOpen={false}>
                           <p className="text-[10px] text-slate-400 leading-normal mt-0.5">
-                            خروجی خودکار شب گذشته اعم از اعدام ها، ترورهای مستقیم لژ و سپرهای مخدوش شده را به حضار اعلام بفرمایید.
+                            {tl('خروجی خودکار شب گذشته اعم از اعدام ها، ترورهای مستقیم لژ و سپرهای مخدوش شده را به حضار اعلام بفرمایید.', 'exitی خودکار night گذشته اعم from execution ها, ترورهای مستقیم lodge and shieldهای مخtwoش شده را to حضار اعلام بفرمایید.')}
                             <br/><br/>
-                            <strong className="text-teal-400">راهنمای جانشینی کشیش (قاعده ۴):</strong> در صورت کشته شدن کشیش مجمع، پاپ اعظم مجاز است یکی از <strong>شهروندان ساده و بدون نقش</strong> را به مقام کشیش جدید منصوب کند. این انتصاب کاملاً <strong>اختیاری</strong> است، اما در صورت عدم انتصاب، قابلیت مشترک پاپ و کشیش (ابطال اعدام زندانی) منجمد می‌شود. پاپ فقط مجاز به تعیین افراد بدون نقش (ساده) است.
+                            <strong className="text-teal-400">{tl('راهنمای جانشینی کشیش (قاعده ۴):', 'guide of succession Priest (قاعده 4):')}</strong>{tl(' در صورت کشته شدن کشیش مجمع، پاپ اعظم مجاز است یکی از ', 'in صورت killed شدن Priest assembly, High Pope مجاز است یکی from')}<strong>{tl('شهروندان ساده و بدون نقش', 'citizens plain and without role')}</strong>{tl(' را به مقام کشیش جدید منصوب کند. این انتصاب کاملاً ', 'را to office Priest new appointed کند. this appointment fully')}<strong>{tl('اختیاری', 'optional')}</strong> است، اما در صورت عدم انتصاب، قابلیت مشترک پاپ و کشیش (ابطال اعدام زندانی) منجمد می‌شود. پاپ فقط مجاز به تعیین افراد بدون نقش (ساده) است.
                           </p>
                         </CollapsibleGuide>
 
@@ -2824,24 +2825,24 @@ export default function App() {
                             {nightResults.deaths.length > 0 && (
                               <div className="flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                                <span>مقتولین شب گذشته: <strong className="text-red-400">{nightResults.deaths.map(id => players.find(p => p.id === id)?.name).join('، ')}</strong></span>
+                                <span>{tl('مقتولین شب گذشته: ', 'killedین night گذشته:')}<strong className="text-red-400">{nightResults.deaths.map(id => players.find(p => p.id === id)?.name).join('، ')}</strong></span>
                               </div>
                             )}
                             {nightResults.shieldBreaks.length > 0 && (
                               <div className="flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                                <span>اصابت ناموفق شلیک (سپرِ تخریب‌شده): <strong className="text-amber-400">{nightResults.shieldBreaks.map(id => players.find(p => p.id === id)?.name).join('، ')}</strong></span>
+                                <span>{tl('اصابت ناموفق شلیک (سپرِ تخریب‌شده): ', 'اصابت failed shot (shieldِ تخریب‌شده):')}<strong className="text-amber-400">{nightResults.shieldBreaks.map(id => players.find(p => p.id === id)?.name).join('، ')}</strong></span>
                               </div>
                             )}
                             {nightResults.courtNominees.length > 0 && (
                               <div className="space-y-1.5 pt-1.5 border-t border-slate-900/40">
                                 <div className="flex items-center gap-1.5">
                                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                                  <span>متهمین مستقیم دادرسی کارآگاه: <strong className="text-indigo-400">{nightResults.courtNominees.map(id => players.find(p => p.id === id)?.name).join('، ')}</strong></span>
+                                  <span>{tl('متهمین مستقیم دادرسی کارآگاه: ', 'defendantین مستقیم دادرسی Detective:')}<strong className="text-indigo-400">{nightResults.courtNominees.map(id => players.find(p => p.id === id)?.name).join('، ')}</strong></span>
                                 </div>
                                 <div className="p-2 bg-amber-950/20 border border-amber-900/30 rounded-lg text-right">
                                   <p className="text-[9px] text-slate-300 leading-normal font-semibold">
-                                    📢 <strong className="text-amber-400 font-extrabold font-sans">تذکر به بازیکنان:</strong> با صدور عفو، زندان یا لایحه مرگ برای یک متهم، کاندیدای دیگر تالار به صورت خودکار تبرئه تام‌الاختیار می‌گردد.
+                                    📢 <strong className="text-amber-400 font-extrabold font-sans">{tl('تذکر به بازیکنان:', 'reminder to players:')}</strong> با صدور عفو، زندان یا لایحه مرگ برای یک متهم، کاندیدای دیگر تالار به صورت خودکار تبرئه تام‌الاختیار می‌گردد.
                                   </p>
                                 </div>
                               </div>
@@ -2849,7 +2850,7 @@ export default function App() {
                           </div>
                         ) : (
                           <div className="bg-emerald-950/20 border border-emerald-900/35 p-3 rounded-xl text-center text-[10px] text-emerald-400 font-semibold leading-relaxed">
-                            ✅ خوشبختانه شبی آرام سپری شد و صبح بدون هیچ مقتولی سر بر آورد.
+                            {tl('✅ خوشبختانه شبی آرام سپری شد و صبح بدون هیچ مقتولی سر بر آورد.', '✅ خوnightختانه nightی votesم shieldی شد and صبح without no killedی سر on آورد.')}
                           </div>
                         )}
 
@@ -2857,7 +2858,7 @@ export default function App() {
                         {/* 1. Priest Dead and Pope Alive -> Assign a new priest */}
                         {!players.some(p => p.role === 'priest' && p.isAlive) && players.some(p => p.role === 'pope' && p.isAlive) && (
                           <div className="p-3 bg-indigo-950/40 border border-indigo-900/60 rounded-xl space-y-2 mt-2">
-                            <span className="text-[10px] font-extrabold text-teal-400 block mb-1">⛪ انتصاب جانشین کشیش توسط پاپ اعظم (قاعده ۴)</span>
+                            <span className="text-[10px] font-extrabold text-teal-400 block mb-1">{tl('⛪ انتصاب جانشین کشیش توسط پاپ اعظم (قاعده ۴)', '⛪ appointment successor Priest توسط High Pope (قاعده 4)')}</span>
                             {(() => {
                               const pope = players.find(p => p.role === 'pope' && p.isAlive);
                               return pope ? (
@@ -2877,7 +2878,7 @@ export default function App() {
                                     id="pope-assign-priest-select"
                                     className="bg-slate-900 border border-slate-800 text-[11px] text-slate-300 rounded p-1.5 focus:outline-none col-span-2 grow"
                                   >
-                                    <option value="">برگزیدن شهروند بدون نقش...</option>
+                                    <option value="">{tl('برگزیدن شهروند بدون نقش...', 'choose citizen without role...')}</option>
                                     {players.filter(p => p.isAlive && p.role === 'none').map(p => (
                                       <option key={p.id} value={p.id}>{p.name}</option>
                                     ))}
@@ -2889,12 +2890,12 @@ export default function App() {
                                         handlePopeAssignNewPriest(s.value);
                                         s.value = '';
                                       } else {
-                                        alert('لطفاً یک بازیکن واجد شرایط انتخاب کنید.');
+                                        alert(tl('لطفاً یک بازیکن واجد شرایط انتخاب کنید.', 'Please a player واجد conditions select کنید.'));
                                       }
                                     }}
                                     className="bg-teal-600 hover:bg-teal-700 text-white text-[10px] font-black px-3 py-1 rounded transition whitespace-nowrap"
                                   >
-                                    تایید کشیش
+                                    {tl('تایید کشیش', 'confirm Priest')}
                                   </button>
                                 </div>
                               </>
@@ -2911,7 +2912,7 @@ export default function App() {
                             onClick={() => setCurrentDayStep(2)}
                             className="flex-1 bg-amber-600 hover:bg-amber-700 text-slate-950 font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 transition"
                           >
-                            <span>ورود به گام دوم: فتنه و انتحار تروریستی روز</span>
+                            <span>{tl('ورود به گام دوم: فتنه و انتحار تروریستی روز', 'enter to step twoم: فتنه and suicide attack terroristی day')}</span>
                             <ChevronLeft className="w-4 h-4 text-slate-950" />
                           </button>
                         </div>
@@ -2924,27 +2925,27 @@ export default function App() {
                       
                       return (
                         <div className="space-y-4 animate-fadeIn">
-                          <CollapsibleGuide title="گام ۲ از ۷: فتنه و انتحار تروریستی روز" defaultOpen={false}>
+                          <CollapsibleGuide title={tl("گام ۲ از ۷: فتنه و انتحار تروریستی روز", "step 2 from 7: فتنه and suicide attack terroristی day")} defaultOpen={false}>
                              <p className="text-[10px] text-slate-400 leading-normal mt-0.5">
                                تروریست‌های دارای بمب فعال در روز جاری را به گرداننده معرفی کنید تا اقدام به خروج خود خواسته و متقابل بازیکنان نمایند.<br/>
-                               <span className="text-amber-500/80 mt-1 block font-bold">- توجه: پزشک و سپر بی‌اثر است. اما اگر هدف درون زندان باشد فقط تروریست منفجر می‌شود!</span>
+                               <span className="text-amber-500/80 mt-1 block font-bold">{tl('- توجه: پزشک و سپر بی‌اثر است. اما اگر هدف درون زندان باشد فقط تروریست منفجر می‌شود!', '- note: پزشک and shield بی‌اثر است. اما اگر target درون prison باشد only terrorist detonate می‌شود!')}</span>
                              </p>
                           </CollapsibleGuide>
 
                           {dayTerrorists.length > 0 ? (
                             <div className="bg-purple-500/15 border border-purple-500/25 text-purple-300 p-2.5 rounded-xl text-xs font-bold font-sans flex items-center justify-between">
-                              <span>👤 تروریست‌های واجد شرایطِ اقدام امروز:</span>
+                              <span>{tl('👤 تروریست‌های واجد شرایطِ اقدام امروز:', '👤 terrorists واجد conditionsِ action امday:')}</span>
                               <span className="font-extrabold text-white underline decoration-purple-500/50 underline-offset-2">{dayTerrorists.map(p => p.name).join('، ')}</span>
                             </div>
                           ) : (
                             <div className="bg-slate-900/40 border border-slate-800 text-slate-500 p-2.5 rounded-xl text-xs font-bold font-sans text-center">
-                              ⚠️ هیچ تروریست بمب‌داری در مجمع زنده نیست!
+                              {tl('⚠️ هیچ تروریست بمب‌داری در مجمع زنده نیست!', '⚠️ no terrorist bomb‌داری in assembly alive نیست!')}
                             </div>
                           )}
 
                           <div className="p-4 bg-slate-950/40 border border-slate-900 rounded-xl space-y-3">
                             <div className="bg-purple-950/20 border border-purple-900/40 p-3 rounded-xl text-xs space-y-1.5 text-right">
-                              <span className="text-slate-400 text-[10px] block font-bold">تروریست‌های انقلابی امروز مجمع:</span>
+                              <span className="text-slate-400 text-[10px] block font-bold">{tl('تروریست‌های انقلابی امروز مجمع:', 'terrorists revolutionی امday assembly:')}</span>
                               {dayTerrorists.length > 0 ? (
                                 <div className="flex flex-wrap gap-1.5 justify-end">
                                   {dayTerrorists.map(p => (
@@ -2954,17 +2955,17 @@ export default function App() {
                                   ))}
                                 </div>
                               ) : (
-                                <div className="text-slate-500 font-bold">هیچ تروریست بمب‌داری در مجمع زنده نیست!</div>
+                                <div className="text-slate-500 font-bold">{tl('هیچ تروریست بمب‌داری در مجمع زنده نیست!', 'no terrorist bomb‌داری in assembly alive نیست!')}</div>
                               )}
                             </div>
 
                             {dayTerrorists.length > 0 && (
                               <div className="space-y-3 p-3 bg-slate-900/50 rounded-xl border border-slate-850">
-                                <span className="text-[10px] font-black text-slate-300 block mb-1">اجرای بمباران انتحاری:</span>
+                                <span className="text-[10px] font-black text-slate-300 block mb-1">{tl('اجرای بمباران انتحاری:', 'اجvote bombاران suicide:')}</span>
                                 
                                 <div className="space-y-2">
                                   <div>
-                                    <label className="text-[9px] text-slate-400 font-bold block mb-1">انتخاب عامل تروریست:</label>
+                                    <label className="text-[9px] text-slate-400 font-bold block mb-1">{tl('انتخاب عامل تروریست:', 'select عامل terrorist:')}</label>
                                     <select
                                       id="day-terrorist-shooter"
                                       className="w-full bg-slate-950 border border-slate-800 text-xs text-slate-300 rounded p-1.5 focus:outline-none focus:border-purple-800 text-right"
@@ -2976,12 +2977,12 @@ export default function App() {
                                   </div>
 
                                   <div>
-                                    <label className="text-[9px] text-slate-400 font-bold block mb-1">انتخاب هدف بیگناه برای انفجار:</label>
+                                    <label className="text-[9px] text-slate-400 font-bold block mb-1">{tl('انتخاب هدف بیگناه برای انفجار:', 'select target بیگناه بvote explosion:')}</label>
                                     <select
                                       id="day-terrorist-target"
                                       className="w-full bg-slate-950 border border-slate-800 text-xs text-slate-300 rounded p-1.5 focus:outline-none focus:border-purple-800 text-right"
                                     >
-                                      <option value="">برگزیدن بازیکن برای ترور...</option>
+                                      <option value="">{tl('برگزیدن بازیکن برای ترور...', 'choose player بvote ترور...')}</option>
                                       {players.filter(p => p.isAlive).map(p => (
                                         <option key={p.id} value={p.id}>{p.name}</option>
                                       ))}
@@ -2994,12 +2995,12 @@ export default function App() {
                                       const targetSel = document.getElementById('day-terrorist-target') as HTMLSelectElement;
                                       if (shooterSel?.value && targetSel?.value) {
                                         if (shooterSel.value === targetSel.value) {
-                                          alert('تروریست طبق قوانین مجمع نمی‌تواند روی خودش انتحار انجام دهد!');
+                                          alert(tl('تروریست طبق قوانین مجمع نمی‌تواند روی خودش انتحار انجام دهد!', 'terrorist طبق rules assembly cannot روی خودش suicide attack انجام دهد!'));
                                           return;
                                         }
                                         let doExplode = true;
                                         try {
-                                          doExplode = !window.confirm || confirm(`آیا مایلید بازیکن تروریست را قرینِ هدف منتخب منفجر و هر دو را از بازی خارج کنید؟`);
+                                          doExplode = !window.confirm || confirm(tl(`آیا مایلید بازیکن تروریست را قرینِ هدف منتخب منفجر و هر دو را از بازی خارج کنید؟`, `آیا مایلید player terrorist را قرینِ target منتخب detonate and each two را from game خارج کنید?`));
                                         } catch (e) {
                                           doExplode = true;
                                         }
@@ -3022,15 +3023,15 @@ export default function App() {
                                               })
                                             );
                                             if (target.isImprisoned) {
-                                              handleLogEvent(`[انتحار بی‌ثمر در زندان] بازیکن تروریست غیور «${shooter.name}» با فعال نمودن جلیقه انفجاری مجمع، به سلول زندان یورش برد اما میله‌های فولادی مانع آسیب به «${target.name}» شد و تنها خودش به هوا رفت!`, 'kill');
+                                              handleLogEvent(tl(`[انتحار بی‌ثمر در زندان] بازیکن تروریست غیور «${shooter.name}» با فعال نمودن جلیقه انفجاری مجمع، به سلول زندان یورش برد اما میله‌های فولادی مانع آسیب به «${target.name}» شد و تنها خودش به هوا رفت!`, `[suicide attack بی‌ثمر in prison] player terrorist غیور "${shooter.name}" with active نمودن جلیقه explosionی assembly, to cell prison یورش برد اما میله‌های فولادی مانع آسیب to "${target.name}" شد and only خودش to هوا رفت!`), 'kill');
                                             } else {
-                                              handleLogEvent(`[انتحار تروریستی روز] بازیکن تروریست غیور «${shooter.name}» با فعال نمودن جلیقه انفجاری مجمع، خود را به همراهِ بازیکن «${target.name}» به هوا فرستاد!`, 'kill');
+                                              handleLogEvent(tl(`[انتحار تروریستی روز] بازیکن تروریست غیور «${shooter.name}» با فعال نمودن جلیقه انفجاری مجمع، خود را به همراهِ بازیکن «${target.name}» به هوا فرستاد!`, `[suicide attack terroristی day] player terrorist غیور "${shooter.name}" with active نمودن جلیقه explosionی assembly, خود را to همراهِ player "${target.name}" to هوا فرستاد!`), 'kill');
                                             }
                                             targetSel.value = '';
                                           }
                                         }
                                       } else {
-                                        alert('لطفاً عامل تروریست و هدف قربانی را انتخاب کنید.');
+                                        alert(tl('لطفاً عامل تروریست و هدف قربانی را انتخاب کنید.', 'Please عامل terrorist and target victim را select کنید.'));
                                       }
                                     }}
                                     className="w-full bg-red-900 hover:bg-red-800 border border-red-700 text-white text-[10px] font-black py-2 rounded-lg transition"
@@ -3048,13 +3049,13 @@ export default function App() {
                               className="bg-slate-900 text-slate-400 hover:text-slate-200 font-bold px-3 py-2.5 rounded-xl text-xs flex items-center gap-1 transition"
                             >
                               <ChevronRight className="w-4 h-4" />
-                              برگشت
+                              {tl('برگشت', 'Back')}
                             </button>
                             <button
                               onClick={() => setCurrentDayStep(3)}
                               className="flex-1 bg-amber-600 hover:bg-amber-700 text-slate-950 font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 transition"
                             >
-                              <span>ورود به گام سوم: انقلاب شهرداری</span>
+                              <span>{tl('ورود به گام سوم: انقلاب شهرداری', 'enter to step سوم: Mayor revolution')}</span>
                               <ChevronLeft className="w-4 h-4 text-slate-950" />
                             </button>
                           </div>
@@ -3065,13 +3066,13 @@ export default function App() {
                     {/* STEP 3: COUPS AND REVOLUTIONS (انقلاب شهردار) */}
                     {currentDayStep === 3 && (
                       <div className="space-y-4 animate-fadeIn">
-                        <CollapsibleGuide title="گام ۲ از ۶: دادگاه انقلاب شهرداری" defaultOpen={false}>
+                        <CollapsibleGuide title={tl("گام ۲ از ۶: دادگاه انقلاب شهرداری", "step 2 from 6: court Mayor revolution")} defaultOpen={false}>
                           <p className="text-[10px] text-slate-400 leading-normal mt-0.5">
                             شهردار زنده مجمع می‌تواند در تالار روز لایحه انقلاب صادر کند.<br/>
-                            <span className="text-rose-400 font-bold block mt-1">- پاپ مطلقا امکان وتوی لایحه انقلاب را ندارد.</span>
-                            <span className="text-amber-400/90 font-bold block mt-1">- قاضی نیز هیچ‌گونه حق وتوی انفرادی در انقلاب شهردار ندارد؛ سرنوشت انقلاب کاملاً به رای اکثریت (نصف + ۱) گره خورده است.</span>
-                            <span className="text-emerald-400/90 font-bold block mt-1">- در صورت موفقیت کودتا، شهردار فوراً جانشین رئیس‌جمهور شده و رئیس‌جمهور سابق مستقیماً متهم دادگاه می‌شود. شکست به معنای خلع شهردار و فرستادن او به دادگاه است!</span>
-                            <span className="text-amber-400/90 font-bold block mt-1">- تنش این دادگاه (موفق یا ناموفق) سبب ایجاد بی‌درنگِ ۱ قابلیت تروریست تصادفی می‌شود که در شب قابلیت اقدام دارد.</span>
+                            <span className="text-rose-400 font-bold block mt-1">{tl('- پاپ مطلقا امکان وتوی لایحه انقلاب را ندارد.', '- Pope مطلقا امکان veto لایحه revolution را lacks.')}</span>
+                            <span className="text-amber-400/90 font-bold block mt-1">{tl('- قاضی نیز هیچ‌گونه حق وتوی انفرادی در انقلاب شهردار ندارد؛ سرنوشت انقلاب کاملاً به رای اکثریت (نصف + ۱) گره خورده است.', '- Judge نیز هیچ‌گونه حق veto solitary in Mayor revolution lacks; سرنوشت revolution fully to vote majority (نصف + 1) گره خورده است.')}</span>
+                            <span className="text-emerald-400/90 font-bold block mt-1">{tl('- در صورت موفقیت کودتا، شهردار فوراً جانشین رئیس‌جمهور شده و رئیس‌جمهور سابق مستقیماً متهم دادگاه می‌شود. شکست به معنای خلع شهردار و فرستادن او به دادگاه است!', '- in صورت successfulیت coup, Mayor فوراً successor President شده and President سابق مستقیماً defendant court می‌شود. شکست to معنای خلع Mayor and فرستادن او to court است!')}</span>
+                            <span className="text-amber-400/90 font-bold block mt-1">{tl('- تنش این دادگاه (موفق یا ناموفق) سبب ایجاد بی‌درنگِ ۱ قابلیت تروریست تصادفی می‌شود که در شب قابلیت اقدام دارد.', '- tension this court (successful or failed) سبب ایجاد بی‌درنگِ 1 قابلیت terrorist random می‌شود که in night قابلیت action has.')}</span>
                           </p>
                         </CollapsibleGuide>
 
@@ -3079,27 +3080,27 @@ export default function App() {
                           const mayor = cabinet.mayorId ? players.find(p => p.id === cabinet.mayorId) : null;
                           return mayor ? (
                             <div className="bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 p-2.5 rounded-xl text-xs font-bold font-sans flex items-center justify-between">
-                              <span>👤 شهردار مجری اقدام انقلاب امروز:</span>
+                              <span>{tl('👤 شهردار مجری اقدام انقلاب امروز:', '👤 Mayor مجری action revolution امday:')}</span>
                               <span className="font-extrabold text-white underline decoration-emerald-500/50 underline-offset-2">{mayor.name}</span>
                             </div>
                           ) : (
                             <div className="bg-slate-900/40 border border-slate-800 text-slate-500 p-2.5 rounded-xl text-xs font-bold font-sans text-center">
-                              ⚠️ شهردار فعالی برای انقلاب در مجمع وجود ندارد.
+                              {tl('⚠️ شهردار فعالی برای انقلاب در مجمع وجود ندارد.', '⚠️ Mayor activeی بvote revolution in assembly exists lacks.')}
                             </div>
                           );
                         })()}
 
                         <div className="p-4 bg-slate-950/40 border border-slate-900 rounded-xl space-y-3">
                           <div className="flex items-center gap-2 text-[11px] font-bold text-slate-300">
-                            <span className="text-slate-500">مقام شهردار مجمع:</span>
+                            <span className="text-slate-500">{tl('مقام شهردار مجمع:', 'office Mayor assembly:')}</span>
                             <span className={cabinet.mayorId ? 'text-amber-400' : 'text-slate-600'}>
-                              {cabinet.mayorId ? players.find(p => p.id === cabinet.mayorId)?.name : 'هیچکس زنده نیست (فاقد اقدام)'}
+                              {cabinet.mayorId ? players.find(p => p.id === cabinet.mayorId)?.name : tl('هیچکس زنده نیست (فاقد اقدام)', 'no one alive نیست (فاقد action)')}
                             </span>
                           </div>
                           
                           {cabinet.mayorId && cabinet.presidentId ? (
                             <div className="space-y-3">
-                              <p className="text-[9px] text-slate-500">رای‌های مجمع شمرده شود: اگر تعداد آرا بالاتر از نصف مجمع + ۱ باشد مصلح انقلاب موفق بوده و تالار به فرمان شهردار جابه‌جا می‌گردد.</p>
+                              <p className="text-[9px] text-slate-500">{tl('رای‌های مجمع شمرده شود: اگر تعداد آرا بالاتر از نصف مجمع + ۱ باشد مصلح انقلاب موفق بوده و تالار به فرمان شهردار جابه‌جا می‌گردد.', 'vote‌های assembly شdead شود: اگر count votes بالاتر from نصف assembly + 1 باشد مصلح revolution successful بوده and hall to order Mayor جابه‌جا می‌گردد.')}</p>
                               <div className="grid grid-cols-2 gap-2">
                                 <button
                                   onClick={() => handleMayorRevolution(true)}
@@ -3110,7 +3111,7 @@ export default function App() {
                                       : 'bg-emerald-950/40 border-emerald-900/50 text-emerald-400 hover:bg-emerald-900/20'
                                   }`}
                                 >
-                                  {mayorRevoltedToday ? 'انقلاب ثبت شده' : 'انقلاب موفق (تنزيل رئیس)'}
+                                  {mayorRevoltedToday ? tl('انقلاب ثبت شده', 'revolution record شده') : tl('انقلاب موفق (تنزيل رئیس)', 'revolution successful (تنزيل رئیس)')}
                                 </button>
                                 <button
                                   onClick={() => handleMayorRevolution(false)}
@@ -3121,12 +3122,12 @@ export default function App() {
                                       : 'bg-rose-950/40 border-rose-900/50 text-rose-400 hover:bg-rose-900/20'
                                   }`}
                                 >
-                                  {mayorRevoltedToday ? 'انقلاب ثبت شده' : 'انقلاب ناموفق (متهم شدن شهردار)'}
+                                  {mayorRevoltedToday ? tl('انقلاب ثبت شده', 'revolution record شده') : tl('انقلاب ناموفق (متهم شدن شهردار)', 'revolution failed (defendant شدن Mayor)')}
                                 </button>
                               </div>
                             </div>
                           ) : (
-                            <p className="text-[10px] text-slate-500 text-center py-2">شرایط ائتلاف مهیا نیست (فوت یکی از طرفین قدرت رئیس/شهردار).</p>
+                            <p className="text-[10px] text-slate-500 text-center py-2">{tl('شرایط ائتلاف مهیا نیست (فوت یکی از طرفین قدرت رئیس/شهردار).', 'conditions ائتلاف مهیا نیست (death یکی from طرفین قدرت رئیس/Mayor).')}</p>
                           )}
                         </div>
 
@@ -3136,13 +3137,13 @@ export default function App() {
                             className="bg-slate-900 text-slate-400 hover:text-slate-200 font-bold px-3 py-2.5 rounded-xl text-xs flex items-center gap-1 transition"
                           >
                             <ChevronRight className="w-4 h-4" />
-                            برگشت
+                            {tl('برگشت', 'Back')}
                           </button>
                           <button
                             onClick={() => setCurrentDayStep(4)}
                             className="flex-1 bg-amber-600 hover:bg-amber-700 text-slate-950 font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 transition"
                           >
-                            <span>ورود به گام چهارم: عزل و نصب ریاست</span>
+                            <span>{tl('ورود به گام چهارم: عزل و نصب ریاست', 'enter to step fourم: عزل and نصب ریاست')}</span>
                             <ChevronLeft className="w-4 h-4 text-slate-950" />
                           </button>
                         </div>
@@ -3152,13 +3153,13 @@ export default function App() {
                     {/* STEP 4: PRESIDENT ROLE MANAGEMENT (اختیارات رئیس جمهور) */}
                     {currentDayStep === 4 && (
                       <div className="space-y-4 animate-fadeIn">
-                        <CollapsibleGuide title="گام ۴ از ۷: جابه‌جایی و انتصابات ریاست مجمع" defaultOpen={false}>
+                        <CollapsibleGuide title={tl("گام ۴ از ۷: جابه‌جایی و انتصابات ریاست مجمع", "step 4 from 7: swap and appointmentات ریاست assembly")} defaultOpen={false}>
                           <p className="text-[10px] text-slate-400 leading-normal mt-0.5">
-                            رئیس‌جمهور در صورت حیاة می‌تواند بین دو جایگاه جابه‌جایی امضا کند، و یا نقشهای مقتول شهر را به غیر اختصاص دهد.
+                            {tl('رئیس‌جمهور در صورت حیاة می‌تواند بین دو جایگاه جابه‌جایی امضا کند، و یا نقشهای مقتول شهر را به غیر اختصاص دهد.', 'President in صورت حیاة can بین two position swap امضا کند, and or roleهای killed city را to غیر اختصاص دهد.')}
                             <br/><br/>
-                            🚨 <strong className="text-amber-400">قانون محدودیت مهره دوم:</strong> طبق مصوبات جدید مجمع، اگر نقش انتخاب شده در <strong>مهره نخست (مهر اول)</strong> خالی و بدون بازیکن بوده باشد (نقش مقتول)، بازیکنانِ تالار که دارای نقش‌های زنده و فعالِ <strong>قاضی</strong> یا <strong>شهردار</strong> هستند، هرگز نباید به عنوان برگزیده در <strong>مهره دوم (مهر دوم)</strong> دیده شوند یا این نقش‌ها را تصاحب نمایند.
+                            🚨 <strong className="text-amber-400">{tl('قانون محدودیت مهره دوم:', 'rule محtwoدیت second piece:')}</strong>{tl(' طبق مصوبات جدید مجمع، اگر نقش انتخاب شده در ', 'طبق مصوبات new assembly, اگر role select شده in')}<strong>{tl('مهره نخست (مهر اول)', 'first piece (مهر اول)')}</strong>{tl(' خالی و بدون بازیکن بوده باشد (نقش مقتول)، بازیکنانِ تالار که دارای نقش‌های زنده و فعالِ ', 'خالی and without player بوده باشد (role killed), playersِ hall که داvote roles alive and activeِ')}<strong>{tl('قاضی', 'Judge')}</strong>{tl(' یا ', 'or')}<strong>{tl('شهردار', 'Mayor')}</strong>{tl(' هستند، هرگز نباید به عنوان برگزیده در ', 'هستند, هرگز نmust to عنوان برگزیده in')}<strong>{tl('مهره دوم (مهر دوم)', 'second piece (مهر twoم)')}</strong> دیده شوند یا این نقش‌ها را تصاحب نمایند.
                             <br/><br/>
-                            <strong className="text-rose-400">راهنمای بحران کلیسا (قاعده ۸ - فوت همزمان):</strong> در صورتی که <strong>پاپ و کشیش به صورت همزمان</strong> کشته شده باشند (مثلاً با بمب تروریست)، رئیس‌جمهور مجاز و <strong>موظف</strong> است یک نفر را برای مقام پاپ اعظم منصوب کند. (اولویت اول با بازیکنان بدون نقش است. در غیر این صورت از میان سایر بازیکنان واجد شرایط به صورت چرخشی استفاده می‌شود.)
+                            <strong className="text-rose-400">{tl('راهنمای بحران کلیسا (قاعده ۸ - فوت همزمان):', 'guide of crisis کلیسا (قاعده 8 - death همزمان):')}</strong>{tl(' در صورتی که ', 'in صورتی که')}<strong>{tl('پاپ و کشیش به صورت همزمان', 'Pope and Priest to صورت همزمان')}</strong>{tl(' کشته شده باشند (مثلاً با بمب تروریست)، رئیس‌جمهور مجاز و ', 'killed شده باشند (مثلاً with bomb terrorist), President مجاز and')}<strong>{tl('موظف', 'موظف')}</strong> است یک نفر را برای مقام پاپ اعظم منصوب کند. (اولویت اول با بازیکنان بدون نقش است. در غیر این صورت از میان سایر بازیکنان واجد شرایط به صورت چرخشی استفاده می‌شود.)
                           </p>
                         </CollapsibleGuide>
 
@@ -3166,12 +3167,12 @@ export default function App() {
                           const president = cabinet.presidentId ? players.find(p => p.id === cabinet.presidentId) : null;
                           return president ? (
                             <div className="bg-amber-500/15 border border-amber-500/25 text-amber-300 p-2.5 rounded-xl text-xs font-bold font-sans flex items-center justify-between">
-                              <span>👤 رئیس‌جمهور مجری جابه‌جایی و انتصابات:</span>
+                              <span>{tl('👤 رئیس‌جمهور مجری جابه‌جایی و انتصابات:', '👤 President مجری swap and appointmentات:')}</span>
                               <span className="font-extrabold text-white underline decoration-amber-500/50 underline-offset-2">{president.name}</span>
                             </div>
                           ) : (
                             <div className="bg-rose-500/10 border border-rose-500/20 text-rose-350 p-2.5 rounded-xl text-xs font-bold font-sans text-center">
-                              ⚠️ رئیس‌جمهور فعالی در مجمع حضور ندارد یا فوت شده است.
+                              {tl('⚠️ رئیس‌جمهور فعالی در مجمع حضور ندارد یا فوت شده است.', '⚠️ President activeی in assembly presence lacks or death شده است.')}
                             </div>
                           );
                         })()}
@@ -3180,10 +3181,10 @@ export default function App() {
                           <div className="space-y-4">
                             {/* Unified President Action: Swap/Fill */}
                             <div className="p-3.5 bg-slate-950/40 border border-slate-850/60 rounded-xl shadow-lg hover:border-amber-500/10 transition-all duration-300">
-                              <span className="text-[10px] font-bold text-amber-400 block mb-2">🔄 اختیارات قانونی ریاست‌جمهوری (پر کردن/جابه‌جایی نقش‌ها)</span>
+                              <span className="text-[10px] font-bold text-amber-400 block mb-2">{tl('🔄 اختیارات قانونی ریاست‌جمهوری (پر کردن/جابه‌جایی نقش‌ها)', '🔄 powers ruleی presidency (پر کردن/swap roles)')}</span>
                               <p className="text-[8.5px] text-slate-400 leading-normal mb-3">
-                                <strong>مهره نخست (نقش):</strong> اولویت اول با قاضی خالی، اولویت دوم با سایر نقش‌های خالی، اولویت سوم جابه‌جایی نقش‌های موجود.<br/>
-                                <strong>مهره دوم (بازیکن):</strong> اولویت مطلق با بازیکنان بدون نقش است. <span className="text-rose-400 font-bold">(توجه: اگر مهره نخست بدون بازیکن/خالی باشد، بازیکنان دارای نقش قاضی و شهردار در مهره دوم دیده نخواهند شد)</span>.
+                                <strong>{tl('مهره نخست (نقش):', 'first piece (role):')}</strong>{tl(' اولویت اول با قاضی خالی، اولویت دوم با سایر نقش‌های خالی، اولویت سوم جابه‌جایی نقش‌های موجود.', 'اولویت اول with Judge خالی, اولویت twoم with سایر roles خالی, اولویت سوم swap roles مexists.')}<br/>
+                                <strong>{tl('مهره دوم (بازیکن):', 'second piece (player):')}</strong>{tl(' اولویت مطلق با بازیکنان بدون نقش است. ', 'اولویت مطلق with players without role است.')}<span className="text-rose-400 font-bold">{tl('(توجه: اگر مهره نخست بدون بازیکن/خالی باشد، بازیکنان دارای نقش قاضی و شهردار در مهره دوم دیده نخواهند شد)', '(note: اگر first piece without player/خالی باشد, players داvote role Judge and Mayor in second piece دیده نخواهند شد)')}</span>.
                               </p>
                               <div className="space-y-2">
                                 <div className="grid grid-cols-2 gap-2 text-xs">
@@ -3203,8 +3204,8 @@ export default function App() {
                                       if (!aliveRoles.has('judge')) {
                                         return (
                                           <>
-                                            <option value="">مهره نخست...</option>
-                                            <option value="judge">قاضی</option>
+                                            <option value="">{tl('مهره نخست...', 'first piece...')}</option>
+                                            <option value="judge">{tl('قاضی', 'Judge')}</option>
                                           </>
                                         );
                                       }
@@ -3212,8 +3213,8 @@ export default function App() {
                                       if (!aliveRoles.has('mayor')) {
                                         return (
                                           <>
-                                            <option value="">مهره نخست...</option>
-                                            <option value="mayor">شهردار</option>
+                                            <option value="">{tl('مهره نخست...', 'first piece...')}</option>
+                                            <option value="mayor">{tl('شهردار', 'Mayor')}</option>
                                           </>
                                         );
                                       }
@@ -3227,7 +3228,7 @@ export default function App() {
                                       if (otherVacant.length > 0) {
                                         return (
                                           <>
-                                            <option value="">مهره نخست...</option>
+                                            <option value="">{tl('مهره نخست...', 'first piece...')}</option>
                                             {otherVacant.map(r => (
                                               <option key={r} value={r}>{ROLE_DETAILS[r].nameFa}</option>
                                             ))}
@@ -3237,7 +3238,7 @@ export default function App() {
 
                                       return (
                                         <>
-                                          <option value="">مهره نخست...</option>
+                                          <option value="">{tl('مهره نخست...', 'first piece...')}</option>
                                           {players.filter(p => p.isAlive && !p.isImprisoned && p.role !== 'none' && p.role !== 'president' && p.role !== 'pope' && p.role !== 'priest' && p.role !== 'judge').map(p => (
                                             <option key={p.id} value={p.role}>{(ROLE_DETAILS[p.role] || ROLE_DETAILS['none']).nameFa} (از {p.name})</option>
                                           ))}
@@ -3269,7 +3270,7 @@ export default function App() {
                                       
                                       return (
                                         <>
-                                          <option value="">مهره دوم...</option>
+                                          <option value="">{tl('مهره دوم...', 'second piece...')}</option>
                                           {candidates.map(p => (
                                             <option key={p.id} value={p.id}>{p.name} {p.role !== 'none' ? `(${(ROLE_DETAILS[p.role] || ROLE_DETAILS['none']).nameFa})` : ''}</option>
                                           ))}
@@ -3305,7 +3306,7 @@ export default function App() {
                                       p.value = '';
                                       setSelectedPresidentUnifiedRole('');
                                     } else {
-                                      alert('لطفاً مهره نخست (نقش) و مهره دوم (بازیکن) را انتخاب کنید.');
+                                      alert(tl('لطفاً مهره نخست (نقش) و مهره دوم (بازیکن) را انتخاب کنید.', 'Please first piece (role) and second piece (player) را select کنید.'));
                                     }
                                   }}
                                   disabled={presidentSwappedToday}
@@ -3315,7 +3316,7 @@ export default function App() {
                                       : 'bg-amber-600 hover:bg-amber-700 text-slate-950'
                                   }`}
                                 >
-                                  {presidentSwappedToday ? 'اختیارات این فاز اعمال شده است' : 'صدور فرمان'}
+                                  {presidentSwappedToday ? tl('اختیارات این فاز اعمال شده است', 'powers this phase اعمال شده است') : tl('صدور فرمان', 'issue order')}
                                 </button>
                               </div>
                             </div>
@@ -3323,14 +3324,14 @@ export default function App() {
                             {/* Both Dead emergency Assign Pope (Rule 8) */}
                             {!players.some(p => p.role === 'pope' && p.isAlive) && !players.some(p => p.role === 'priest' && p.isAlive) && (
                               <div className="p-3 bg-rose-950/20 border border-rose-900/40 rounded-xl space-y-2 mt-2">
-                                <span className="text-[10px] font-black text-rose-400 block mb-1">⛪ تعیین اضطراری پاپ اعظم جدید (قاعده ۸)</span>
-                                <p className="text-[8.5px] text-slate-400 leading-normal">رئیس‌جمهور موظف است در فوت همزمان پاپ و کشیش، پاپ جدید را با اولویت شهروند ساده (قاضی و کشیش مجاز نیستند) برگزیند.</p>
+                                <span className="text-[10px] font-black text-rose-400 block mb-1">{tl('⛪ تعیین اضطراری پاپ اعظم جدید (قاعده ۸)', '⛪ set emergency High Pope new (قاعده 8)')}</span>
+                                <p className="text-[8.5px] text-slate-400 leading-normal">{tl('رئیس‌جمهور موظف است در فوت همزمان پاپ و کشیش، پاپ جدید را با اولویت شهروند ساده (قاضی و کشیش مجاز نیستند) برگزیند.', 'President موظف است in death همزمان Pope and Priest, Pope new را with اولویت citizen plain (Judge and Priest مجاز نیستند) برگزیند.')}</p>
                                 <div className="flex gap-2">
                                   <select
                                     id="president-assign-pope-select"
                                     className="bg-slate-900 border border-slate-800 text-[11px] text-slate-300 rounded p-1 flex-1 focus:outline-none col-span-2 grow"
                                   >
-                                    <option value="">شهروند واجد صلاحیت...</option>
+                                    <option value="">{tl('شهروند واجد صلاحیت...', 'citizen واجد صلاحیت...')}</option>
                                     {players
                                       .filter(p => p.isAlive && p.id !== cabinet.presidentId && p.role !== 'judge' && p.role !== 'priest')
                                       .sort((a,b) => {
@@ -3339,7 +3340,7 @@ export default function App() {
                                         return 0;
                                       })
                                       .map(p => (
-                                        <option key={p.id} value={p.id}>{p.name} {p.role === 'none' ? '(اولویت: شهروند ساده)' : `(${(ROLE_DETAILS[p.role] || ROLE_DETAILS['none']).nameFa})`}</option>
+                                        <option key={p.id} value={p.id}>{p.name} {p.role === 'none' ? tl('(اولویت: شهروند ساده)', '(اولویت: citizen plain)') : `(${(ROLE_DETAILS[p.role] || ROLE_DETAILS['none']).nameFa})`}</option>
                                       ))}
                                   </select>
                                   <button
@@ -3349,12 +3350,12 @@ export default function App() {
                                         handlePresidentAssignNewPope(s.value);
                                         s.value = '';
                                       } else {
-                                        alert('یک بازیکن را برگزینید.');
+                                        alert(tl('یک بازیکن را برگزینید.', 'a player را choose.'));
                                       }
                                     }}
                                     className="bg-amber-600 hover:bg-amber-700 text-slate-950 text-[10px] font-black px-3 py-1 rounded whitespace-nowrap"
                                   >
-                                    منصوب کن
+                                    {tl('منصوب کن', 'appointed کن')}
                                   </button>
                                 </div>
                               </div>
@@ -3362,7 +3363,7 @@ export default function App() {
                           </div>
                         ) : (
                           <div className="bg-slate-950/80 p-4 border border-slate-900 rounded-xl text-center text-slate-500 font-bold text-xs py-5">
-                            رئیس‌جمهور مجمع فوت نموده یا فاقد کرسی می‌باشد.
+                            {tl('رئیس‌جمهور مجمع فوت نموده یا فاقد کرسی می‌باشد.', 'President assembly death نموده or فاقد کرسی می‌باشد.')}
                           </div>
                         )}
 
@@ -3372,7 +3373,7 @@ export default function App() {
                             className="bg-slate-900 text-slate-400 hover:text-slate-200 font-bold px-3 py-2.5 rounded-xl text-xs flex items-center gap-1 transition"
                           >
                             <ChevronRight className="w-4 h-4" />
-                            برگشت
+                            {tl('برگشت', 'Back')}
                           </button>
                           <button
                             onClick={() => {
@@ -3383,7 +3384,7 @@ export default function App() {
                             }}
                             className="flex-1 bg-amber-600 hover:bg-amber-700 text-slate-950 font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 transition"
                           >
-                            <span>ورود به گام پنجم: لایحه دفاعیه مجمع</span>
+                            <span>{tl('ورود به گام پنجم: لایحه دفاعیه مجمع', 'enter to step fiveم: لایحه defense assembly')}</span>
                             <ChevronLeft className="w-4 h-4 text-slate-950" />
                           </button>
                         </div>
@@ -3393,7 +3394,7 @@ export default function App() {
                     {/* STEP 5: COURT FORMATION & DEFENSE TIMER (نامزدان و دفاعیه دادگاه) */}
                     {currentDayStep === 5 && (
                       <div className="space-y-4 animate-fadeIn">
-                        <CollapsibleGuide title="گام ۵ از ۶: ثبت متهمین تالار و لایحه وکیل" defaultOpen={false}>
+                        <CollapsibleGuide title={tl("گام ۵ از ۶: ثبت متهمین تالار و لایحه وکیل", "step 5 from 6: record defendantین hall and لایحه Lawyer")} defaultOpen={false}>
                           <p className="text-[10px] text-slate-400 leading-normal mt-0.5">
                             حداکثر ۲ متهم مجمع را ثبت بفرمایید و لایحه ۱ دقیقه‌ای وکیل (برای دفاع یا حمله به متهمین) را شبیه‌سازی کنید.
                           </p>
@@ -3403,7 +3404,7 @@ export default function App() {
                           const lawyer = players.find(p => p.role === 'lawyer' && p.isAlive && !p.isImprisoned);
                           return lawyer ? (
                             <div className="bg-[#1d273e] border border-[#2b3a5a] text-sky-300 p-2.5 rounded-xl text-xs font-bold font-sans flex items-center justify-between">
-                              <span>👤 وکیل مدافع (ایرادکننده لایحه دفاعیه):</span>
+                              <span>{tl('👤 وکیل مدافع (ایرادکننده لایحه دفاعیه):', '👤 defense Lawyer (ایرادکننده لایحه defense):')}</span>
                               <span className="font-extrabold text-white underline decoration-[#3b5284] underline-offset-2">{lawyer.name}</span>
                             </div>
                           ) : (
@@ -3415,14 +3416,14 @@ export default function App() {
 
                         {courtExecutedToday && (
                           <div className="bg-red-950/20 border border-red-900/40 p-3 rounded-lg text-center text-[10.5px] font-bold text-red-400 animate-pulse">
-                            ⚠️ تذکر: لایحه حکم نهایی دادگاهِ عالی امروز صادر شده است. هر مجمع بیش از ۱ دادگاه مجاز نیست.
+                            {tl('⚠️ تذکر: لایحه حکم نهایی دادگاهِ عالی امروز صادر شده است. هر مجمع بیش از ۱ دادگاه مجاز نیست.', '⚠️ reminder: لایحه verdict نهایی courtِ عالی امday issued شده است. each assembly بیش from 1 court مجاز نیست.')}
                           </div>
                         )}
 
                         {/* Defense Lawyer Timer */}
                         <div className="bg-slate-950 p-3 border border-slate-900 rounded-xl flex items-center justify-between">
                           <div className="text-right">
-                            <span className="block text-[9.5px] text-slate-400 font-bold">کرونومتر ۶۰ ثانیه وکیل مدافع:</span>
+                            <span className="block text-[9.5px] text-slate-400 font-bold">{tl('کرونومتر ۶۰ ثانیه وکیل مدافع:', 'کرونومتر 60 ثانیه defense Lawyer:')}</span>
                             <span className="font-mono font-extrabold text-amber-500 text-xs text-right block mt-0.5">{timerCount} ثانیه‌</span>
                           </div>
                           <div className="flex gap-1" dir="ltr">
@@ -3430,13 +3431,13 @@ export default function App() {
                               onClick={handleToggleTimer}
                               className="text-[10px] font-black bg-[#1d273e] hover:bg-[#2c3a5b] px-3 py-1.5 text-slate-200 rounded-lg cursor-pointer"
                             >
-                              {timerRunning ? 'توقف' : 'شروع'}
+                              {timerRunning ? tl('توقف', 'توقف') : tl('شروع', 'start')}
                             </button>
                             <button
                               onClick={handleResetTimer}
                               className="text-[10px] font-bold bg-slate-800 hover:bg-slate-700 px-3 py-1.5 text-slate-400 rounded-lg cursor-pointer"
                             >
-                              ریست
+                              {tl('ریست', 'reset')}
                             </button>
                           </div>
                         </div>
@@ -3446,7 +3447,7 @@ export default function App() {
                           <span className="block text-[10px] text-slate-300 font-black">متهمین منتخب تالار دادگاه امشب (ظرفیت: {courtSelectedPlayers.length}/۲ نفر):</span>
                           <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-900/80 text-xs text-slate-400 space-y-2">
                             {courtSelectedPlayers.length === 0 ? (
-                              <span className="text-[10px] text-slate-600 block text-center font-bold">هیچ متهمی در لیست تالار حضور ندارد.</span>
+                              <span className="text-[10px] text-slate-600 block text-center font-bold">{tl('هیچ متهمی در لیست تالار حضور ندارد.', 'no defendantی in list hall presence lacks.')}</span>
                             ) : (
                               courtSelectedPlayers.map((id) => {
                                 const p = players.find((x) => x.id === id);
@@ -3457,12 +3458,12 @@ export default function App() {
                                     <button
                                       onClick={() => {
                                         setCourtSelectedPlayers((prev) => prev.filter((item) => item !== p.id));
-                                        handleLogEvent(`[عفو فوری] عفو خطای دستی ثبت متهم برای «${p.name}» انجام پذیرفت.`, 'system');
+                                        handleLogEvent(tl(`[عفو فوری] عفو خطای دستی ثبت متهم برای «${p.name}» انجام پذیرفت.`, `[pardon فوری] pardon Errorی دستی record defendant بvote "${p.name}" انجام پذیرفت.`), 'system');
                                       }}
                                       className="bg-slate-900 text-slate-300 text-[9px] font-bold px-2 py-1 rounded border border-slate-800 hover:bg-slate-800 transition"
-                                      title="لغو ثبت اشتباه"
+                                      title={tl("لغو ثبت اشتباه", "cancel record اشتباه")}
                                     >
-                                      لغو و بازگشت
+                                      {tl('لغو و بازگشت', 'cancel and بازگشت')}
                                     </button>
                                   </div>
                                 );
@@ -3474,19 +3475,19 @@ export default function App() {
                         {/* Manual nomination search-add dropdown */}
                         {!courtExecutedToday && courtSelectedPlayers.length < 2 && (
                           <div className="space-y-1">
-                            <span className="block text-[10px] font-bold text-slate-400">ثبت پرونده و ارسال دستی شخص به دادگاه:</span>
+                            <span className="block text-[10px] font-bold text-slate-400">{tl('ثبت پرونده و ارسال دستی شخص به دادگاه:', 'record case and ارسال دستی شخص to court:')}</span>
                             <select
                               onChange={(e) => {
                                 if (e.target.value) {
                                   if (courtSelectedPlayers.includes(e.target.value)) return;
                                   if (courtSelectedPlayers.length >= 2) {
-                                    alert('ورودی دادگاه قانوناً بیش از دو نفر نمی‌تواند باشد.');
+                                    alert(tl('ورودی دادگاه قانوناً بیش از دو نفر نمی‌تواند باشد.', 'enterی court ruleاً بیش from two نفر cannot باشد.'));
                                     e.target.value = '';
                                     return;
                                   }
                                   const targetPl = players.find(p => p.id === e.target.value);
                                   if (targetPl && isRestrictedFromCourt(targetPl)) {
-                                    alert('رئیس‌جمهور، پاپ و قاضی مصونیت قضایی دارند و به دادگاه نمی‌روند!');
+                                    alert(tl('رئیس‌جمهور، پاپ و قاضی مصونیت قضایی دارند و به دادگاه نمی‌روند!', 'President, Pope and Judge مصونیت judicial دارند and to court نمی‌روند!'));
                                     e.target.value = '';
                                     return;
                                   }
@@ -3496,7 +3497,7 @@ export default function App() {
                               }}
                               className="w-full bg-[#050810] border border-slate-800 text-xs text-slate-400 rounded-lg p-2 focus:outline-none"
                             >
-                              <option value="">برگزیدن متهم جرمان...</option>
+                              <option value="">{tl('برگزیدن متهم جرمان...', 'choose defendant جرمان...')}</option>
                               {players
                                 .filter((p) => p.isAlive && !p.isImprisoned && !courtSelectedPlayers.includes(p.id) && !isRestrictedFromCourt(p))
                                 .map((p) => (
@@ -3512,13 +3513,13 @@ export default function App() {
                             className="bg-slate-900 text-slate-400 hover:text-slate-200 font-bold px-3 py-2.5 rounded-xl text-xs flex items-center gap-1 transition"
                           >
                             <ChevronRight className="w-4 h-4" />
-                            برگشت
+                            {tl('برگشت', 'Back')}
                           </button>
                           <button
                             onClick={() => setCurrentDayStep(6)}
                             className="flex-1 bg-amber-600 hover:bg-amber-700 text-slate-950 font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 transition"
                           >
-                            <span>ورود به گام ششم: احکام قاضی</span>
+                            <span>{tl('ورود به گام ششم: احکام قاضی', 'enter to step ششم: احکام Judge')}</span>
                             <ChevronLeft className="w-4 h-4 text-slate-950" />
                           </button>
                         </div>
@@ -3528,9 +3529,9 @@ export default function App() {
                     {/* STEP 6: JUDGE VERDICTS & PRISON HOUSING */}
                     {currentDayStep === 6 && (
                       <div className="space-y-4 animate-fadeIn">
-                        <CollapsibleGuide title="گام ۶ از ۶: رای نهایی قاضی، سیاهچال و صیانت پاپ" defaultOpen={false}>
+                        <CollapsibleGuide title={tl("گام ۶ از ۶: رای نهایی قاضی، سیاهچال و صیانت پاپ", "step 6 from 6: vote نهایی Judge, سیاهچال and صیانت Pope")} defaultOpen={false}>
                           <p className="text-[10px] text-slate-400 leading-normal mt-0.5">
-                            قاضی تالار مجمع رای نهایی را اعمال می‌سازد. در صورت محکومیتِ اعدام، پاپ اعظم کلیسا می‌تواند آن را به طور زنده وتو کند.
+                            {tl('قاضی تالار مجمع رای نهایی را اعمال می‌سازد. در صورت محکومیتِ اعدام، پاپ اعظم کلیسا می‌تواند آن را به طور زنده وتو کند.', 'Judge assembly hall vote نهایی را اعمال می‌سازد. in صورت محکومیتِ execution, High Pope کلیسا can that را to طور alive veto کند.')}
                           </p>
                         </CollapsibleGuide>
 
@@ -3540,12 +3541,12 @@ export default function App() {
                           return (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                               <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-2.5 rounded-xl font-bold font-sans flex items-center justify-between">
-                                <span>⚖️ قاضی مجمع (رای نهایی):</span>
-                                <span className="font-extrabold text-white underline decoration-amber-500/50 underline-offset-2">{judge ? judge.name : 'فاقد قاضی فعال/زنده'}</span>
+                                <span>{tl('⚖️ قاضی مجمع (رای نهایی):', '⚖️ Judge assembly (vote نهایی):')}</span>
+                                <span className="font-extrabold text-white underline decoration-amber-500/50 underline-offset-2">{judge ? judge.name : tl('فاقد قاضی فعال/زنده', 'فاقد Judge active/alive')}</span>
                               </div>
                               <div className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 p-2.5 rounded-xl font-bold font-sans flex items-center justify-between">
-                                <span>⛪ پاپ اعظم (وتوکننده):</span>
-                                <span className="font-extrabold text-white underline decoration-indigo-500/50 underline-offset-2">{pope ? pope.name : 'فاقد پاپ فعال/زنده'}</span>
+                                <span>{tl('⛪ پاپ اعظم (وتوکننده):', '⛪ High Pope (vetoکننده):')}</span>
+                                <span className="font-extrabold text-white underline decoration-indigo-500/50 underline-offset-2">{pope ? pope.name : tl('فاقد پاپ فعال/زنده', 'فاقد Pope active/alive')}</span>
                               </div>
                             </div>
                           );
@@ -3558,11 +3559,11 @@ export default function App() {
                             : 'bg-slate-950 border-slate-900'
                         }`}>
                           <div className="flex items-center justify-between">
-                            <span className="text-[9.5px] text-slate-400 font-bold">⛪ جایگاه صیانت کلیسایی (پاپ اعظم):</span>
+                            <span className="text-[9.5px] text-slate-400 font-bold">{tl('⛪ جایگاه صیانت کلیسایی (پاپ اعظم):', '⛪ position صیانت کلیسایی (High Pope):')}</span>
                             <span className={players.some(p => p.role === 'pope' && p.isAlive && !p.isImprisoned) ? 'text-emerald-400 text-[10px] font-black' : 'text-slate-600 text-[10px] font-black'}>
                               {players.some(p => p.role === 'pope' && p.isAlive && !p.isImprisoned) 
-                                ? `زنده و حاکم: «${players.find(p => p.role === 'pope' && p.isAlive && !p.isImprisoned)?.name}»` 
-                                : 'فاقد پاپ اعظم فعال یا زندانی شده'}
+                                ? tl(`زنده و حاکم: «${players.find(p => p.role === 'pope' && p.isAlive && !p.isImprisoned)?.name}»`, `alive and حاکم: "${players.find(p => p.role === 'pope' && p.isAlive && !p.isImprisoned)?.name}"`) 
+                                : tl('فاقد پاپ اعظم فعال یا زندانی شده', 'فاقد High Pope active or prisoner شده')}
                             </span>
                           </div>
 
@@ -3572,7 +3573,7 @@ export default function App() {
                             </div>
                           ) : (
                             <div className="text-[9px] text-emerald-450 bg-emerald-955/10 border border-emerald-900/30 px-2 py-1.5 rounded-lg font-medium leading-relaxed font-sans">
-                              📜 منشور وتوی صیانت پاپ تافته و آماده بهره‌برداری است! پاپ در صورت اعدام متهم مجمع یا زندان، به صورت اتوماتیک یا دستی دکمه وتو را فعال دارد.
+                              {tl('📜 منشور وتوی صیانت پاپ تافته و آماده بهره‌برداری است! پاپ در صورت اعدام متهم مجمع یا زندان، به صورت اتوماتیک یا دستی دکمه وتو را فعال دارد.', '📜 منشور veto صیانت Pope تافته and آماده بهره‌برداری است! Pope in صورت execution defendant assembly or prison, to صورت اتوماتیک or دستی button veto را active has.')}
                             </div>
                           )}
 
@@ -3580,8 +3581,8 @@ export default function App() {
                           {courtExecutionToVeto && (
                             <div className="p-2 bg-rose-955/20 rounded-lg border border-rose-900/40 space-y-2 mt-2">
                               <div className="flex justify-between items-center text-[10px]">
-                                <span className="font-extrabold text-rose-400 flex items-center gap-1">⚠️ حکم محکومیت اعدام دادگاه مجمع:</span>
-                                <span className="text-rose-400 font-black text-[9px] bg-rose-955/40 border border-rose-900/40 px-1.5 py-0.5 rounded animate-pulse">آماده دفاع پاپ</span>
+                                <span className="font-extrabold text-rose-400 flex items-center gap-1">{tl('⚠️ حکم محکومیت اعدام دادگاه مجمع:', '⚠️ verdict محکومیت execution court assembly:')}</span>
+                                <span className="text-rose-400 font-black text-[9px] bg-rose-955/40 border border-rose-900/40 px-1.5 py-0.5 rounded animate-pulse">{tl('آماده دفاع پاپ', 'آماده defense Pope')}</span>
                               </div>
                               <p className="text-[9px] text-slate-350 leading-normal">
                                 بازیکن «<strong>{players.find(p => p.id === courtExecutionToVeto)?.name}</strong>» به فرمان دادگاه محکوم به اعدام نهایی شد. پاپ می‌تواند با صدور فرمان صیانت این حکم را ملغی و بازیکن را احیا کند. پس از وتو، قابلیت تروریست در بازی جاری می‌گردد.
@@ -3595,7 +3596,7 @@ export default function App() {
                                     : 'bg-amber-900 hover:bg-amber-800 text-white border-amber-700'
                                 }`}
                               >
-                                {popeVetoCooldown > 0 ? 'وتوی پاپ در دوره انتظار (یک روز در میان) است' : '⛪ وتوی مذهبی پاپ و بازگرداندن متهم به مجمع'}
+                                {popeVetoCooldown > 0 ? tl('وتوی پاپ در دوره انتظار (یک روز در میان) است', 'veto Pope in roundه wait (a day in میان) است') : tl('⛪ وتوی مذهبی پاپ و بازگرداندن متهم به مجمع', '⛪ veto religious Pope and بازگرداندن defendant to assembly')}
                               </button>
                             </div>
                           )}
@@ -3604,8 +3605,8 @@ export default function App() {
                           {prisonerExecutionToVeto && (
                             <div className="p-2 bg-rose-955/20 rounded-lg border border-rose-900/40 space-y-2 mt-2">
                               <div className="flex justify-between items-center text-[10px]">
-                                <span className="font-extrabold text-rose-400 flex items-center gap-1">⚠️ حکم اعدام زندانی در سیاهچال:</span>
-                                <span className="text-rose-400 font-black text-[9px] bg-rose-955/40 border border-rose-900/40 px-1.5 py-0.5 rounded animate-pulse">آماده دفاع پاپ</span>
+                                <span className="font-extrabold text-rose-400 flex items-center gap-1">{tl('⚠️ حکم اعدام زندانی در سیاهچال:', '⚠️ verdict execution prisoner in سیاهچال:')}</span>
+                                <span className="text-rose-400 font-black text-[9px] bg-rose-955/40 border border-rose-900/40 px-1.5 py-0.5 rounded animate-pulse">{tl('آماده دفاع پاپ', 'آماده defense Pope')}</span>
                               </div>
                               <p className="text-[9px] text-slate-350 leading-normal">
                                 زندانی «<strong>{players.find(p => p.id === prisonerExecutionToVeto)?.name}</strong>» در سیاهچال محکوم به مرگ قطعی شد. پاپ تالار می‌تواند این حکم اعدام را لغو کرده و اجازه دهد او زنده در بند باقی بماند. پس از وتو، قابلیت تروریست در بازی جاری می‌گردد.
@@ -3619,7 +3620,7 @@ export default function App() {
                                     : 'bg-amber-900 hover:bg-amber-800 text-white border-amber-700'
                                 }`}
                               >
-                                {popeVetoCooldown > 0 ? 'وتوی پاپ در دوره انتظار (یک روز در میان) است' : '⛪ وتوی مذهبی پاپ و ابطال مرگ زندانی'}
+                                {popeVetoCooldown > 0 ? tl('وتوی پاپ در دوره انتظار (یک روز در میان) است', 'veto Pope in roundه wait (a day in میان) است') : tl('⛪ وتوی مذهبی پاپ و ابطال مرگ زندانی', '⛪ veto religious Pope and ابطال death prisoner')}
                               </button>
                             </div>
                           )}
@@ -3629,20 +3630,20 @@ export default function App() {
                         <div className="p-3 bg-slate-950/60 border border-slate-900 rounded-xl space-y-3">
                           <span className="block text-[10px] text-slate-300 font-black border-b border-slate-900 pb-1.5 flex items-center gap-1 pb-1">
                             <Scale className="w-4 h-4 text-amber-500" />
-                            صدور حکم حاکمه دادگاه عالی قاضی:
+                            {tl('صدور حکم حاکمه دادگاه عالی قاضی:', 'issue verdict حاکمه court عالی Judge:')}
                           </span>
                           
                           {courtSelectedPlayers.length === 0 ? (
-                            <p className="text-[10px] text-slate-500 text-center py-2 font-bold select-none">متهم فعالی در تالار دادگاه وجود ندارد.</p>
+                            <p className="text-[10px] text-slate-500 text-center py-2 font-bold select-none">{tl('متهم فعالی در تالار دادگاه وجود ندارد.', 'defendant activeی in hall court exists lacks.')}</p>
                           ) : (
                             <div className="space-y-3.5 text-xs text-slate-400">
                               <div className="p-3 bg-amber-950/20 border border-amber-900/30 rounded-xl space-y-1.5 text-right">
                                 <div className="flex items-center gap-1.5 font-black text-amber-400 text-[10px]">
                                   <Zap className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                                  <span>نکته مهم برای گرداننده:</span>
+                                  <span>{tl('نکته مهم برای گرداننده:', 'نکته important بvote moderator:')}</span>
                                 </div>
                                 <p className="text-[9.5px] text-slate-300 leading-relaxed font-semibold">
-                                  📢 <strong className="text-amber-300 font-extrabold">ابلاغ قانون مجمع به بازیکنان:</strong> گرداننده موظف است این فکت را به بازیکنان و متهم بگوید که با صدور عفو، زندان یا لایحه مرگ برای یک متهم، کاندیدای دیگر تالار به صورت خودکار تبرئه تام‌الاختیار می‌گردد.
+                                  📢 <strong className="text-amber-300 font-extrabold">{tl('ابلاغ قانون مجمع به بازیکنان:', 'ابلاغ rule assembly to players:')}</strong> گرداننده موظف است این فکت را به بازیکنان و متهم بگوید که با صدور عفو، زندان یا لایحه مرگ برای یک متهم، کاندیدای دیگر تالار به صورت خودکار تبرئه تام‌الاختیار می‌گردد.
                                 </p>
                               </div>
                               {courtSelectedPlayers.map((id) => {
@@ -3653,7 +3654,7 @@ export default function App() {
                                     <span className="font-extrabold text-slate-200 block text-right">{p.name} ⚖️</span>
                                     {courtExecutionToVeto === p.id ? (
                                       <div className="p-2 bg-amber-955/20 border border-amber-900/40 rounded-lg space-y-1 text-right">
-                                        <p className="text-[10px] text-rose-450 font-bold leading-normal">⚠️ این متهم در مجمع امروز محکوم به اعدام شد.</p>
+                                        <p className="text-[10px] text-rose-450 font-bold leading-normal">{tl('⚠️ این متهم در مجمع امروز محکوم به اعدام شد.', '⚠️ this defendant in assembly امday محکوم to execution شد.')}</p>
                                         <button
                                           onClick={handleVetoCourtExecution}
                                           disabled={popeVetoCooldown > 0 || !players.some(x => x.role === 'pope' && x.isAlive && !x.isImprisoned) || cycleNumber < 1}
@@ -3663,7 +3664,7 @@ export default function App() {
                                               : 'bg-amber-900 hover:bg-amber-800 text-white border-amber-700'
                                           }`}
                                         >
-                                          {popeVetoCooldown > 0 ? 'وتوی پاپ در دوره خنک‌سازی است' : '⛪ وتوی مذهبی پاپ و بازگرداندن متهم'}
+                                          {popeVetoCooldown > 0 ? tl('وتوی پاپ در دوره خنک‌سازی است', 'veto Pope in roundه خنک‌سازی است') : tl('⛪ وتوی مذهبی پاپ و بازگرداندن متهم', '⛪ veto religious Pope and بازگرداندن defendant')}
                                         </button>
                                       </div>
                                     ) : (
@@ -3672,19 +3673,19 @@ export default function App() {
                                           onClick={() => handleExecuteVerdict('execute', p.id)}
                                           className="bg-rose-950/80 text-rose-400 text-[9.5px] font-black py-1 px-1.5 rounded border border-rose-900/50 hover:bg-rose-900 transition"
                                         >
-                                          اعدام نهایی
+                                          {tl('اعدام نهایی', 'execution نهایی')}
                                         </button>
                                         <button
                                           onClick={() => handleExecuteVerdict('jail', p.id)}
                                           className="bg-amber-950/80 text-amber-300 text-[9.5px] font-black py-1 px-1.5 rounded border border-amber-900/50 hover:bg-amber-900 transition"
                                         >
-                                          حبس زندان
+                                          {tl('حبس زندان', 'حبس prison')}
                                         </button>
                                         <button
                                           onClick={() => handleExecuteVerdict('pardon', p.id)}
                                           className="bg-emerald-950/80 text-emerald-400 text-[9.5px] font-black py-1 px-1.5 rounded border border-emerald-900/50 hover:bg-emerald-900 transition"
                                         >
-                                          تبرئه فوری
+                                          {tl('تبرئه فوری', 'تبرئه فوری')}
                                         </button>
                                       </div>
                                     )}
@@ -3711,38 +3712,38 @@ export default function App() {
 
                           <div className="bg-slate-955 rounded-lg p-2 border border-slate-900 text-xs space-y-1.5">
                             {players.filter(p => p.isAlive && p.isImprisoned || prisonerExecutionToVeto === p.id).length === 0 ? (
-                              <div className="text-center py-2 text-slate-600 font-bold text-[9.5px] select-none">هیچ شخصی در سلول انفرادی زندان محبوس نیست.</div>
+                              <div className="text-center py-2 text-slate-600 font-bold text-[9.5px] select-none">{tl('هیچ شخصی در سلول انفرادی زندان محبوس نیست.', 'no شخصی in cell solitary prison محبوس نیست.')}</div>
                             ) : (
                               players.filter(p => p.isAlive && p.isImprisoned || prisonerExecutionToVeto === p.id).map((p) => (
                                 <div key={p.id} className="flex-col border-b border-slate-900/50 pb-1.5 last:border-0 last:pb-0 gap-1.5">
                                   <div className="flex items-center justify-between">
-                                    <span className="font-extrabold text-amber-500 font-sans">{p.name} <span className="text-[8px] text-slate-500 font-normal">(بدون نقش)</span></span>
+                                    <span className="font-extrabold text-amber-500 font-sans">{p.name} <span className="text-[8px] text-slate-500 font-normal">{tl('(بدون نقش)', '(without role)')}</span></span>
                                     {prisonerExecutionToVeto !== p.id && p.imprisonedAtCycle !== cycleNumber && !prisonerVerdictGivenToday && (
                                       <div className="flex gap-1" dir="ltr">
                                         <button
                                           onClick={() => handleExecutePrisonerVerdict(p.id, 'execute')}
                                           className="bg-rose-955 text-rose-400 text-[8px] font-black px-2 py-1 rounded-md border border-rose-900/80 hover:bg-rose-900/20"
                                         >
-                                          اعدام زندانی
+                                          {tl('اعدام زندانی', 'execution prisoner')}
                                         </button>
                                         <button
                                           onClick={() => handleExecutePrisonerVerdict(p.id, 'pardon')}
                                           className="bg-emerald-955 text-emerald-400 text-[8px] font-black px-2 py-1 rounded-md border border-emerald-900/80 hover:bg-emerald-900/20"
                                         >
-                                          عفو و آزادی
+                                          {tl('عفو و آزادی', 'pardon and آزادی')}
                                         </button>
                                       </div>
                                     )}
                                     {prisonerExecutionToVeto !== p.id && p.imprisonedAtCycle !== cycleNumber && prisonerVerdictGivenToday && (
-                                      <span className="text-[8px] font-bold text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">حکم امروز صادر شده</span>
+                                      <span className="text-[8px] font-bold text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">{tl('حکم امروز صادر شده', 'verdict امday issued شده')}</span>
                                     )}
                                     {prisonerExecutionToVeto !== p.id && p.imprisonedAtCycle === cycleNumber && (
-                                      <span className="text-[8px] font-bold text-amber-500/80 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">جدیدالورود (امروز حکمی دریافت نمی‌کند)</span>
+                                      <span className="text-[8px] font-bold text-amber-500/80 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">{tl('جدیدالورود (امروز حکمی دریافت نمی‌کند)', 'newالenter (امday verdictی دریافت نمی‌کند)')}</span>
                                     )}
                                   </div>
                                   {prisonerExecutionToVeto === p.id && (
                                     <div className="p-2 bg-amber-955/20 border border-amber-900/40 rounded-lg mt-1 space-y-1 text-right">
-                                      <p className="text-[10px] text-rose-450 font-bold leading-normal">⚠️ این زندانی اعدام انقلابی شد.</p>
+                                      <p className="text-[10px] text-rose-450 font-bold leading-normal">{tl('⚠️ این زندانی اعدام انقلابی شد.', '⚠️ this prisoner execution revolutionی شد.')}</p>
                                       <button
                                         onClick={handleVetoPrisonerExecution}
                                         disabled={popeVetoCooldown > 0 || !players.some(x => x.role === 'pope' && x.isAlive && !x.isImprisoned) || cycleNumber < 1}
@@ -3752,7 +3753,7 @@ export default function App() {
                                             : 'bg-amber-900 hover:bg-amber-800 text-white border-amber-700'
                                         }`}
                                       >
-                                        {popeVetoCooldown > 0 ? 'وتو در خنک‌سازی است' : '⛪ وتوی مذهبی پاپ و بازگرداندن به سلول'}
+                                        {popeVetoCooldown > 0 ? tl('وتو در خنک‌سازی است', 'veto in خنک‌سازی است') : tl('⛪ وتوی مذهبی پاپ و بازگرداندن به سلول', '⛪ veto religious Pope and بازگرداندن to cell')}
                                       </button>
                                     </div>
                                   )}
@@ -3768,14 +3769,14 @@ export default function App() {
                             className="bg-slate-900 text-slate-400 hover:text-slate-200 font-bold px-3 py-2.5 rounded-xl text-xs flex items-center gap-1 transition"
                           >
                             <ChevronRight className="w-4 h-4" />
-                            برگشت
+                            {tl('برگشت', 'Back')}
                           </button>
                           <button
                             onClick={handleBeginNight}
                             className="flex-1 bg-teal-600 hover:bg-teal-700 text-slate-950 font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition"
                           >
                             <Moon className="w-4 h-4 text-slate-950" />
-                            <span>پایان فاز روز و رفتن به بستر شب جدید</span>
+                            <span>{tl('پایان فاز روز و رفتن به بستر شب جدید', 'end day phase and رفتن to بستر night new')}</span>
                           </button>
                         </div>
                       </div>
@@ -3788,7 +3789,7 @@ export default function App() {
                 {selectedTab === 'logs' && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b border-slate-900 pb-2 mb-2">
-                      <h4 className="text-xs font-bold text-slate-200">صندوق تاریخچه وقایع مجمع</h4>
+                      <h4 className="text-xs font-bold text-slate-200">{tl('صندوق تاریخچه وقایع مجمع', 'صنtwoق تاریخچه وقایع assembly')}</h4>
                       <button
                         onClick={() => {
                           if (logsConfirmActive) {
@@ -3805,13 +3806,13 @@ export default function App() {
                             : 'border-slate-800 bg-slate-905 text-slate-500 hover:text-rose-400'
                         }`}
                       >
-                        {logsConfirmActive ? 'تایید پاک‌سازی؟' : 'پاک کردن'}
+                        {logsConfirmActive ? tl('تایید پاک‌سازی؟', 'confirm پاک‌سازی?') : tl('پاک کردن', 'پاک کردن')}
                       </button>
                     </div>
 
                     <div className="overflow-y-auto max-h-[500px] space-y-2 pr-1 custom-scrollbar text-xs">
                       {logs.length === 0 ? (
-                        <p className="text-center text-slate-600 py-10">وقایعی ثبت نگردیده است.</p>
+                        <p className="text-center text-slate-600 py-10">{tl('وقایعی ثبت نگردیده است.', 'وقایعی record نگردیده است.')}</p>
                       ) : (
                         logs.map((log) => {
                           let typeBadgeColor = 'text-slate-400 bg-slate-950';
@@ -3826,7 +3827,7 @@ export default function App() {
                               <div className="flex justify-between items-center mb-1">
                                 <span className="text-[10px] text-slate-500 font-mono" dir="ltr">{log.timestamp}</span>
                                 <span className={`text-[9px] px-1.5 py-0.5 rounded border font-semibold ${typeBadgeColor}`}>
-                                  {log.phase === 'night' ? 'شب' : log.phase === 'setup' ? 'آغاز' : 'روز'}
+                                  {log.phase === 'night' ? tl('شب', 'night') : log.phase === 'setup' ? tl('آغاز', 'begin') : tl('روز', 'day')}
                                 </span>
                               </div>
                               <p className="text-[11px] text-slate-300 leading-relaxed font-normal">{log.message}</p>
@@ -3885,25 +3886,25 @@ export default function App() {
               <div className="flex items-center justify-between border-b border-amber-950/20 pb-2 mb-3">
                 <div className="flex items-center gap-1.5">
                   <Zap className="w-4 h-4 text-amber-500 animate-pulse" />
-                  <span className="text-xs font-black text-white">کنترل‌های دسترسی سریع (دِو)</span>
+                  <span className="text-xs font-black text-white">{tl('کنترل‌های دسترسی سریع (دِو)', 'کنترل‌های دسترسی سریع (دِو)')}</span>
                 </div>
                 <button
                   onClick={() => setDevPanelOpen(false)}
                   className="text-[10px] text-slate-400 hover:text-white px-2 py-0.5 rounded bg-slate-950 border border-slate-800 hover:border-slate-700 transition cursor-pointer font-bold"
                 >
-                  بستن ×
+                  {tl('بستن ×', 'close ×')}
                 </button>
               </div>
 
               <p className="text-[9px] text-slate-400 mb-3 bg-amber-500/5 p-2 rounded-lg border border-amber-500/10 leading-relaxed font-semibold">
-                این تابلوی کمکی صرفاً در حوزه توسعه فعال است و با آن بدون پر کردن تک‌تک فرم‌ها می‌توانید به تمامی مراحل و ریزگام‌ها بروید.
+                {tl('این تابلوی کمکی صرفاً در حوزه توسعه فعال است و با آن بدون پر کردن تک‌تک فرم‌ها می‌توانید به تمامی مراحل و ریزگام‌ها بروید.', 'this تابلوی کمکی صرفاً in حوزه توسعه active است and with that without پر کردن تک‌تک فرم‌ها canید to تمامی مراحل and ریزstep‌ها بروید.')}
               </p>
 
               <div className="border-b border-slate-900 pb-3 mb-3">
-                <span className="text-[10px] font-bold text-slate-400 block mb-2">تغییر لوگوی برنامه (ذخیره در مروگر):</span>
+                <span className="text-[10px] font-bold text-slate-400 block mb-2">{tl('تغییر لوگوی برنامه (ذخیره در مروگر):', 'change لوگوی onnameه (ذخیره in مروگر):')}</span>
                 <div className="flex gap-2">
                   <label className="flex-1 text-center bg-slate-950 hover:bg-slate-900 border border-slate-800 text-[10px] py-2 rounded-lg font-bold text-amber-500 transition cursor-pointer">
-                    انتخاب تصویر از چت/سیستم
+                    {tl('انتخاب تصویر از چت/سیستم', 'select تصویر from چت/سیستم')}
                     <input
                       type="file"
                       accept="image/*"
@@ -3932,7 +3933,7 @@ export default function App() {
                       }}
                       className="px-3 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-900/30 text-[10px] rounded-lg font-bold text-rose-400 transition cursor-pointer"
                     >
-                      حذف
+                      {tl('حذف', 'remove')}
                     </button>
                   )}
                 </div>
@@ -3941,7 +3942,7 @@ export default function App() {
               <div className="space-y-3">
                 {/* section 1: Main Game Phases */}
                 <div>
-                  <span className="text-[10px] font-bold text-slate-400 block mb-1">۱. فازهای اصلی بازی:</span>
+                  <span className="text-[10px] font-bold text-slate-400 block mb-1">{tl('۱. فازهای اصلی بازی:', '1. phaseهای اصلی game:')}</span>
                   <div className="grid grid-cols-2 gap-1 text-[9px]">
                     <button
                       onClick={() => handleDevSetupAndJump('setup')}
@@ -4018,137 +4019,137 @@ export default function App() {
 
                 {/* section 2: Day 0 Sub-steps */}
                 <div className="border-t border-slate-900 pt-2">
-                  <span className="text-[10px] font-bold text-slate-400 block mb-1">۲. گام‌های آغازین روز صفر (Day 0):</span>
+                  <span className="text-[10px] font-bold text-slate-400 block mb-1">{tl('۲. گام‌های آغازین روز صفر (Day 0):', '2. step‌های beginین Day Zero (Day 0):')}</span>
                   <div className="grid grid-cols-3 gap-1 text-[8px]">
                     <button
                       onClick={() => handleJumpToDay0Step(1)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-medium"
                     >
-                      ۱: خوانش اسرار
+                      {tl('۱: خوانش اسرار', '1: خوانش اسرار')}
                     </button>
                     <button
                       onClick={() => handleJumpToDay0Step(2)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-medium"
                     >
-                      ۲: سر صحبت
+                      {tl('۲: سر صحبت', '2: سر speak')}
                     </button>
                     <button
                       onClick={() => handleJumpToDay0Step(3)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-medium"
                     >
-                      ۳: انتخاب پاپ
+                      {tl('۳: انتخاب پاپ', '3: select Pope')}
                     </button>
                     <button
                       onClick={() => handleJumpToDay0Step(4)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-medium"
                     >
-                      ۴: انتصاب کشیش
+                      {tl('۴: انتصاب کشیش', '4: appointment Priest')}
                     </button>
                     <button
                       onClick={() => handleJumpToDay0Step(5)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-medium"
                     >
-                      ۵: رئیس‌جمهور
+                      {tl('۵: رئیس‌جمهور', '5: President')}
                     </button>
                     <button
                       onClick={() => handleJumpToDay0Step(6)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-medium"
                     >
-                      ۶: تشکیل کابینه
+                      {tl('۶: تشکیل کابینه', '6: تشکیل cabinet')}
                     </button>
                     <button
                       onClick={() => handleJumpToDay0Step(7)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-medium"
                     >
-                      ۷: عزل و نصب معاون
+                      {tl('۷: عزل و نصب معاون', '7: عزل and نصب Vice President')}
                     </button>
                     <button
                       onClick={() => handleJumpToDay0Step(8)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-medium"
                     >
-                      ۸: انتصاب زیرگروه شهردار
+                      {tl('۸: انتصاب زیرگروه شهردار', '8: appointment زیرگروه Mayor')}
                     </button>
                     <button
                       onClick={() => handleJumpToDay0Step(9)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-medium"
                     >
-                      ۹: قاضی و وکیل
+                      {tl('۹: قاضی و وکیل', '9: Judge and Lawyer')}
                     </button>
                   </div>
                 </div>
 
                 {/* section 3: Night Sub-steps */}
                 <div className="border-t border-slate-900 pt-2">
-                  <span className="text-[10px] font-bold text-slate-400 block mb-1">۳. گام‌های نوبتی فاز شب (Night Wizard):</span>
+                  <span className="text-[10px] font-bold text-slate-400 block mb-1">{tl('۳. گام‌های نوبتی فاز شب (Night Wizard):', '3. step‌های نوبتی night phase (Night Wizard):')}</span>
                   <div className="grid grid-cols-4 gap-1 text-[8px]" dir="rtl">
                     <button
                       onClick={() => handleJumpToNightStep(1)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-bold"
-                      title="مختل‌سازی کشیش"
+                      title={tl("مختل‌سازی کشیش", "disrupted‌سازی Priest")}
                     >
-                      ۱: کشیش
+                      {tl('۱: کشیش', '1: Priest')}
                     </button>
                     <button
                       onClick={() => handleJumpToNightStep(2)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-bold"
-                      title="پزشک اورژانسی"
+                      title={tl("پزشک اورژانسی", "پزشک اورژانسی")}
                     >
-                      ۲: دکتر
+                      {tl('۲: دکتر', '2: Doctor')}
                     </button>
                     <button
                       onClick={() => handleJumpToNightStep(3)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-bold"
-                      title="انتحار تروریستی"
+                      title={tl("انتحار تروریستی", "suicide attack terroristی")}
                     >
-                      ۳: تروریست
+                      {tl('۳: تروریست', '3: terrorist')}
                     </button>
                     <button
                       onClick={() => handleJumpToNightStep(4)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-bold"
-                      title="شلیک پلیس"
+                      title={tl("شلیک پلیس", "shot Police")}
                     >
-                      ۴: پلیس
+                      {tl('۴: پلیس', '4: Police')}
                     </button>
                     <button
                       onClick={() => handleJumpToNightStep(5)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-bold"
-                      title="جلب پرونده کارآگاه"
+                      title={tl("جلب پرونده کارآگاه", "جلب case Detective")}
                     >
-                      ۵: کارآگاه
+                      {tl('۵: کارآگاه', '5: Detective')}
                     </button>
                     <button
                       onClick={() => handleJumpToNightStep(6)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-bold"
-                      title="استعلام حقیقت خبرنگار"
+                      title={tl("استعلام حقیقت خبرنگار", "inquiry حقیقت Journalist")}
                     >
-                      ۶: خبرنگار
+                      {tl('۶: خبرنگار', '6: Journalist')}
                     </button>
                     <button
                       onClick={() => handleJumpToNightStep(7)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-bold"
-                      title="شلیک ماسون مقتدر"
+                      title={tl("شلیک ماسون مقتدر", "shot ماسون مقتدر")}
                     >
-                      ۷: ماسون
+                      {tl('۷: ماسون', '7: ماسون')}
                     </button>
                     <button
                       onClick={() => handleJumpToNightStep(8)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-bold"
-                      title="ردیابی دوربین گزارشگر"
+                      title={tl("ردیابی دوربین گزارشگر", "ردیابی roundبین Reporter")}
                     >
-                      ۸: گزارشگر
+                      {tl('۸: گزارشگر', '8: Reporter')}
                     </button>
                   </div>
                 </div>
 
                 {/* section 4: Winner Simulation */}
                 <div className="border-t border-slate-900 pt-2">
-                  <span className="text-[10px] font-bold text-slate-400 block mb-1">۴. شبیه‌ساز نتیجه پایان بازی:</span>
+                  <span className="text-[10px] font-bold text-slate-400 block mb-1">{tl('۴. شبیه‌ساز نتیجه پایان بازی:', '4. nightیه‌ساز result end game:')}</span>
                   <div className="grid grid-cols-3 gap-1 text-[8px]">
                     <button
                       onClick={() => {
                         setSimulatedWinner('freemason');
                         setGamePhase('gameover');
-                        handleLogEvent('[شبیه‌ساز] پیروزی لژ فراماسون‌ها فعال گردید.', 'system');
+                        handleLogEvent(tl('[شبیه‌ساز] پیروزی لژ فراماسون‌ها فعال گردید.', '[nightیه‌ساز] پیdayی Freemason lodge active گردید.'), 'system');
                       }}
                       className={`p-1 rounded font-bold text-center border transition ${
                         simulatedWinner === 'freemason'
@@ -4156,13 +4157,13 @@ export default function App() {
                           : 'bg-slate-950 border-slate-850 text-rose-300 hover:bg-slate-900'
                       }`}
                     >
-                      برد فراماسون
+                      {tl('برد فراماسون', 'برد Freemason')}
                     </button>
                     <button
                       onClick={() => {
                         setSimulatedWinner('citizen');
                         setGamePhase('gameover');
-                        handleLogEvent('[شبیه‌ساز] پیروزی نهضت شهروندان فعال گردید.', 'system');
+                        handleLogEvent(tl('[شبیه‌ساز] پیروزی نهضت شهروندان فعال گردید.', '[nightیه‌ساز] پیdayی نهضت citizens active گردید.'), 'system');
                       }}
                       className={`p-1 rounded font-bold text-center border transition ${
                         simulatedWinner === 'citizen'
@@ -4170,30 +4171,30 @@ export default function App() {
                           : 'bg-slate-950 border-slate-850 text-sky-300 hover:bg-slate-900'
                       }`}
                     >
-                      برد شهروندان
+                      {tl('برد شهروندان', 'برد citizens')}
                     </button>
                     <button
                       onClick={() => {
                         setSimulatedWinner(null);
                         setGamePhase('day');
-                        handleLogEvent('[شبیه‌ساز] شبیه‌سازی برد باطل و وضعیت به عادی برگشت.', 'system');
+                        handleLogEvent(tl('[شبیه‌ساز] شبیه‌سازی برد باطل و وضعیت به عادی برگشت.', '[nightیه‌ساز] nightیه‌سازی برد باطل and وضعیت to normal Back.'), 'system');
                       }}
                       className="p-1 rounded bg-slate-800 hover:bg-slate-700 transition text-slate-100 border border-slate-700 font-bold"
                     >
-                      پاکسازی برد
+                      {tl('پاکسازی برد', 'پاکسازی برد')}
                     </button>
                   </div>
                 </div>
 
                 {/* section 5: Terrorist Assignment Helper */}
                 <div className="border-t border-slate-900 pt-2 text-right">
-                  <span className="text-[10px] font-bold text-slate-400 block mb-1">۵. تخصیص و شبیه‌سازی تروریست مجمع:</span>
+                  <span className="text-[10px] font-bold text-slate-400 block mb-1">{tl('۵. تخصیص و شبیه‌سازی تروریست مجمع:', '5. تخصیص and nightیه‌سازی terrorist assembly:')}</span>
                   <div className="space-y-1 text-[8px] text-right">
                     <button
                       onClick={() => {
                         const eligible = players.filter((p) => p.isAlive && !p.isImprisoned && !p.hasTerroristAbility);
                         if (eligible.length === 0) {
-                          alert('هیچ بازیکن زنده و واجد شرایطی جهت دریافت قابلیت تروریست یافت نشد.');
+                          alert(tl('هیچ بازیکن زنده و واجد شرایطی جهت دریافت قابلیت تروریست یافت نشد.', 'no player alive and واجد conditionsی جهت دریافت قابلیت terrorist یافت نشد.'));
                           return;
                         }
                         const roleless = eligible.filter((p) => p.role === 'none');
@@ -4205,7 +4206,7 @@ export default function App() {
                             p.id === chosen.id ? { ...p, hasTerroristAbility: true, hasTerroristAbilityCycle: cycleNumber + 1 } : p
                           )
                         );
-                        handleLogEvent(`[شبیه‌ساز] به دستور دستی توسعه، بازیکن «${chosen.name}» به عنوان تروریست بازی منصوب شد.`, 'ability');
+                        handleLogEvent(tl(`[شبیه‌ساز] به دستور دستی توسعه، بازیکن «${chosen.name}» به عنوان تروریست بازی منصوب شد.`, `[nightیه‌ساز] to دستور دستی توسعه, player "${chosen.name}" to عنوان terrorist game appointed شد.`), 'ability');
                       }}
                       className="w-full p-1.5 rounded bg-rose-950/40 text-rose-300 border border-rose-900/40 hover:bg-rose-950/80 transition text-center font-bold"
                     >
@@ -4214,19 +4215,19 @@ export default function App() {
                     <div className="text-[9px] text-slate-400 bg-[#06080f] p-1.5 rounded leading-relaxed border border-slate-900 mt-1">
                       تروریست‌های زنده فعلی:{' '}
                       <span className="text-rose-400 font-black">
-                        {players.filter(p => p.hasTerroristAbility && p.isAlive).map(p => p.name).join('، ') || 'هیچکس'}
+                        {players.filter(p => p.hasTerroristAbility && p.isAlive).map(p => p.name).join('، ') || tl('هیچکس', 'no one')}
                       </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="border-t border-slate-900 pt-2.5 space-y-2">
-                  <span className="text-[10px] font-bold text-slate-400 block">میانبرها و دستورات سریع:</span>
+                  <span className="text-[10px] font-bold text-slate-400 block">{tl('میانبرها و دستورات سریع:', 'میانبرها and دستورات سریع:')}</span>
                   <div className="flex gap-1.5">
                     <button
                       onClick={() => {
                         setCycleNumber((prev) => Math.max(1, prev - 1));
-                        handleLogEvent('[توسعه] تعداد دوره دستی کاهش یافت.', 'system');
+                        handleLogEvent(tl('[توسعه] تعداد دوره دستی کاهش یافت.', '[توسعه] count roundه دستی کاهش یافت.'), 'system');
                       }}
                       className="flex-1 bg-slate-950 hover:bg-slate-900 border border-slate-850 text-[10px] py-1.5 rounded-lg font-bold text-slate-300 text-center transition cursor-pointer"
                     >
@@ -4235,7 +4236,7 @@ export default function App() {
                     <button
                       onClick={() => {
                         setCycleNumber((prev) => prev + 1);
-                        handleLogEvent('[توسعه] تعداد دوره دستی افزایش یافت.', 'system');
+                        handleLogEvent(tl('[توسعه] تعداد دوره دستی افزایش یافت.', '[توسعه] count roundه دستی افزایش یافت.'), 'system');
                       }}
                       className="flex-1 bg-slate-950 hover:bg-slate-900 border border-slate-850 text-[10px] py-1.5 rounded-lg font-bold text-slate-300 text-center transition cursor-pointer"
                     >
@@ -4245,14 +4246,14 @@ export default function App() {
                   <div className="flex gap-1.5">
                     <button
                       onClick={() => {
-                        const defaultNames = ['مهرداد', 'نیما', 'سپیده', 'آرمان', 'صبا', 'کیوان', 'بهار', 'رامین', 'رویا', 'سینا'];
+                        const defaultNames = [tl('مهرداد', 'Mehrdad'), tl('نیما', 'Nima'), tl('سپیده', 'Sepideh'), tl('آرمان', 'Arman'), tl('صبا', 'Saba'), tl('کیوان', 'Kayvan'), tl('بهار', 'Bahar'), tl('رامین', 'Ramin'), tl('رویا', 'Roya'), tl('سینا', 'Sina')];
                         const assigned = initializePlayers(defaultNames);
                         setPlayers(assigned);
-                        handleLogEvent('[توسعه] ۱۰ بازیکن تستی به صورت پیش‌فرض مقداردهی اولیه شدند.', 'system');
+                        handleLogEvent(tl('[توسعه] ۱۰ بازیکن تستی به صورت پیش‌فرض مقداردهی اولیه شدند.', '[توسعه] 10 player تستی to صورت پیش‌فرض مقhasهی اولیه شدند.'), 'system');
                       }}
                       className="flex-1 bg-slate-950 hover:bg-slate-900 border border-slate-850 text-[10px] py-1.5 rounded-lg font-bold text-slate-300 text-center transition cursor-pointer"
                     >
-                      تولید ۱۰ بازیکن تستی
+                      {tl('تولید ۱۰ بازیکن تستی', 'تولید 10 player تستی')}
                     </button>
                     <button
                       onClick={() => {
@@ -4281,11 +4282,11 @@ export default function App() {
                         setRolesInPlay([]);
                         setLastNightPriestBlockedId(null);
                         localStorage.clear();
-                        handleLogEvent('[توسعه] اطلاعات کل بازی فوراً ریست شد.', 'system');
+                        handleLogEvent(tl('[توسعه] اطلاعات کل بازی فوراً ریست شد.', '[توسعه] اطلاعات کل game فوراً reset شد.'), 'system');
                       }}
                       className="flex-1 bg-rose-950/20 hover:bg-rose-950/35 border border-rose-900/30 text-rose-400 text-[10px] py-1.5 rounded-lg font-bold text-center transition cursor-pointer"
                     >
-                      ریست دسته‌جمعی آنی
+                      {tl('ریست دسته‌جمعی آنی', 'reset دسته‌جمعی آنی')}
                     </button>
                   </div>
                 </div>
@@ -4308,7 +4309,7 @@ export default function App() {
             className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
           >
             <HelpCircle className="w-4 h-4 text-amber-500" />
-            راهنما و قوانین بازی
+            {tl('راهنما و قوانین بازی', 'guide and rules game')}
           </button>
 
           {gamePhase !== 'setup' && (
@@ -4329,10 +4330,10 @@ export default function App() {
                     ? 'bg-rose-950/80 border-rose-800 text-rose-300 animate-pulse'
                     : 'bg-slate-950 hover:bg-slate-900 border-slate-800 text-slate-400 hover:text-rose-400'
                 }`}
-                title="بازی از اول"
+                title={tl("بازی از اول", "game from اول")}
               >
                 <RotateCcw className="w-4 h-4" />
-                {resetConfirmActive ? 'تایید شروع مجدد؟ (کلیک دوباره)' : 'شروع مجدد'}
+                {resetConfirmActive ? tl('تایید شروع مجدد؟ (کلیک دوباره)', 'confirm start مجدد? (کلیک twoباره)') : tl('شروع مجدد', 'start مجدد')}
               </button>
 
               {/* Secrets reveal mode */}

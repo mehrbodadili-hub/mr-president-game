@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ROLE_DETAILS } from '../constants';
+import { tl } from '../i18n';
 import { 
   HelpCircle, 
   Users, 
@@ -43,10 +44,10 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
         <div>
           <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-200 bg-clip-text text-transparent flex items-center gap-2">
             <BookOpen className="w-6 h-6 text-amber-500" />
-            راهنمای جامع بازی سناریو «آقای رئیس‌جمهور»
+            {tl('راهنمای جامع بازی سناریو «آقای رئیس‌جمهور»', 'guide of جامع game سناریو "آقای President"')}
           </h2>
           <p className="text-xs text-slate-400 mt-1">
-            آموزش سناریوی فکری و سیاسی، قابلیت‌های جناح‌ها، وظایف گرداننده و شناسنامه تخصصی نقش‌ها
+            {tl('آموزش سناریوی فکری و سیاسی، قابلیت‌های جناح‌ها، وظایف گرداننده و شناسنامه تخصصی نقش‌ها', 'آموزش سناریوی فکری and political, قابلیت‌های جناح‌ها, وظایف moderator and شناسnameه تخصصی roles')}
           </p>
         </div>
         
@@ -61,7 +62,7 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
             }`}
           >
             <Users className="w-3.5 h-3.5" />
-            راهنمای بازیکنان
+            {tl('راهنمای بازیکنان', 'guide of players')}
           </button>
           <button
             onClick={() => setActiveMode('moderator')}
@@ -72,7 +73,7 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
             }`}
           >
             <Play className="w-3.5 h-3.5" />
-            راهنمای گرداننده
+            {tl('راهنمای گرداننده', 'guide of moderator')}
           </button>
           <button
             onClick={() => setActiveMode('roles')}
@@ -83,7 +84,7 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
             }`}
           >
             <Shield className="w-3.5 h-3.5" />
-            شناسنامه نقش‌ها
+            {tl('شناسنامه نقش‌ها', 'شناسnameه roles')}
           </button>
         </div>
       </div>
@@ -96,18 +97,18 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Introduction Card */}
               <div className="md:col-span-2">
-                <CollapsibleGuide title="مقدمه و هدف سناریو مجمع" defaultOpen={true}>
+                <CollapsibleGuide title={tl("مقدمه و هدف سناریو مجمع", "مقدمه and target سناریو assembly")} defaultOpen={true}>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                    بازی سناریو <strong>«آقای رئیس‌جمهور»</strong> یک بازی استنتاجی، استراتژیک و مذاکره‌محور است که در مجمعی عالی اتفاق می‌افتد. شهر بین دو جناح <strong>شهروندان مجمع</strong> و <strong>فراماسون‌های وفادار به مجمع مخفی</strong> تقسیم شده است. 
+                    بازی سناریو <strong>{tl('«آقای رئیس‌جمهور»', 'tl("آقای President", "آقای President")')}</strong>{tl(' یک بازی استنتاجی، استراتژیک و مذاکره‌محور است که در مجمعی عالی اتفاق می‌افتد. شهر بین دو جناح ', 'a game استنتاجی, strategic and negotiation‌محور است که in assemblyی عالی اتفاق می‌افتد. city بین two جناح')}<strong>{tl('شهروندان مجمع', 'citizens assembly')}</strong>{tl(' و ', 'and')}<strong>{tl('فراماسون‌های وفادار به مجمع مخفی', 'Freemasons loyal to assembly hidden')}</strong> تقسیم شده است. 
                   </p>
                   <div className="space-y-2 text-xs text-slate-400">
                     <div className="flex gap-2 items-start">
                       <span className="text-amber-500">•</span>
-                      <p><strong>هدف فراماسون‌ها:</strong> کسب اکثریت یا برابری عددی در مجمع از طریق نفوذ، فریب در رای‌گیری یا اعدام و زندانی کردن شهروندان.</p>
+                      <p><strong>{tl('هدف فراماسون‌ها:', 'target Freemasons:')}</strong>{tl(' کسب اکثریت یا برابری عددی در مجمع از طریق نفوذ، فریب در رای‌گیری یا اعدام و زندانی کردن شهروندان.', 'کسب majority or برابری عددی in assembly from طریق infiltration, deceit in voting or execution and prisoner کردن citizens.')}</p>
                     </div>
                     <div className="flex gap-2 items-start">
                       <span className="text-amber-500">•</span>
-                      <p><strong>هدف شهروندان:</strong> کشف فراماسون‌ها، دفاع از ارکان جمهوری مجمع و نابودسازی یا اسارت کامل آن‌ها در پشت میله‌های زندان.</p>
+                      <p><strong>{tl('هدف شهروندان:', 'target citizens:')}</strong>{tl(' کشف فراماسون‌ها، دفاع از ارکان جمهوری مجمع و نابودسازی یا اسارت کامل آن‌ها در پشت میله‌های زندان.', 'کشف Freemasons, defense from ارکان جمهوری assembly and نابودسازی or اسارت کامل آن‌ها in پشت میله‌های prison.')}</p>
                     </div>
                   </div>
                 </CollapsibleGuide>
@@ -115,21 +116,21 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
 
               {/* Quick Status Bar */}
               <div className="md:col-span-1">
-                <CollapsibleGuide title="خلاصه کارت‌های هویت مجمع" defaultOpen={false}>
+                <CollapsibleGuide title={tl("خلاصه کارت‌های هویت مجمع", "خلاصه کارت‌های identity assembly")} defaultOpen={false}>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center bg-[#070c17] px-2.5 py-1.5 rounded border border-[#1e293bb3]">
                       <span className="text-xs font-bold text-slate-100 flex items-center gap-1">
                         <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        شهروندان مجمع
+                        {tl('شهروندان مجمع', 'citizens assembly')}
                       </span>
-                      <span className="text-[10px] text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-900/40">تکثر آرا</span>
+                      <span className="text-[10px] text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-900/40">{tl('تکثر آرا', 'تکثر votes')}</span>
                     </div>
                     <div className="flex justify-between items-center bg-[#070c17] px-2.5 py-1.5 rounded border border-[#1e293bb3]">
                       <span className="text-xs font-bold text-slate-100 flex items-center gap-1">
                         <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-                        فراماسون‌ها
+                        {tl('فراماسون‌ها', 'Freemasons')}
                       </span>
-                      <span className="text-[10px] text-rose-400 bg-rose-950/40 px-1.5 py-0.5 rounded border border-rose-900/40">شبکه آگاه</span>
+                      <span className="text-[10px] text-rose-400 bg-rose-950/40 px-1.5 py-0.5 rounded border border-rose-900/40">{tl('شبکه آگاه', 'nightکه آگاه')}</span>
                     </div>
                   </div>
                   <div className="text-[10px] text-slate-500 mt-4 leading-relaxed bg-[#050810] p-2 rounded border border-slate-800">
@@ -142,39 +143,39 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
             {/* Core Rules Section */}
             <div className="space-y-3">
               {/* Variable Player Count Rules */}
-              <CollapsibleGuide title="الزامات شروع مجمع و قوانین وابسته به تعداد اعضا (بر پایه جمعیت)" defaultOpen={false}>
+              <CollapsibleGuide title={tl("الزامات شروع مجمع و قوانین وابسته به تعداد اعضا (بر پایه جمعیت)", "الزامات start assembly and rules وابسته to count اعضا (on پایه جمعیت)")} defaultOpen={false}>
                 <p className="text-xs text-slate-300 leading-relaxed mb-3">
-                  تعداد بازیکنان رسمی مجمع حاکمیتی جهت حفظ توازن قوای سیاسی و امنیت ملی مابین <strong className="text-amber-400">۸ الی ۳۰ بازیکن</strong> است. برای جمعیت‌های مختلف در این بازه، برخی قوانین و نقش‌ها به صورت خودکار تعدیل می‌گردند:
+                  تعداد بازیکنان رسمی مجمع حاکمیتی جهت حفظ توازن قوای سیاسی و امنیت ملی مابین <strong className="text-amber-400">{tl('۸ الی ۳۰ بازیکن', '8 الی 30 player')}</strong> است. برای جمعیت‌های مختلف در این بازه، برخی قوانین و نقش‌ها به صورت خودکار تعدیل می‌گردند:
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                   <div className="bg-[#050810] p-3 rounded-md border border-slate-800">
-                    <span className="font-bold text-amber-300 block mb-1">جمعیت مجمع بین ۸ تا ۱۱ نفر:</span>
+                    <span className="font-bold text-amber-300 block mb-1">{tl('جمعیت مجمع بین ۸ تا ۱۱ نفر:', 'جمعیت assembly بین 8 until 11 نفر:')}</span>
                     <ul className="space-y-1 list-disc list-inside text-slate-400 text-[11px] leading-relaxed">
-                      <li>در جمعیت کمتر از ۱۱ نفر، <strong className="text-slate-300">حق رای معاون اول به ۱ رای</strong> کاهش می‌یابد (در حالت عادی ۲ رای دارد).</li>
-                      <li>نقش <strong className="text-slate-300">پلیس مسلح</strong> از بازی به طور کامل حذف می‌گردد.</li>
+                      <li>{tl('در جمعیت کمتر از ۱۱ نفر، ', 'in جمعیت کمتر from 11 نفر,')}<strong className="text-slate-300">{tl('حق رای معاون اول به ۱ رای', 'حق vote Vice President to 1 vote')}</strong>{tl(' کاهش می‌یابد (در حالت عادی ۲ رای دارد).', 'کاهش می‌یابد (in حالت normal 2 vote has).')}</li>
+                      <li>{tl('نقش ', 'role')}<strong className="text-slate-300">{tl('پلیس مسلح', 'Police مسلح')}</strong>{tl(' از بازی به طور کامل حذف می‌گردد.', 'from game to طور کامل remove می‌گردد.')}</li>
                     </ul>
                   </div>
                   
                   <div className="bg-[#050810] p-3 rounded-md border border-slate-800">
-                    <span className="font-bold text-amber-300 block mb-1">جمعیت مجمع کمتر از ۱۰ نفر (۸ و ۹ نفر):</span>
+                    <span className="font-bold text-amber-300 block mb-1">{tl('جمعیت مجمع کمتر از ۱۰ نفر (۸ و ۹ نفر):', 'جمعیت assembly کمتر from 10 نفر (8 and 9 نفر):')}</span>
                     <ul className="space-y-1 list-disc list-inside text-slate-400 text-[11px] leading-relaxed">
-                      <li>نقش <strong className="text-slate-300">معاون اول</strong> به طور کامل از بازی خلع و حذف می‌شود.</li>
-                      <li>انتصاب افراد تحت امر این رده (خبرنگار و گزارشگر) مستقیماً توسط خود <strong className="text-slate-300">رئیس‌جمهور</strong> در فاز روز صفر صورت می‌پذیرد.</li>
-                      <li>نقش <strong className="text-slate-300">کشیش</strong> به طور کامل از بازی حذف شده و شب صفر مربوط به او نیز نادیده گرفته می‌شود.</li>
+                      <li>{tl('نقش ', 'role')}<strong className="text-slate-300">{tl('معاون اول', 'Vice President')}</strong>{tl(' به طور کامل از بازی خلع و حذف می‌شود.', 'to طور کامل from game خلع and remove می‌شود.')}</li>
+                      <li>{tl('انتصاب افراد تحت امر این رده (خبرنگار و گزارشگر) مستقیماً توسط خود ', 'appointment افراد تحت امر this رده (Journalist and Reporter) مستقیماً توسط خود')}<strong className="text-slate-300">{tl('رئیس‌جمهور', 'President')}</strong>{tl(' در فاز روز صفر صورت می‌پذیرد.', 'in phase Day Zero صورت می‌پذیرد.')}</li>
+                      <li>{tl('نقش ', 'role')}<strong className="text-slate-300">{tl('کشیش', 'Priest')}</strong>{tl(' به طور کامل از بازی حذف شده و شب صفر مربوط به او نیز نادیده گرفته می‌شود.', 'to طور کامل from game remove شده and Night Zero مربوط to او نیز نادیده گرفته می‌شود.')}</li>
                     </ul>
                   </div>
 
                   <div className="bg-[#050810] p-3 rounded-md border border-slate-800">
-                    <span className="font-bold text-amber-300 block mb-1">جمعیت مجمع کمتر از ۹ نفر (۸ نفر):</span>
+                    <span className="font-bold text-amber-300 block mb-1">{tl('جمعیت مجمع کمتر از ۹ نفر (۸ نفر):', 'جمعیت assembly کمتر from 9 نفر (8 نفر):')}</span>
                     <ul className="space-y-1 list-disc list-inside text-slate-400 text-[11px] leading-relaxed">
-                      <li>نقش <strong className="text-slate-300">وکیل مدافع</strong> (زیرمجموعه قاضی ارشد) از بازی حذف می‌گردد و گام انتصاب آن طی نخواهد شد.</li>
+                      <li>{tl('نقش ', 'role')}<strong className="text-slate-300">{tl('وکیل مدافع', 'defense Lawyer')}</strong>{tl(' (زیرمجموعه قاضی ارشد) از بازی حذف می‌گردد و گام انتصاب آن طی نخواهد شد.', '(زیرtotalه Judge ارشد) from game remove می‌گردد and step appointment that طی نخواهد شد.')}</li>
                     </ul>
                   </div>
 
                   <div className="bg-[#050810] p-3 rounded-md border border-slate-800 flex flex-col justify-center">
-                    <span className="font-bold text-rose-400 block mb-1">محدودیت‌ها و هشدارها:</span>
+                    <span className="font-bold text-rose-400 block mb-1">{tl('محدودیت‌ها و هشدارها:', 'محtwoدیت‌ها and Warningها:')}</span>
                     <p className="text-slate-400 text-[11px] leading-relaxed">
-                      برای تعداد کمتر از ۸ نفر مجمع رسمی حاکمیتی تشکیل نمی‌شود. همچنین جهت کارایی و پایداری قوانین و توازن استدلال، مجمع نباید بیش از ۳۰ عضو داشته باشد.
+                      {tl('برای تعداد کمتر از ۸ نفر مجمع رسمی حاکمیتی تشکیل نمی‌شود. همچنین جهت کارایی و پایداری قوانین و توازن استدلال، مجمع نباید بیش از ۳۰ عضو داشته باشد.', 'بvote count کمتر from 8 نفر assembly رسمی sovereigntyی تشکیل نمی‌شود. همچنین جهت کاvoteی and stability rules and balance استدلال, assembly نmust بیش from 30 عضو داشته باشد.')}
                     </p>
                   </div>
                 </div>
@@ -183,16 +184,16 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
                 {/* Rule Item: Mason Specialized Rules */}
                 <div className="md:col-span-2">
-                  <CollapsibleGuide title="قوانین اختصاصی و پیچیده فراماسون‌ها" defaultOpen={false}>
+                  <CollapsibleGuide title={tl("قوانین اختصاصی و پیچیده فراماسون‌ها", "rules اختصاصی and پیچیده Freemasons")} defaultOpen={false}>
                     <div className="flex gap-3 text-right">
                       <div className="p-2 bg-rose-500/10 rounded border border-rose-500/20 text-rose-500 h-fit">
                         <Skull className="w-5 h-5" />
                       </div>
                       <div>
                         <ul className="text-xs text-slate-300 mt-1 space-y-2 list-disc list-inside">
-                          <li><strong>زندان:</strong> فراماسونی که زندانی شده باشد، به هیچ وجه با اعضای فعال لژ بیدار نمی‌شود و حق مشارکت در شلیک شبانه را ندارد.</li>
-                          <li><strong>انسداد کشیش:</strong> شلیک شبانه تیم فراماسون <strong>تنها در صورتی مسدود و بی‌اثر می‌شود</strong> که <strong>فراماسون ارشد</strong> (دارای کوچکترین شماره فعال) توسط کشیش مسدود شود. اگر مسدود شود، طبق الزامات بازی تیم فراماسون هم‌چنان به دستور گرداننده شلیک خود را انجام می‌دهند (بدون آنکه بدانند مسدود شده‌اند)، اما <strong>هدف تیراندازی هیچ آسیبی نخواهد دید</strong>. (توجه: مسدود شدن یک فراماسون عادی، شلیک تیمی را مختل نمی‌کند).</li>
-                          <li><strong>ایمنی زندان:</strong> هیچ بازیکنی (اعم از فراماسون، شهروند یا غیره) اگر در سلول زندان باشد، تحت هیچ شرایطی (شلیک پلیس، شلیک فراماسون‌ها) توسط این تیراندازی‌ها در شب کشته نمی‌شود.</li>
+                          <li><strong>{tl('زندان:', 'prison:')}</strong>{tl(' فراماسونی که زندانی شده باشد، به هیچ وجه با اعضای فعال لژ بیدار نمی‌شود و حق مشارکت در شلیک شبانه را ندارد.', 'Freemasonی که prisoner شده باشد, to no وجه with اعضای active lodge awake نمی‌شود and حق مشارکت in shot nightانه را lacks.')}</li>
+                          <li><strong>{tl('انسداد کشیش:', 'block Priest:')}</strong>{tl(' شلیک شبانه تیم فراماسون ', 'shot nightانه تیم Freemason')}<strong>{tl('تنها در صورتی مسدود و بی‌اثر می‌شود', 'only in صورتی blocked and بی‌اثر می‌شود')}</strong>{tl(' که ', 'که')}<strong>{tl('فراماسون ارشد', 'Freemason ارشد')}</strong>{tl(' (دارای کوچکترین شماره فعال) توسط کشیش مسدود شود. اگر مسدود شود، طبق الزامات بازی تیم فراماسون هم‌چنان به دستور گرداننده شلیک خود را انجام می‌دهند (بدون آنکه بدانند مسدود شده‌اند)، اما ', '(داvote smallترین شماره active) توسط Priest blocked شود. اگر blocked شود, طبق الزامات game تیم Freemason هم‌چنان to دستور moderator shot خود را انجام می‌دهند (without آنکه بدانند blocked شده‌اند), اما')}<strong>{tl('هدف تیراندازی هیچ آسیبی نخواهد دید', 'target shotاندازی no آسیبی نخواهد دید')}</strong>{tl('. (توجه: مسدود شدن یک فراماسون عادی، شلیک تیمی را مختل نمی‌کند).', '. (note: blocked شدن a Freemason normal, shot تیمی را disrupted نمی‌کند).')}</li>
+                          <li><strong>{tl('ایمنی زندان:', 'ایمنی prison:')}</strong>{tl(' هیچ بازیکنی (اعم از فراماسون، شهروند یا غیره) اگر در سلول زندان باشد، تحت هیچ شرایطی (شلیک پلیس، شلیک فراماسون‌ها) توسط این تیراندازی‌ها در شب کشته نمی‌شود.', 'no a player (اعم from Freemason, citizen or غیره) اگر in cell prison باشد, تحت no conditionsی (shot Police, shot Freemasons) توسط this shotاندازی‌ها in night killed نمی‌شود.')}</li>
                         </ul>
                       </div>
                     </div>
@@ -201,18 +202,18 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
 
                 {/* Rule Item: Chaos Phase */}
                 <div className="md:col-span-2">
-                  <CollapsibleGuide title="فاز اضطراری آشوب شهر (نفس‌های آخر)" defaultOpen={false}>
+                  <CollapsibleGuide title={tl("فاز اضطراری آشوب شهر (نفس‌های آخر)", "phase emergency chaos city (نفس‌های آخر)")} defaultOpen={false}>
                     <div className="flex gap-3 text-right">
                       <div className="p-2 bg-rose-500/10 rounded border border-rose-500/20 text-rose-500 h-fit">
                         <Skull className="w-5 h-5" />
                       </div>
                       <div>
                         <ul className="text-xs text-slate-300 mt-1 space-y-2 list-disc list-inside">
-                          <li><strong>آستانه ورود:</strong> این فاز زمانی فعال می‌شود که تعداد بازیکنان <b>فعال</b> (زنده و خارج از زندان) به <b>۵ نفر</b> (یا در بازی‌های ۸ نفره و کمتر، به <b>۴ نفر</b>) برسد.</li>
-                          <li><strong>حذف زندانیان و نقش‌ها:</strong> تمام زندانیان بالافاصله کشته می‌شوند، بازی دیگر فاز شب نخواهد داشت، و <b>همه نقش‌های قبلی باطل می‌شوند.</b></li>
-                          <li><strong>۳۰ ثانیه صحبت و رأی اجباری:</strong> بازیکنان به ترتیب تصادفی سیستم، هر کدام ۳۰ ثانیه صحبت می‌کنند و باید <b>اجباراً به یک نفر رأی خروج بدهند.</b> گزینه عفوی وجود ندارد.</li>
-                          <li><strong>خروج و بررسی:</strong> فردی که بیشترین رأی خروج را بیاورد مستقیماً بازی را ترک کرده و سیستم وضعیت پیروزی را می‌سنجد. اگر بازی تمام نشده باشد مجددا صحبت و رأی تا تعیین هویت فاتح ادامه می‌یابد.</li>
-                          <li><strong>تساوی آرا:</strong> اگر آرا برابر شد یکی از نفراتی که رأی بالا آورده‌اند بصورت <b>تصادفی</b> توسط نرم‌افزار حذف می‌شود.</li>
+                          <li><strong>{tl('آستانه ورود:', 'آستانه enter:')}</strong>{tl(' این فاز زمانی فعال می‌شود که تعداد بازیکنان ', 'this phase زمانی active می‌شود که count players')}<b>{tl('فعال', 'active')}</b>{tl(' (زنده و خارج از زندان) به ', '(alive and خارج from prison) to')}<b>{tl('۵ نفر', '5 نفر')}</b>{tl(' (یا در بازی‌های ۸ نفره و کمتر، به ', '(or in game‌های 8 نفره and کمتر, to')}<b>{tl('۴ نفر', '4 نفر')}</b>{tl(') برسد.', ') برسد.')}</li>
+                          <li><strong>{tl('حذف زندانیان و نقش‌ها:', 'remove prisoners and roles:')}</strong>{tl(' تمام زندانیان بالافاصله کشته می‌شوند، بازی دیگر فاز شب نخواهد داشت، و ', 'تمام prisoners بالافاصله killed می‌شوند, game دیگر night phase نخواهد داشت, and')}<b>{tl('همه نقش‌های قبلی باطل می‌شوند.', 'all roles Previous باطل می‌شوند.')}</b></li>
+                          <li><strong>{tl('۳۰ ثانیه صحبت و رأی اجباری:', '30 ثانیه speak and vote اجباری:')}</strong>{tl(' بازیکنان به ترتیب تصادفی سیستم، هر کدام ۳۰ ثانیه صحبت می‌کنند و باید ', 'players to ترتیب random سیستم, each کدام 30 ثانیه speak می‌کنند and must')}<b>{tl('اجباراً به یک نفر رأی خروج بدهند.', 'اجباراً to a نفر vote exit بدهند.')}</b>{tl(' گزینه عفوی وجود ندارد.', 'option pardonی exists lacks.')}</li>
+                          <li><strong>{tl('خروج و بررسی:', 'exit and بررسی:')}</strong>{tl(' فردی که بیشترین رأی خروج را بیاورد مستقیماً بازی را ترک کرده و سیستم وضعیت پیروزی را می‌سنجد. اگر بازی تمام نشده باشد مجددا صحبت و رأی تا تعیین هویت فاتح ادامه می‌یابد.', 'فردی که بیشترین vote exit را بیاورد مستقیماً game را ترک کرده and سیستم وضعیت پیdayی را می‌سنجد. اگر game تمام نشده باشد مجددا speak and vote until set identity فاتح continue می‌یابد.')}</li>
+                          <li><strong>{tl('تساوی آرا:', 'تساوی votes:')}</strong>{tl(' اگر آرا برابر شد یکی از نفراتی که رأی بالا آورده‌اند بصورت ', 'اگر votes برابر شد یکی from نفراتی که vote بالا آورده‌اند بصورت')}<b>{tl('تصادفی', 'random')}</b>{tl(' توسط نرم‌افزار حذف می‌شود.', 'توسط نرم‌افزار remove می‌شود.')}</li>
                         </ul>
                       </div>
                     </div>
@@ -221,21 +222,21 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
 
                 {/* Rule Item 1 */}
                 <div className="md:col-span-1">
-                  <CollapsibleGuide title="قوانین سخت‌گیرانه زندان (جدید و فوق‌پیشرفته)" defaultOpen={false}>
+                  <CollapsibleGuide title={tl("قوانین سخت‌گیرانه زندان (جدید و فوق‌پیشرفته)", "rules سخت‌گیرانه prison (new and فوق‌پیشرفته)")} defaultOpen={false}>
                     <div className="flex gap-3 text-right">
                       <div className="p-2 bg-amber-500/10 rounded border border-amber-500/20 text-amber-500 h-fit">
                         <Lock className="w-5 h-5" />
                       </div>
                       <div>
                         <p className="text-xs text-slate-300 leading-relaxed mb-2">
-                          هنگامی که بازیکنی توسط حکم نهایی دادگاه (با رای قاضی) به <strong>زندان</strong> فرستاده می‌شود:
+                          هنگامی که بازیکنی توسط حکم نهایی دادگاه (با رای قاضی) به <strong>{tl('زندان', 'prison')}</strong> فرستاده می‌شود:
                         </p>
                         <ul className="text-xs text-slate-400 space-y-1.5 list-disc list-inside leading-relaxed">
-                          <li><strong>ظرفیت زندان:</strong> بر اساس جمعیت مجمع در شروع بازی ثابت است.</li>
-                          <li>او هویت ملی/جناحی خود را حفظ می‌کند اما نقش ویژه خود را به یک شهروند ساده واگذار می‌کند.</li>
-                          <li>حق رای ندارند و شمارش نمی‌شوند، اما حق دکترین و گفتمان را دارند.</li>
-                          <li><strong>قانون جدیدالورود:</strong> امکان صدور هیچ‌گونه حکمی (اعدام/عفو) در روز اول ورود تفهیمی وجود ندارد.</li>
-                          <li>قاضی الزامی به عفو یا اعدام روزانه اشخاص بومی زندان ندارد.</li>
+                          <li><strong>{tl('ظرفیت زندان:', 'ظرفیت prison:')}</strong>{tl(' بر اساس جمعیت مجمع در شروع بازی ثابت است.', 'on اساس جمعیت assembly in start game ثابت است.')}</li>
+                          <li>{tl('او هویت ملی/جناحی خود را حفظ می‌کند اما نقش ویژه خود را به یک شهروند ساده واگذار می‌کند.', 'او identity ملی/جناحی خود را حفظ می‌کند اما role ویژه خود را to a citizen plain واگذار می‌کند.')}</li>
+                          <li>{tl('حق رای ندارند و شمارش نمی‌شوند، اما حق دکترین و گفتمان را دارند.', 'حق vote ندارند and شمارش نمی‌شوند, اما حق Doctorین and discourse را دارند.')}</li>
+                          <li><strong>{tl('قانون جدیدالورود:', 'rule newالenter:')}</strong>{tl(' امکان صدور هیچ‌گونه حکمی (اعدام/عفو) در روز اول ورود تفهیمی وجود ندارد.', 'امکان issue هیچ‌گونه verdictی (execution/pardon) in day اول enter تفهیمی exists lacks.')}</li>
+                          <li>{tl('قاضی الزامی به عفو یا اعدام روزانه اشخاص بومی زندان ندارد.', 'Judge mandatory to pardon or execution dayانه اشخاص بومی prison lacks.')}</li>
                         </ul>
                       </div>
                     </div>
@@ -244,19 +245,19 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
 
                 {/* Rule Item 2 */}
                 <div className="md:col-span-1">
-                  <CollapsibleGuide title="مکانیزم‌های تروریست انتحاری مجمع" defaultOpen={false}>
+                  <CollapsibleGuide title={tl("مکانیزم‌های تروریست انتحاری مجمع", "مکانیزم‌های terrorist suicide assembly")} defaultOpen={false}>
                     <div className="flex gap-3 text-right">
                       <div className="p-2 bg-amber-500/10 rounded border border-amber-500/20 text-amber-500 h-fit">
                         <Skull className="w-5 h-5" />
                       </div>
                       <div>
                         <p className="text-xs text-slate-300 leading-relaxed mb-2">
-                          تیر موفق پلیس، وتوی پاپ و انقلاب شهردار تهدید امنیتی را افزایش داده و تروریست تولید می‌کند:
+                          {tl('تیر موفق پلیس، وتوی پاپ و انقلاب شهردار تهدید امنیتی را افزایش داده و تروریست تولید می‌کند:', 'shot successful Police, veto Pope and Mayor revolution تهدید امنیتی را افزایش داده and terrorist تولید می‌کند:')}
                         </p>
                         <ul className="text-xs text-slate-400 space-y-1.5 list-disc list-inside leading-relaxed">
-                          <li><strong>مهلت کارایی بمب:</strong> یک شب و روزِ پس از رخداد (در غیر اینصورت باطل گشته و می‌سوزد).</li>
-                          <li>سپر یا محافظت نجات دکتر هیچ اثری بر انتحار تروریست ندارد.</li>
-                          <li>بمب‌گذاری زنده زندانیان فقط تروریست را منفجر کرده و فرد مصون در سلول آسیب نمی‌بیند.</li>
+                          <li><strong>{tl('مهلت کارایی بمب:', 'مهلت کاvoteی bomb:')}</strong>{tl(' یک شب و روزِ پس از رخداد (در غیر اینصورت باطل گشته و می‌سوزد).', 'a night and dayِ then from رخداد (in غیر اینصورت باطل گشته and می‌سوزد).')}</li>
+                          <li>{tl('سپر یا محافظت نجات دکتر هیچ اثری بر انتحار تروریست ندارد.', 'shield or protection save Doctor no اثری on suicide attack terrorist lacks.')}</li>
+                          <li>{tl('بمب‌گذاری زنده زندانیان فقط تروریست را منفجر کرده و فرد مصون در سلول آسیب نمی‌بیند.', 'bombing alive prisoners only terrorist را detonate کرده and فرد مصون in cell آسیب نمی‌بیند.')}</li>
                         </ul>
                       </div>
                     </div>
@@ -265,20 +266,20 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
 
                 {/* Rule Item 6 */}
                 <div className="md:col-span-2">
-                  <CollapsibleGuide title="قوانین و پیامدهای لایحه انقلاب روزانه شهردار" defaultOpen={false}>
+                  <CollapsibleGuide title={tl("قوانین و پیامدهای لایحه انقلاب روزانه شهردار", "rules and پیامدهای لایحه revolution dayانه Mayor")} defaultOpen={false}>
                     <div className="flex gap-3">
                       <div className="p-2 bg-rose-500/10 rounded border border-rose-500/20 text-rose-500 h-fit">
                         <UserX className="w-5 h-5 text-rose-500" />
                       </div>
                       <div>
                         <p className="text-xs text-slate-400 leading-relaxed mb-2">
-                          علاوه بر جانشینی‌های سلسله‌مراتبی هنگام مرگ، <strong>شهردار زنده</strong> این اختیار را دارد که در تالار روز دادخواست «انقلاب» بدهد.
+                          علاوه بر جانشینی‌های سلسله‌مراتبی هنگام مرگ، <strong>{tl('شهردار زنده', 'Mayor alive')}</strong> این اختیار را دارد که در تالار روز دادخواست «انقلاب» بدهد.
                         </p>
                         <ul className="text-xs text-rose-200 mt-2 space-y-2 list-disc list-inside">
-                          <li><strong>رای‌گیری مستقیم (نصف + ۱):</strong> انقلاب فقط با رای موافق اکثریت مطلق مجمع شکل می‌گیرد. در لایحه انقلاب <strong>قاضی به هیچ وجه امکان وتو ندارد</strong> و فقط رای‌گیری تعیین‌کننده است.</li>
-                          <li><strong>عدم مصونیت پاپ:</strong> پاپ اعظم نیز مطلقا <strong>نمی‌تواند</strong> لایحه انقلاب را باطل (وتو) یا رد کند.</li>
-                          <li><strong>جانشینی فاتح:</strong> در صورت پیروزی، رئیس‌جمهور فعلی از سمت خود خلع شده و شهردار مستقیماً جانشین او می‌شود. همچنین، <strong>رئیس‌جمهور خلع‌شده مستقیماً به عنوان متهم اول وارد دادگاه می‌شود</strong>.</li>
-                          <li><strong>سقوط مسببان:</strong> در صورت شکست رای‌گیری در دادگاه، این شهردار است که جایگاه خود را به صورت کامل از دست داده و او به عنوان متهم وارد دادگاه به جهت محاکمه می‌گردد.</li>
+                          <li><strong>{tl('رای‌گیری مستقیم (نصف + ۱):', 'voting مستقیم (نصف + 1):')}</strong>{tl(' انقلاب فقط با رای موافق اکثریت مطلق مجمع شکل می‌گیرد. در لایحه انقلاب ', 'revolution only with vote in favor majority مطلق assembly شکل می‌گیرد. in لایحه revolution')}<strong>{tl('قاضی به هیچ وجه امکان وتو ندارد', 'Judge to no وجه امکان veto lacks')}</strong>{tl(' و فقط رای‌گیری تعیین‌کننده است.', 'and only voting set‌کننده است.')}</li>
+                          <li><strong>{tl('عدم مصونیت پاپ:', 'عدم مصونیت Pope:')}</strong>{tl(' پاپ اعظم نیز مطلقا ', 'High Pope نیز مطلقا')}<strong>{tl('نمی‌تواند', 'cannot')}</strong>{tl(' لایحه انقلاب را باطل (وتو) یا رد کند.', 'لایحه revolution را باطل (veto) or رد کند.')}</li>
+                          <li><strong>{tl('جانشینی فاتح:', 'succession فاتح:')}</strong>{tl(' در صورت پیروزی، رئیس‌جمهور فعلی از سمت خود خلع شده و شهردار مستقیماً جانشین او می‌شود. همچنین، ', 'in صورت پیdayی, President فعلی from سمت خود خلع شده and Mayor مستقیماً successor او می‌شود. همچنین,')}<strong>{tl('رئیس‌جمهور خلع‌شده مستقیماً به عنوان متهم اول وارد دادگاه می‌شود', 'President خلع‌شده مستقیماً to عنوان defendant اول وارد court می‌شود')}</strong>.</li>
+                          <li><strong>{tl('سقوط مسببان:', 'سقوط مسببان:')}</strong>{tl(' در صورت شکست رای‌گیری در دادگاه، این شهردار است که جایگاه خود را به صورت کامل از دست داده و او به عنوان متهم وارد دادگاه به جهت محاکمه می‌گردد.', 'in صورت شکست voting in court, this Mayor است که position خود را to صورت کامل from دست داده and او to عنوان defendant وارد court to جهت محاکمه می‌گردد.')}</li>
                         </ul>
                       </div>
                     </div>
@@ -287,7 +288,7 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
 
                 {/* Rule Item 7: Pope Veto Rules */}
                 <div className="md:col-span-2">
-                  <CollapsibleGuide title="قوانین وتوی پاپ اعظم" defaultOpen={false}>
+                  <CollapsibleGuide title={tl("قوانین وتوی پاپ اعظم", "rules veto High Pope")} defaultOpen={false}>
                     <div className="flex gap-3">
                       <div className="p-2 bg-amber-500/10 rounded border border-amber-500/20 text-amber-500 h-fit">
                         <Shield className="w-5 h-5 text-amber-500" />
@@ -297,7 +298,7 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
                           نکات بسیار مهم درباره نقش وتو (استفاده از وتو تنها یک روز در میان و آن هم برای یک بار فعال می‌شود):
                         </p>
                         <ul className="text-xs text-amber-400 mt-2 space-y-2 list-disc list-inside">
-                          <li>هر گاه پاپ حکمی را وتو کند (بازگرداندن شخصی از مرگ)، به واسطه هرج و مرجِ رخ داده <strong>یک قابلیت تروریست (عملیات انتحاری)</strong> بصورت اتفاقی میان بازیکنان ایجاد خواهد شد.</li>
+                          <li>{tl('هر گاه پاپ حکمی را وتو کند (بازگرداندن شخصی از مرگ)، به واسطه هرج و مرجِ رخ داده ', 'each گاه Pope verdictی را veto کند (بازگرداندن شخصی from death), to واسطه chaosِ رخ داده')}<strong>{tl('یک قابلیت تروریست (عملیات انتحاری)', 'a قابلیت terrorist (operation suicide)')}</strong>{tl(' بصورت اتفاقی میان بازیکنان ایجاد خواهد شد.', 'بصورت اتفاقی میان players ایجاد خواهد شد.')}</li>
                         </ul>
                       </div>
                     </div>
@@ -306,20 +307,20 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
 
                 {/* Rule Item 8 */}
                 <div className="md:col-span-2">
-                  <CollapsibleGuide title="قوانین جانشینی پاپ و کشیش" defaultOpen={false}>
+                  <CollapsibleGuide title={tl("قوانین جانشینی پاپ و کشیش", "rules succession Pope and Priest")} defaultOpen={false}>
                     <div className="flex gap-3">
                       <div className="p-2 bg-[#0d1e2e] rounded border border-teal-500/20 text-teal-400 h-fit">
                         <History className="w-5 h-5 text-teal-400" />
                       </div>
                       <div>
                         <p className="text-xs text-slate-400 leading-relaxed mb-2">
-                          ترتیب و ساختار کلیسا همواره در مجمع دارای اهمیت و قوانین پیوسته است:
+                          {tl('ترتیب و ساختار کلیسا همواره در مجمع دارای اهمیت و قوانین پیوسته است:', 'ترتیب and ساختار کلیسا همواره in assembly داvote اهمیت and rules پیوسته است:')}
                         </p>
                         <ul className="text-xs text-slate-300 mt-2 space-y-2 list-disc list-inside">
-                          <li><strong>جانشینی خودکار پاپ:</strong> در صورت فوت پاپ، نرم‌افزار به صورت <strong>خودکار</strong> کشیش زنده را به مقام پاپ اعظم ارتقا می‌دهد و به او توانایی‌های پاپ و یک سپر اولیه اعطا می‌کند.</li>
-                          <li><strong>شرط انتصاب کشیش جدید:</strong> پاپ اعظم برای تعیین کشیش جایگزین <strong>فقط</strong> می‌تواند از میان بازیکنان <strong className="text-amber-400">شهروند بدون نقش (ساده)</strong> یکی را انتخاب کند. اگر در بازی هیچ شهروند آزاد و بدون نقشی وجود نداشته باشد، پاپ باید تا ایجاد یک شهروند بدون نقش (مثلاً فرد آزاد شده از زندان) برای تعیین کشیش صبر کند.</li>
-                          <li><strong>خالی ماندن صندلی کشیش (اختیاری):</strong> این انتصاب کاملاً <strong>اختیاری</strong> است. پاپ می‌تواند تصمیم بگیرد صندلی کشیش را خالی نگه دارد. اما باید توجه داشت که فرمان رهایی زندانیِ تالار منوط به امضای هر دو (پاپ و کشیش) است؛ پس تا زمان حضور کشیش جدید، قابلیت وتوی مرگ زندانی غیرفعال خواهد ماند.</li>
-                          <li><strong>بحران فوت همزمان (قاعده ۸):</strong> تنها در صورتی که <strong>پاپ و کشیش هر دو به صورت قطعی کشته شده باشند</strong>، مجمع دچار بحران کلیسا می‌شود. در این موقعیت استثنایی، سیستم خودکار از رئیس‌جمهور می‌خواهد که سریعاً یک بازیکن زنده را برای مقام پاپ اعظم منصوب کند. در لیست پیشنهادی سیستم، اولویت همواره با شهروندان ساده (بدون نقش) است و نقش‌های قاضی و کشیش قطعاً در این لیست حضور نخواهند داشت.</li>
+                          <li><strong>{tl('جانشینی خودکار پاپ:', 'succession خودکار Pope:')}</strong>{tl(' در صورت فوت پاپ، نرم‌افزار به صورت ', 'in صورت death Pope, نرم‌افزار to صورت')}<strong>{tl('خودکار', 'خودکار')}</strong>{tl(' کشیش زنده را به مقام پاپ اعظم ارتقا می‌دهد و به او توانایی‌های پاپ و یک سپر اولیه اعطا می‌کند.', 'Priest alive را to office High Pope ارتقا می‌دهد and to او توانایی‌های Pope and a shield اولیه اعطا می‌کند.')}</li>
+                          <li><strong>{tl('شرط انتصاب کشیش جدید:', 'شرط appointment Priest new:')}</strong>{tl(' پاپ اعظم برای تعیین کشیش جایگزین ', 'High Pope بvote set Priest جایگزین')}<strong>{tl('فقط', 'only')}</strong>{tl(' می‌تواند از میان بازیکنان ', 'can from میان players')}<strong className="text-amber-400">{tl('شهروند بدون نقش (ساده)', 'citizen without role (plain)')}</strong>{tl(' یکی را انتخاب کند. اگر در بازی هیچ شهروند آزاد و بدون نقشی وجود نداشته باشد، پاپ باید تا ایجاد یک شهروند بدون نقش (مثلاً فرد آزاد شده از زندان) برای تعیین کشیش صبر کند.', 'یکی را select کند. اگر in game no citizen آزاد and without roleی exists نداشته باشد, Pope must until ایجاد a citizen without role (مثلاً فرد آزاد شده from prison) بvote set Priest صبر کند.')}</li>
+                          <li><strong>{tl('خالی ماندن صندلی کشیش (اختیاری):', 'خالی ماندن seat Priest (optional):')}</strong>{tl(' این انتصاب کاملاً ', 'this appointment fully')}<strong>{tl('اختیاری', 'optional')}</strong>{tl(' است. پاپ می‌تواند تصمیم بگیرد صندلی کشیش را خالی نگه دارد. اما باید توجه داشت که فرمان رهایی زندانیِ تالار منوط به امضای هر دو (پاپ و کشیش) است؛ پس تا زمان حضور کشیش جدید، قابلیت وتوی مرگ زندانی غیرفعال خواهد ماند.', 'است. Pope can تصمیم بگیرد seat Priest را خالی نگه has. اما must note داشت که order رهایی prisonerِ hall منوط to امضای each two (Pope and Priest) است; then until زمان presence Priest new, قابلیت veto death prisoner inactive خواهد ماند.')}</li>
+                          <li><strong>{tl('بحران فوت همزمان (قاعده ۸):', 'crisis death همزمان (قاعده 8):')}</strong>{tl(' تنها در صورتی که ', 'only in صورتی که')}<strong>{tl('پاپ و کشیش هر دو به صورت قطعی کشته شده باشند', 'Pope and Priest each two to صورت قطعی killed شده باشند')}</strong>{tl('، مجمع دچار بحران کلیسا می‌شود. در این موقعیت استثنایی، سیستم خودکار از رئیس‌جمهور می‌خواهد که سریعاً یک بازیکن زنده را برای مقام پاپ اعظم منصوب کند. در لیست پیشنهادی سیستم، اولویت همواره با شهروندان ساده (بدون نقش) است و نقش‌های قاضی و کشیش قطعاً در این لیست حضور نخواهند داشت.', ', assembly دچار crisis کلیسا می‌شود. in this موقعیت استثنایی, سیستم خودکار from President می‌خواهد که سریعاً a player alive را بvote office High Pope appointed کند. in list پیشنهادی سیستم, اولویت همواره with citizens plain (without role) است and roles Judge and Priest قطعاً in this list presence نخواهند داشت.')}</li>
                         </ul>
                       </div>
                     </div>
@@ -328,20 +329,20 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
 
                 {/* Rule Item 9 */}
                 <div className="md:col-span-2">
-                  <CollapsibleGuide title="قوانین سلسله‌مراتب جانشینی ریاست‌جمهوری" defaultOpen={false}>
+                  <CollapsibleGuide title={tl("قوانین سلسله‌مراتب جانشینی ریاست‌جمهوری", "rules hierarchy succession presidency")} defaultOpen={false}>
                     <div className="flex gap-3">
                       <div className="p-2 bg-[#2d143c] rounded border border-purple-500/20 text-purple-400 h-fit">
                         <History className="w-5 h-5 text-purple-400" />
                       </div>
                       <div>
                         <p className="text-xs text-slate-400 leading-relaxed mb-2">
-                          در صورت کشته‌شدن رئیس‌جمهور، سیستم مجمع به صورت خودکار زنجیره جانشینی زیر را طی می‌کند:
+                          {tl('در صورت کشته‌شدن رئیس‌جمهور، سیستم مجمع به صورت خودکار زنجیره جانشینی زیر را طی می‌کند:', 'in صورت killed‌شدن President, سیستم assembly to صورت خودکار زنجیره succession زیر را طی می‌کند:')}
                         </p>
                         <ul className="text-xs text-slate-300 mt-2 space-y-2 list-disc list-inside">
-                          <li><strong>جانشینی سطح اول (معاون اول):</strong> در صورتی که <strong>معاون اول</strong> در قید حیات باشد، بلافاصله و به صورت اتوماتیک مقام ریاست‌جمهوری را در دست می‌گیرد (سپر اولیه جدید دریافت می‌کند).</li>
-                          <li><strong>جانشینی سطح دوم (شهردار):</strong> اگر معاون مرده باشد اما <strong>شهردار</strong> زنده باشد، مقام ریاست‌جمهوری اضطراراً به شهردار تفویض می‌گردد.</li>
-                          <li><strong>جانشینی سطح ۵ (تصادفی در وضعیت بحران):</strong> چنانچه هم رئیس‌جمهور، هم معاون و هم شهردار به قتل رسیده باشند (مردگان اجرایی)، نرم‌افزار به صورت <strong>تصادفی</strong> یک نفر را از بین شهروندان جانشین می‌سازد.</li>
-                          <li><strong>شفافیت تفکیک قوا:</strong> در این قرعه‌کشی تصادفیِ ریاست‌جمهوری، <strong>پاپ اعظم، کشیش، قاضی مجمع و تمام زندانیان</strong> اکیداً از لیست کاندیداها حذف شده‌اند و هرگز مجریه را در دست نخواهند گرفت. (در صورتی که فقط این افراد در بازی مانده باشند، جامعه بدون قوه مجریه خواهد ماند!).</li>
+                          <li><strong>{tl('جانشینی سطح اول (معاون اول):', 'succession سطح اول (Vice President):')}</strong>{tl(' در صورتی که ', 'in صورتی که')}<strong>{tl('معاون اول', 'Vice President')}</strong>{tl(' در قید حیات باشد، بلافاصله و به صورت اتوماتیک مقام ریاست‌جمهوری را در دست می‌گیرد (سپر اولیه جدید دریافت می‌کند).', 'in قید حیات باشد, بلافاصله and to صورت اتوماتیک office presidency را in دست می‌گیرد (shield اولیه new دریافت می‌کند).')}</li>
+                          <li><strong>{tl('جانشینی سطح دوم (شهردار):', 'succession سطح twoم (Mayor):')}</strong>{tl(' اگر معاون مرده باشد اما ', 'اگر Vice President dead باشد اما')}<strong>{tl('شهردار', 'Mayor')}</strong>{tl(' زنده باشد، مقام ریاست‌جمهوری اضطراراً به شهردار تفویض می‌گردد.', 'alive باشد, office presidency اضطراراً to Mayor تفویض می‌گردد.')}</li>
+                          <li><strong>{tl('جانشینی سطح ۵ (تصادفی در وضعیت بحران):', 'succession سطح 5 (random in وضعیت crisis):')}</strong>{tl(' چنانچه هم رئیس‌جمهور، هم معاون و هم شهردار به قتل رسیده باشند (مردگان اجرایی)، نرم‌افزار به صورت ', 'چنانچه هم President, هم Vice President and هم Mayor to قتل رسیده باشند (مردگان executive), نرم‌افزار to صورت')}<strong>{tl('تصادفی', 'random')}</strong>{tl(' یک نفر را از بین شهروندان جانشین می‌سازد.', 'a نفر را from بین citizens successor می‌سازد.')}</li>
+                          <li><strong>{tl('شفافیت تفکیک قوا:', 'شفافیت تفکیک قوا:')}</strong>{tl(' در این قرعه‌کشی تصادفیِ ریاست‌جمهوری، ', 'in this قرعه‌کشی randomِ presidency,')}<strong>{tl('پاپ اعظم، کشیش، قاضی مجمع و تمام زندانیان', 'High Pope, Priest, Judge assembly and تمام prisoners')}</strong>{tl(' اکیداً از لیست کاندیداها حذف شده‌اند و هرگز مجریه را در دست نخواهند گرفت. (در صورتی که فقط این افراد در بازی مانده باشند، جامعه بدون قوه مجریه خواهد ماند!).', 'اکیداً from list کاندیداها remove شده‌اند and هرگز مجریه را in دست نخواهند گرفت. (in صورتی که only this افراد in game مانده باشند, جامعه without قوه مجریه خواهد ماند!).')}</li>
                         </ul>
                       </div>
                     </div>
@@ -352,11 +353,11 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
 
             {/* Quick Tips */}
             <div className="mt-4">
-              <CollapsibleGuide title="توصیه‌های استراتژیک برای بازیکنان مجمع" defaultOpen={false}>
+              <CollapsibleGuide title={tl("توصیه‌های استراتژیک برای بازیکنان مجمع", "advice‌های strategic بvote players assembly")} defaultOpen={false}>
                 <div className="space-y-2 text-xs text-slate-400 leading-relaxed">
-                  <p>۱. اگر <strong>شهروند مجمع</strong> هستید، دقت کنید که قدرت در مجمع متعلق به رئیس جمهورتان است. همواره برای حفظ پایداری کابینه بکوشید و از افتادن نقش قاضی به دست فراماسون‌های مرموز ممانعت کنید.</p>
-                  <p>۲. به عنوان <strong>وکیل</strong>، شما ۱ دقیقه فرصت برای پایان روز دارید تا بتوانید درباره متهمین و پرونده‌های روزانه آنها صحبت کنید. شما می‌توانید از آن‌ها دفاع یا به آن‌ها حمله کنید.</p>
-                  <p>۳. <strong>فراماسون‌ها</strong> تمایل دارند رئیس‌جمهور حامی خود را برپا کنند یا شهردار را برای انقلاب و کودتا برانگیزند تا کنترل مجمع را تماماً در دست بگیرند.</p>
+                  <p>{tl('۱. اگر ', '1. اگر')}<strong>{tl('شهروند مجمع', 'citizen assembly')}</strong>{tl(' هستید، دقت کنید که قدرت در مجمع متعلق به رئیس جمهورتان است. همواره برای حفظ پایداری کابینه بکوشید و از افتادن نقش قاضی به دست فراماسون‌های مرموز ممانعت کنید.', 'هستید, دقت کنید که قدرت in assembly متعلق to Presidentتان است. همواره بvote حفظ stability cabinet بکوشید and from افتادن role Judge to دست Freemasons مرموز ممانعت کنید.')}</p>
+                  <p>{tl('۲. به عنوان ', '2. to عنوان')}<strong>{tl('وکیل', 'Lawyer')}</strong>{tl('، شما ۱ دقیقه فرصت برای پایان روز دارید تا بتوانید درباره متهمین و پرونده‌های روزانه آنها صحبت کنید. شما می‌توانید از آن‌ها دفاع یا به آن‌ها حمله کنید.', ', شما 1 دقیقه فرصت بvote End day دارید until بتوانید درباره defendantین and case‌های dayانه آنها speak کنید. شما canید from آن‌ها defense or to آن‌ها حمله کنید.')}</p>
+                  <p>{tl('۳. ', '3.')}<strong>{tl('فراماسون‌ها', 'Freemasons')}</strong>{tl(' تمایل دارند رئیس‌جمهور حامی خود را برپا کنند یا شهردار را برای انقلاب و کودتا برانگیزند تا کنترل مجمع را تماماً در دست بگیرند.', 'تمایل دارند President حامی خود را برپا کنند or Mayor را بvote revolution and coup برانگیزند until کنترل assembly را تماماً in دست بگیرند.')}</p>
                 </div>
               </CollapsibleGuide>
             </div>
@@ -367,21 +368,21 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
         {activeMode === 'moderator' && (
           <div className="space-y-4 animate-fadeIn">
             {/* Intro / Mission */}
-            <CollapsibleGuide title="بیانیه مأموریت و تعهد سیاسی گرداننده مجمع" defaultOpen={true}>
+            <CollapsibleGuide title={tl("بیانیه مأموریت و تعهد سیاسی گرداننده مجمع", "بیانیه مأموریت and commitment political moderator assembly")} defaultOpen={true}>
               <p className="text-xs text-slate-300 leading-relaxed">
-                به عنوان گرداننده یا لیدر رسمی مجمع، شما نظم شب، استعلام‌های خبرنگار، تیرهای پلیس و حکم قضات را اداره می‌کنید. این نرم‌افزار به شما کمک می‌کند تمام فازها را راحت‌تر، دقیق‌تر و بدون اشتباه طی کنید.
+                {tl('به عنوان گرداننده یا لیدر رسمی مجمع، شما نظم شب، استعلام‌های خبرنگار، تیرهای پلیس و حکم قضات را اداره می‌کنید. این نرم‌افزار به شما کمک می‌کند تمام فازها را راحت‌تر، دقیق‌تر و بدون اشتباه طی کنید.', 'to عنوان moderator or leader رسمی assembly, شما نظم night, inquiry‌های Journalist, shotهای Police and verdict قضات را اداره می‌کنید. this نرم‌افزار to شما کمک می‌کند تمام phaseها را راحت‌تر, دقیق‌تر and without اشتباه طی کنید.')}
               </p>
             </CollapsibleGuide>
 
             {/* Step-by-Step Moderator Guide */}
-            <CollapsibleGuide title="گام‌های شبانه هدایت ترتیبی مجمع توسط لیدر" defaultOpen={false}>
+            <CollapsibleGuide title={tl("گام‌های شبانه هدایت ترتیبی مجمع توسط لیدر", "step‌های nightانه guidance ترتیبی assembly توسط leader")} defaultOpen={false}>
               <div className="relative border-r-2 border-[#1e293b] pr-6 mr-3 space-y-4 text-right pt-2 pb-1">
                 {/* Step 1 */}
                 <div className="relative">
                   <span className="absolute -right-9 top-0 flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold font-mono">
                     1
                   </span>
-                  <h4 className="text-xs font-bold text-slate-200 mb-1">توزیع و رؤیت محرمانه هویت‌ها (روز صفر)</h4>
+                  <h4 className="text-xs font-bold text-slate-200 mb-1">{tl('توزیع و رؤیت محرمانه هویت‌ها (روز صفر)', 'توزیع and رؤیت secret identities (Day Zero)')}</h4>
                   <p className="text-[11px] text-slate-400 leading-relaxed">
                     با وارد کردن نام‌ها، بازی را آغاز کنید. سپس بازیکنان را یکی‌یکی بیدار کرده تا با کلیک بر روی دکمه چشم سیستم، هویت مخفی خود (فراماسون به همراه شماره خود یا شهروند عادی) را دور از چشم دیگران بررسی کنند.
                   </p>
@@ -392,7 +393,7 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
                   <span className="absolute -right-9 top-0 flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold font-mono">
                     2
                   </span>
-                  <h4 className="text-xs font-bold text-slate-200 mb-1">مدیریت غصب قابلیت‌ها در شب</h4>
+                  <h4 className="text-xs font-bold text-slate-200 mb-1">{tl('مدیریت غصب قابلیت‌ها در شب', 'management غصب قابلیت‌ها in night')}</h4>
                   <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
                     ابتدا کشیش (Priest) یا دزد (Thief) را بیدار کنید تا نقش هدفش را مختل سازد. این کار قبل از بیدار شدن مابقی نقش‌های اصلی شب الزامی است.
                   </p>
@@ -403,9 +404,9 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
                   <span className="absolute -right-9 top-0 flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold font-mono">
                     3
                   </span>
-                  <h4 className="text-xs font-bold text-slate-200 mb-1">اعمال استعلامات خبرنگار و گزارشگر</h4>
+                  <h4 className="text-xs font-bold text-slate-200 mb-1">{tl('اعمال استعلامات خبرنگار و گزارشگر', 'اعمال inquiries Journalist and Reporter')}</h4>
                   <p className="text-[11px] text-slate-400 leading-relaxed">
-                    خبرنگار و گزارشگر را فراخوان کرده و نتایج را در پنل شب پیاده کنید تا گزارش‌های آنها به دست مجمع برسد. <strong>توجه مهم:</strong> افشای خبرنگار به هیچ وجه ربطی به ورود به دادگاه ندارد و او نمی‌تواند متهمی را به دادگاه بفرستد. <strong>فقط کارآگاه</strong> می‌تواند مستقیماً اتهام ورود به دادگاه را صادر نماید.
+                    خبرنگار و گزارشگر را فراخوان کرده و نتایج را در پنل شب پیاده کنید تا گزارش‌های آنها به دست مجمع برسد. <strong>{tl('توجه مهم:', 'note important:')}</strong>{tl(' افشای خبرنگار به هیچ وجه ربطی به ورود به دادگاه ندارد و او نمی‌تواند متهمی را به دادگاه بفرستد. ', 'revealی Journalist to no وجه ربطی to enter to court lacks and او cannot defendantی را to court بفرستد.')}<strong>{tl('فقط کارآگاه', 'only Detective')}</strong> می‌تواند مستقیماً اتهام ورود به دادگاه را صادر نماید.
                   </p>
                 </div>
 
@@ -414,9 +415,9 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
                   <span className="absolute -right-9 top-0 flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold font-mono">
                     4
                   </span>
-                  <h4 className="text-xs font-bold text-slate-200 mb-1">اعمال نجات‌ها، شلیک‌ها و خروجی شب</h4>
+                  <h4 className="text-xs font-bold text-slate-200 mb-1">{tl('اعمال نجات‌ها، شلیک‌ها و خروجی شب', 'اعمال save‌ها, shot‌ها and exitی night')}</h4>
                   <p className="text-[11px] text-slate-400 leading-relaxed">
-                    نجات دکتر را بپرسید. شلیک‌های پلیس یا مافیا را اعمال کنید. فاز خروجی شب شامل کسانی که سپرهایشان شکسته یا کشته شده‌اند به بازی تسلیم می‌شود.
+                    {tl('نجات دکتر را بپرسید. شلیک‌های پلیس یا مافیا را اعمال کنید. فاز خروجی شب شامل کسانی که سپرهایشان شکسته یا کشته شده‌اند به بازی تسلیم می‌شود.', 'save Doctor را بپرسید. shot‌های Police or مافیا را اعمال کنید. output phase night شامل کسانی که shieldهایشان شکسته or killed شده‌اند to game تسلیم می‌شود.')}
                   </p>
                 </div>
 
@@ -425,7 +426,7 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
                   <span className="absolute -right-9 top-0 flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold font-mono">
                     5
                   </span>
-                  <h4 className="text-xs font-bold text-slate-200 mb-1">مدیریت تروریست فعال و ترورهای غیرمنتظره</h4>
+                  <h4 className="text-xs font-bold text-slate-200 mb-1">{tl('مدیریت تروریست فعال و ترورهای غیرمنتظره', 'management terrorist active and ترورهای غیرمنتظره')}</h4>
                   <p className="text-[11px] text-slate-400 leading-relaxed">
                     اگر در شب قبل پلیس شلیک کرده، به صورت تصادفی حتماً قابلیت تروریستی به یک بازیکن غیر‌تروریست داده شده است (در سیستم ثبت می‌گردد). لیدر باید بپرسد آیا تروریست قصد عملیات شبانه یا آغاز فردا را دارد یا خیر.
                   </p>
@@ -434,13 +435,13 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
             </CollapsibleGuide>
 
             {/* Critical Moderator Checklist */}
-            <CollapsibleGuide title="چک‌لیست حیاتی مدیریت و کنترل زندانیان مجمع حاکمیت" defaultOpen={false}>
+            <CollapsibleGuide title={tl("چک‌لیست حیاتی مدیریت و کنترل زندانیان مجمع حاکمیت", "چک‌list critical management and کنترل prisoners assembly sovereignty")} defaultOpen={false}>
               <ul className="text-xs text-slate-400 space-y-2 list-disc list-inside leading-relaxed text-right">
-                <li>به محض فرستادن بازیکنی به زندان با تصمیم قاضی در فاز روز، حتماً روی دکمهٔ <strong>«انتقال به زندان»</strong> روی کارت او کلیک کنید.</li>
-                <li>سیستم به طور خودکار نقش او را خلع می‌کند اما هویت او برای شمارش‌های برد و باخت باقی می‌ماند و از حق رای‌گیری در مجمع محروم می‌شود.</li>
-                <li><strong>قانون جدیدالورود:</strong> بازیکنی که تازه وارد زندان می‌شود، در همان روز نمی‌تواند هیچ حکم جدیدی (اعدام یا عفو) دریافت کند.</li>
-                <li><strong>اختیار قاضی:</strong> قاضی کاملاً مختار است که در یک روز هیچکدام از زندانیان واجد شرایط را اعدام یا عفو نکند و آنها را در همان وضعیت حبس نگه دارد. صدور حکم برای زندان الزامی نیست.</li>
-                <li>فراموش نکنید: رئیس‌جمهور، پاپ و قاضی هیچ‌گاه به زندان و دادگاه نرفته و متهم مجمع نمی‌گردند.</li>
+                <li>{tl('به محض فرستادن بازیکنی به زندان با تصمیم قاضی در فاز روز، حتماً روی دکمهٔ ', 'to محض فرستادن a player to prison with تصمیم Judge in day phase, حتماً روی buttonٔ')}<strong>{tl('«انتقال به زندان»', '"send to prison"')}</strong>{tl(' روی کارت او کلیک کنید.', 'روی کارت او کلیک کنید.')}</li>
+                <li>{tl('سیستم به طور خودکار نقش او را خلع می‌کند اما هویت او برای شمارش‌های برد و باخت باقی می‌ماند و از حق رای‌گیری در مجمع محروم می‌شود.', 'سیستم to طور خودکار role او را خلع می‌کند اما identity او بvote شمارش‌های برد and باخت باقی می‌ماند and from حق voting in assembly محروم می‌شود.')}</li>
+                <li><strong>{tl('قانون جدیدالورود:', 'rule newالenter:')}</strong>{tl(' بازیکنی که تازه وارد زندان می‌شود، در همان روز نمی‌تواند هیچ حکم جدیدی (اعدام یا عفو) دریافت کند.', 'a player که تازه وارد prison می‌شود, in همان day cannot no verdict newی (execution or pardon) دریافت کند.')}</li>
+                <li><strong>{tl('اختیار قاضی:', 'authority Judge:')}</strong>{tl(' قاضی کاملاً مختار است که در یک روز هیچکدام از زندانیان واجد شرایط را اعدام یا عفو نکند و آنها را در همان وضعیت حبس نگه دارد. صدور حکم برای زندان الزامی نیست.', 'Judge fully مختار است که in a day هیچکدام from prisoners واجد conditions را execution or pardon نکند and آنها را in همان وضعیت حبس نگه has. issue verdict بvote prison mandatory نیست.')}</li>
+                <li>{tl('فراموش نکنید: رئیس‌جمهور، پاپ و قاضی هیچ‌گاه به زندان و دادگاه نرفته و متهم مجمع نمی‌گردند.', 'فراموش نکنید: President, Pope and Judge هیچ‌گاه to prison and court نرفته and defendant assembly نمی‌گردند.')}</li>
               </ul>
             </CollapsibleGuide>
           </div>
@@ -451,13 +452,13 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
           <div className="space-y-4 animate-fadeIn">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h3 className="text-base font-bold text-slate-200">کودکس و شناسنامه قدرت نقش‌ها</h3>
-                <p className="text-[11px] text-slate-400">جستجوی سریع قابلیت‌های شب و روز هر یک از شخصیت‌های بازی مجمع</p>
+                <h3 className="text-base font-bold text-slate-200">{tl('کودکس و شناسنامه قدرت نقش‌ها', 'کودکس and شناسnameه قدرت roles')}</h3>
+                <p className="text-[11px] text-slate-400">{tl('جستجوی سریع قابلیت‌های شب و روز هر یک از شخصیت‌های بازی مجمع', 'search for سریع قابلیت‌های night and day each a from شخصیت‌های game assembly')}</p>
               </div>
               <div className="relative w-full md:w-72">
                 <input
                   type="text"
-                  placeholder="جستجوی نقش..."
+                  placeholder={tl("جستجوی نقش...", "search for role...")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full bg-[#050810] text-slate-100 border border-[#1e293b] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-amber-500 pr-9 text-right"
@@ -471,11 +472,11 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
               <table className="w-full text-xs text-right text-slate-300">
                 <thead className="bg-[#050810] text-slate-400 sticky top-0 border-b border-[#1e293b] z-10">
                   <tr>
-                    <th scope="col" className="px-4 py-2 text-right">عنوان نقش</th>
-                    <th scope="col" className="px-4 py-2 text-right">وظیفه روز</th>
-                    <th scope="col" className="px-4 py-2 text-right">وظیفه شب</th>
-                    <th scope="col" className="px-4 py-2 text-right">انتصاب دهنده</th>
-                    <th scope="col" className="px-4 py-2 text-center">سپر دفاعی</th>
+                    <th scope="col" className="px-4 py-2 text-right">{tl('عنوان نقش', 'عنوان role')}</th>
+                    <th scope="col" className="px-4 py-2 text-right">{tl('وظیفه روز', 'وظیفه day')}</th>
+                    <th scope="col" className="px-4 py-2 text-right">{tl('وظیفه شب', 'وظیفه night')}</th>
+                    <th scope="col" className="px-4 py-2 text-right">{tl('انتصاب دهنده', 'appointment دهنده')}</th>
+                    <th scope="col" className="px-4 py-2 text-center">{tl('سپر دفاعی', 'shield defensive')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#1e293b]/50">
@@ -501,10 +502,10 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
                           {hasShield ? (
                             <span className="inline-flex items-center gap-0.5 bg-emerald-950/20 text-emerald-400 border border-emerald-900/40 text-[9px] px-1.5 py-0.5 rounded-full">
                               <Shield className="w-2.5 h-2.5" />
-                              دارد
+                              {tl('دارد', 'has')}
                             </span>
                           ) : (
-                            <span className="text-slate-600">ـ</span>
+                            <span className="text-slate-600">{tl('ـ', '-')}</span>
                           )}
                         </td>
                       </tr>
@@ -513,7 +514,7 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
                   {rolesList.length === 0 && (
                     <tr>
                       <td colSpan={5} className="text-center py-8 text-slate-500 font-medium">
-                        نقشی متناظر با جستجوی شما پیدا نشد.
+                        {tl('نقشی متناظر با جستجوی شما پیدا نشد.', 'roleی textاظر with search for شما پیدا نشد.')}
                       </td>
                     </tr>
                   )}
@@ -525,7 +526,7 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
             <div className="flex items-center gap-2 bg-[#050810] border border-[#1e293b] p-3 rounded-lg text-[11px] text-slate-400">
               <Shield className="w-4 h-4 text-emerald-500 flex-shrink-0" />
               <p>
-                <strong>راهنمای مکانیزم سپر:</strong> نقش‌هایی نظیر رئیس‌جمهور، پاپ، شهردار و قاضی که اداره ارکان مجمع را برعهده دارند، در اولین نفوذ شبانه یا سوءقصد آسیب نمی‌بینند و بقای آنها وابسته به سپر است. شکستن سپر در فاز غسل شب مشخص می‌گردد.
+                <strong>{tl('راهنمای مکانیزم سپر:', 'guide of مکانیزم shield:')}</strong> نقش‌هایی نظیر رئیس‌جمهور، پاپ، شهردار و قاضی که اداره ارکان مجمع را برعهده دارند، در اولین نفوذ شبانه یا سوءقصد آسیب نمی‌بینند و بقای آنها وابسته به سپر است. شکستن سپر در فاز غسل شب مشخص می‌گردد.
               </p>
             </div>
           </div>
@@ -535,16 +536,16 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
       {/* Footer view */}
       <div className="mt-6 flex justify-between items-center text-xs text-slate-400 border-t border-[#1e293b] pt-4">
         <div className="flex gap-2 text-[10px] text-slate-500">
-          <span>کد سناریو: MP-2026</span>
+          <span>{tl('کد سناریو: MP-2026', 'کد سناریو: MP-2026')}</span>
           <span>|</span>
-          <span>نسخه پایدار ۱.۲</span>
+          <span>{tl('نسخه پایدار ۱.۲', 'نسخه پایدار 1.2')}</span>
         </div>
         {onClose && (
           <button
             onClick={onClose}
             className="bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-bold px-4 py-1.5 rounded-lg text-xs transition duration-200"
           >
-            بستن راهنما
+            {tl('بستن راهنما', 'close guide')}
           </button>
         )}
       </div>

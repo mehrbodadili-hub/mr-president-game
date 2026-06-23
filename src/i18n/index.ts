@@ -35,3 +35,12 @@ i18n.on('languageChanged', applyHtmlDir);
 if (typeof document !== 'undefined') applyHtmlDir(i18n.language || 'fa');
 
 export default i18n;
+
+/**
+ * Inline bilingual helper: returns the Persian string when the active language
+ * is Persian, otherwise the English string. Used for dynamic narrative log
+ * messages where a full key/JSON entry would be overkill.
+ */
+export function tl(fa: string, en: string): string {
+  return (i18n.language || 'fa').startsWith('en') ? en : fa;
+}
