@@ -4,15 +4,15 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Player, RoleType, NightState, GameLog } from '../types';
-import { ROLE_DETAILS } from '../constants';
 import { Shield, Skull, Ban, Eye, Target, Sparkles, ArrowLeft, ArrowRight, Zap, Play } from 'lucide-react';
 
 interface NightWizardProps {
   players: Player[];
   cycle: number;
   showSecrets?: boolean;
-  logs?: GameLog[]; // Passed for Journalist day death analysis
+  logs?: GameLog[];
   lastPriestBlockedId?: string | null;
   onLogEvent: (message: string, type: 'info' | 'kill' | 'protect' | 'block' | 'ability' | 'system') => void;
   onCompleteNight: (results: {
@@ -29,20 +29,34 @@ interface NightWizardProps {
 }
 
 export default function NightWizard({ players, cycle, showSecrets = false, logs = [], lastPriestBlockedId, onLogEvent, onCompleteNight }: NightWizardProps) {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.dir() === 'rtl';
+  const NextArrow = isRTL ? ArrowLeft : ArrowRight;
+  const PrevArrow = isRTL ? ArrowRight : ArrowLeft;
+
+  const roleName = (r: RoleType | string | undefined | null) => {
+    if (!r || r === 'none') return '';
+    return t(`roles.${r}.name`);
+  };
+
+  const blockDesc = (p: Player) => {
+    const blocks: string[] = [];
+    if (p.hasTerroristAbility) blocks.push(t('night.blocks.terrorist'));
+    if (p.identity === 'freemason') blocks.push(t('night.blocks.mason'));
+    if (p.role && p.role !== 'none') {
+      blocks.push(t('night.blocks.activeRole', { role: roleName(p.role) }));
+    }
+    return blocks.join(t('night.blocks.joiner')) || t('night.blocks.fallback');
+  };
+
   const isStepRemovedByPopulation = (stepNum: number) => {
-    if (stepNum === 1) { // Priest
-      return players.length < 10;
-    }
-    if (stepNum === 4) { // Police
-      return players.length < 12;
-    }
+    if (stepNum === 1) return players.length < 10;
+    if (stepNum === 4) return players.length < 12;
     return false;
   };
 
   const isStepEnabled = (stepNum: number) => {
     if (isStepRemovedByPopulation(stepNum)) return false;
-    
-    // Check if the role actually exists in the starting game roster
     if (stepNum === 1) return players.some(p => p.role === 'priest');
     if (stepNum === 4) return players.some(p => p.role === 'police');
     if (stepNum === 2) return players.some(p => p.role === 'doctor');
@@ -51,33 +65,13 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
     if (stepNum === 6) return players.some(p => p.identity === 'freemason');
     if (stepNum === 7) return players.some(p => p.role === 'reporter');
     if (stepNum === 8) return players.some(p => p.role === 'journalist');
-    
     return true;
   };
 
-  const getFirstEnabledStep = () => {
-    let first = 1;
-    while (first <= 8 && !isStepEnabled(first)) {
-      first++;
-    }
-    return first > 8 ? 1 : first;
-  };
+  const getFirstEnabledStep = () => { let s = 1; while (s <= 8 && !isStepEnabled(s)) s++; return s > 8 ? 1 : s; };
+  const getLastEnabledStep = () => { let s = 8; while (s >= 1 && !isStepEnabled(s)) s--; return s < 1 ? 8 : s; };
 
-  const getLastEnabledStep = () => {
-    let last = 8;
-    while (last >= 1 && !isStepEnabled(last)) {
-      last--;
-    }
-    return last < 1 ? 8 : last;
-  };
-
-  const [step, setStep] = useState(() => {
-    let s = 1;
-    while (s <= 8 && !isStepEnabled(s)) {
-      s++;
-    }
-    return s > 8 ? 8 : s;
-  });
+  const [step, setStep] = useState(() => { let s = 1; while (s <= 8 && !isStepEnabled(s)) s++; return s > 8 ? 8 : s; });
   const [nightAction, setNightAction] = useState<NightState>({
     currentStep: 1,
     priestTargetRole: null,
@@ -102,48 +96,20 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      (window as any).setNightStep = (s: number) => {
-        setStep(s);
-      };
-      return () => {
-        delete (window as any).setNightStep;
-      };
+      (window as any).setNightStep = (s: number) => setStep(s);
+      return () => { delete (window as any).setNightStep; };
     }
   }, []);
 
   const alivePlayers = players.filter((p) => p.isAlive && !p.isImprisoned);
 
   const getDoctorMaxTargets = () => {
-    const totalPlayersCount = players.length;
-    if (totalPlayersCount < 10) return 1;
-    if (totalPlayersCount >= 11 && totalPlayersCount <= 20) return 2;
+    const n = players.length;
+    if (n < 10) return 1;
+    if (n >= 11 && n <= 20) return 2;
     return 3;
   };
 
-  const getPlayerBlockInfo = (playerId: string | null) => {
-    if (!playerId) return null;
-    const p = players.find(x => x.id === playerId);
-    if (!p) return null;
-    
-    const blocks: string[] = [];
-    if (p.hasTerroristAbility) {
-      blocks.push('قابلیت بمب‌گذاری تروریستی');
-    }
-    if (p.identity === 'freemason') {
-      blocks.push('شلیک شبانه لژ فراماسونری');
-    }
-    if (p.role && p.role !== 'none') {
-      const roleName = ROLE_DETAILS[p.role]?.nameFa || p.role;
-      blocks.push(`نقش فعال «${roleName}»`);
-    }
-    
-    return {
-      player: p,
-      blocksDescription: blocks.join(' و ') || 'هیچ نقش یا قابلیت خاصی (شهروند ساده)'
-    };
-  };
-
-  // Helper selectors to check if roles are active and alive
   const isRoleAlive = (role: RoleType) => players.some((p) => p.role === role && p.isAlive && !p.isImprisoned);
   const getPlayerWithRole = (role: RoleType) => players.find((p) => p.role === role && p.isAlive && !p.isImprisoned);
 
@@ -151,14 +117,14 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
   const doctorActive = isRoleAlive('doctor');
   const terroristActive = players.some((p) => p.hasTerroristAbility && p.isAlive && !p.isImprisoned);
   const policeActive = isRoleAlive('police');
-  const detectiveActive = isRoleAlive('detective') && cycle % 2 === 1; // every other night
+  const detectiveActive = isRoleAlive('detective') && cycle % 2 === 1;
   const masonsActive = players.some((p) => p.identity === 'freemason' && p.isAlive && !p.isImprisoned);
   const aliveMasons = players.filter((p) => p.identity === 'freemason' && p.isAlive && !p.isImprisoned);
   const activeMasonCommander = aliveMasons.length > 0
     ? aliveMasons.reduce((prev, current) => (prev.masonNumber < current.masonNumber ? prev : current))
     : null;
   const reporterActive = isRoleAlive('reporter');
-  const journalistActive = isRoleAlive('journalist') && cycle % 2 === 1; // every other night
+  const journalistActive = isRoleAlive('journalist') && cycle % 2 === 1;
 
   const isPlayerBlocked = (playerId: string | null) => {
     if (!priestActive) return false;
@@ -177,38 +143,17 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
     activeMasonCommander?.id === nightAction.priestTargetPlayerId
   );
 
-  // Skip step if role is deceased or inactive tonight
-  // Step sequence:
-  // 1: Priest (کشیش)
-  // 2: Doctor (دکتر)
-  // 3: Terrorist (تروریست)
-  // 4: Police (پلیس)
-  // 5: Detective (کارآگاه)
-  // 6: Freemason (تیم فراماسون)
-  // 7: Reporter (گزارشگر) - "نفر یکی مانده به آخر"
-  // 8: Journalist (خبرنگار) - "آخرین نقش فعال شب"
   const handleNextStep = () => {
     let nextStep = step + 1;
-    while (nextStep <= 8 && !isStepEnabled(nextStep)) {
-      nextStep++;
-    }
-
-    if (nextStep > 8) {
-      evaluateNight();
-    } else {
-      setStep(nextStep);
-    }
+    while (nextStep <= 8 && !isStepEnabled(nextStep)) nextStep++;
+    if (nextStep > 8) evaluateNight();
+    else setStep(nextStep);
   };
 
   const handlePrevStep = () => {
     let prevStep = step - 1;
-    while (prevStep >= 1 && !isStepEnabled(prevStep)) {
-      prevStep--;
-    }
-
-    if (prevStep >= 1) {
-      setStep(prevStep);
-    }
+    while (prevStep >= 1 && !isStepEnabled(prevStep)) prevStep--;
+    if (prevStep >= 1) setStep(prevStep);
   };
 
   const evaluateNight = () => {
@@ -220,98 +165,69 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
     let journalistReport: string | null = null;
     let reporterReport: string | null = null;
 
-    // 1. Check Blocks (Role/Ability blocked by Priest)
     const isRoleBlockedValue = (role: string) => {
       if (!priestActive) return false;
       if (!nightAction.priestTargetPlayerId) return false;
       const targetPlayer = players.find(p => p.id === nightAction.priestTargetPlayerId);
       if (!targetPlayer) return false;
-
-      if (role === 'terrorist') {
-        return targetPlayer.hasTerroristAbility;
-      }
-      if (role === 'freemason') {
-        return activeMasonCommander ? targetPlayer.id === activeMasonCommander.id : false;
-      }
+      if (role === 'terrorist') return targetPlayer.hasTerroristAbility;
+      if (role === 'freemason') return activeMasonCommander ? targetPlayer.id === activeMasonCommander.id : false;
       return targetPlayer.role === role;
     };
 
     const isDoctorBlocked = isRoleBlockedValue('doctor');
-    const isTerroristBlocked = isRoleBlockedValue('terrorist');
     const isPoliceBlocked = isRoleBlockedValue('police');
     const isDetectiveBlocked = isRoleBlockedValue('detective');
     const isMasonBlocked = isRoleBlockedValue('freemason');
     const isReporterBlocked = isRoleBlockedValue('reporter');
     const isJournalistBlocked = isRoleBlockedValue('journalist');
 
-    // Log Priest Block
     if (priestActive && nightAction.priestTargetPlayerId) {
       const targetPlayer = players.find(p => p.id === nightAction.priestTargetPlayerId);
       if (targetPlayer) {
-        const blocks: string[] = [];
-        if (targetPlayer.hasTerroristAbility) {
-          blocks.push('قابلیت بمب‌گذاری تروریستی');
-        }
-        if (targetPlayer.identity === 'freemason') {
-          blocks.push('شلیک شبانه لژ فراماسونری');
-        }
-        if (targetPlayer.role && targetPlayer.role !== 'none') {
-          const roleName = ROLE_DETAILS[targetPlayer.role]?.nameFa || targetPlayer.role;
-          blocks.push(`نقش فعال «${roleName}»`);
-        }
-        const desc = blocks.join(' و ') || 'هیچ نقش یا قابلیت خاصی (شهروند ساده)';
-        onLogEvent(`کشیش در شب، تمام قابلیت‌ها و نقش بازیکن «${targetPlayer.name}» (شامل: ${desc}) را کاملاً مسدود کرد.`, 'block');
+        onLogEvent(t('night.logs.priestBlock', { name: targetPlayer.name, desc: blockDesc(targetPlayer) }), 'block');
       }
     }
 
-    // 2. Doctor Protect
     let protectedPlayerId = !isDoctorBlocked ? nightAction.doctorTargetId : null;
     if (doctorActive && protectedPlayerId) {
       if (isDoctorBlocked) {
-        onLogEvent(`دکتر تلاش کرد بیماران خود را درمان کند، اما لایحه او توسط کشیش مسدود شد.`, 'block');
+        onLogEvent(t('night.logs.doctorBlocked'), 'block');
       } else {
         const savedPlayerIds = protectedPlayerId.split(',').filter(Boolean);
         savedPlayerIds.forEach((pId) => {
           const savedPlayer = players.find((p) => p.id === pId);
-          if (savedPlayer) {
-            onLogEvent(`دکتر شبانه بازیکن «${savedPlayer.name}» را پانسمان و بیمه درمانی کرد.`, 'protect');
-          }
+          if (savedPlayer) onLogEvent(t('night.logs.doctorTreated', { name: savedPlayer.name }), 'protect');
         });
       }
     }
 
-    // Initialize list of attacked players
     const attacksMap = new Map<string, Array<'police' | 'mason' | 'terrorist'>>();
     const addAttack = (pId: string, type: 'police' | 'mason' | 'terrorist') => {
-      if (!attacksMap.has(pId)) {
-        attacksMap.set(pId, []);
-      }
+      if (!attacksMap.has(pId)) attacksMap.set(pId, []);
       attacksMap.get(pId)?.push(type);
     };
 
     let triggerTerroristCount = 0;
     let policeShotOccurred = false;
 
-    // 3. Terrorist Action
     if (terroristActive && terroristShooterId) {
       const terroristPlayer = players.find((p) => p.id === terroristShooterId);
       if (terroristPlayer) {
         const isShooterBlocked = priestActive && nightAction.priestTargetPlayerId === terroristPlayer.id;
         if (nightAction.terroristTargetId) {
-          terroristsUsed.push(terroristPlayer.id); // Add them to used list either way
+          terroristsUsed.push(terroristPlayer.id);
           if (isShooterBlocked) {
-            onLogEvent(`کشیش از عملیات انتحاری «${terroristPlayer.name}» ممانعت به عمل آورد! بمب منفجر نشد اما قابلیت تروریست دفع شد.`, 'block');
+            onLogEvent(t('night.logs.terroristBlocked', { name: terroristPlayer.name }), 'block');
           } else {
             const targetPlayer = players.find((p) => p.id === nightAction.terroristTargetId);
             if (targetPlayer) {
               if (targetPlayer.isImprisoned) {
-                onLogEvent(`انتحار بی‌ثمر در زندان! تروریست ${terroristPlayer.name} به سلول زندان هجوم برد اما ${targetPlayer.name} در امان ماند. تنها تروریست منفجر شد!`, 'kill');
+                onLogEvent(t('night.logs.terroristPrison', { terror: terroristPlayer.name, target: targetPlayer.name }), 'kill');
                 deaths.push(terroristPlayer.id);
-                // Target is not attacked! Target lives!
               } else {
-                onLogEvent(`انتحار تروریستی! بازیکن ${terroristPlayer.name} ضامن نارنجک خود را کشید و به همراه ${targetPlayer.name} منفجر شد!`, 'kill');
+                onLogEvent(t('night.logs.terroristKill', { terror: terroristPlayer.name, target: targetPlayer.name }), 'kill');
                 addAttack(targetPlayer.id, 'terrorist');
-                // Terrorist always dies!
                 deaths.push(terroristPlayer.id);
               }
             }
@@ -320,97 +236,81 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
       }
     }
 
-    // 4. Police Action
     if (policeActive && nightAction.policeTargetId) {
       if (isPoliceBlocked) {
-        onLogEvent(`شلیک پلیس توسط کشیش معلق شد.`, 'block');
+        onLogEvent(t('night.logs.policeBlocked'), 'block');
       } else {
         const targetPlayer = players.find((p) => p.id === nightAction.policeTargetId);
-        onLogEvent(`تک‌تیرانداز پلیس شبانه به سمت بازیکن «${targetPlayer?.name}» آتش گشود!`, 'kill');
+        onLogEvent(t('night.logs.policeShot', { name: targetPlayer?.name }), 'kill');
         addAttack(nightAction.policeTargetId, 'police');
         policeShotOccurred = true;
       }
     }
 
-    // 5. Detective Action
     if (detectiveActive && nightAction.detectiveTargetId) {
       if (isDetectiveBlocked) {
-        onLogEvent(`حکم جلب کارآگاه توسط کشیش باطل شد.`, 'block');
+        onLogEvent(t('night.logs.detectiveBlocked'), 'block');
       } else {
         const targetPlayer = players.find((p) => p.id === nightAction.detectiveTargetId);
-        onLogEvent(`کارآگاه با پیدا کردن ادله کافی، بازیکن «${targetPlayer?.name}» را مستقیم به دادگاه فرستاد.`, 'ability');
+        onLogEvent(t('night.logs.detectiveCourt', { name: targetPlayer?.name }), 'ability');
         courtNominees.push(nightAction.detectiveTargetId);
       }
     }
 
-    // 6. Freemason Action
     if (masonsActive && nightAction.masonTargetId) {
       if (isMasonBlocked) {
-        onLogEvent(`کشیش توانست لژ فراماسونری را برای امشب مهرو‌موم و مسدود کند.`, 'block');
+        onLogEvent(t('night.logs.masonBlocked'), 'block');
       } else {
         const targetPlayer = players.find((p) => p.id === nightAction.masonTargetId);
-        const commanderName = activeMasonCommander ? ` به تصمیم ${activeMasonCommander.name}` : '';
-        onLogEvent(`فراماسون‌ها${commanderName} در شب یک فنجان مرگ برای بازیکن «${targetPlayer?.name}» تدارک دیدند!`, 'kill');
+        const commander = activeMasonCommander ? t('night.logs.masonCommander', { name: activeMasonCommander.name }) : '';
+        onLogEvent(t('night.logs.masonKill', { commander, name: targetPlayer?.name }), 'kill');
         addAttack(nightAction.masonTargetId, 'mason');
       }
     }
 
-    // 7. Reporter Action
     if (reporterActive && nightAction.reporterTargetId) {
       if (isReporterBlocked) {
-        onLogEvent(`گزارشگر بایکوت خبری شد.`, 'block');
-        reporterReport = 'تلاش شما برای رصد دیشب با سد سانسور روبه‌رو شد.';
+        onLogEvent(t('night.logs.reporterBlocked'), 'block');
+        reporterReport = t('night.logs.reporterBlockedMsg');
       } else {
         const inspectPlayer = players.find((p) => p.id === nightAction.reporterTargetId);
-        const reportText = `رصد گزارشگر با موفقیت انجام شد. رویدادهای رصد برای ${inspectPlayer?.name} گردآوری شد.`;
-        reporterReport = reportText;
-        onLogEvent(`گزارشگر فرآیند رصد فعالیت‌های شبانه بازیکن کریتیکال «${inspectPlayer?.name}» را تکمیل کرد.`, 'ability');
+        reporterReport = t('night.logs.reporterReport', { name: inspectPlayer?.name });
+        onLogEvent(t('night.logs.reporterDone', { name: inspectPlayer?.name }), 'ability');
       }
     }
 
-    // 8. Journalist Action
     if (journalistActive && nightAction.journalistTargetType) {
       if (isJournalistBlocked) {
-        onLogEvent(`قلم خبرنگار توسط کشیش سانسور شد.`, 'block');
-        journalistReport = 'گزارش سانسور شده است و هیچ خروجی هویتی یافت نشد.';
+        onLogEvent(t('night.logs.journalistBlocked'), 'block');
+        journalistReport = t('night.logs.journalistBlockedMsg');
       } else {
-        journalistReport = `بررسی خبرنگار درباره خارج‌شدگان فاز «${
-          nightAction.journalistTargetType === 'night' ? 'شب جاری' : 'روز گذشته'
-        }» با موفقیت ثبت شد.`;
-        onLogEvent(`خبرنگار مشغول تفتیش و تهیه گزارش هویتی از خارج‌شدگان شد.`, 'ability');
+        const when = nightAction.journalistTargetType === 'night' ? t('night.logs.journalistWhenNight') : t('night.logs.journalistWhenDay');
+        journalistReport = t('night.logs.journalistReport', { when });
+        onLogEvent(t('night.logs.journalistDone'), 'ability');
       }
     }
 
-    // --- RESOLVE ATTACKS & SHIELDS & SAVES ---
     attacksMap.forEach((attackTypes, attackerId) => {
       const victim = players.find((p) => p.id === attackerId);
       if (!victim) return;
-
       const isSaved = protectedPlayerId && protectedPlayerId.split(',').filter(Boolean).includes(victim.id);
-
       attackTypes.forEach((atkType) => {
         if (atkType === 'terrorist') {
-          if (!deaths.includes(victim.id)) {
-            deaths.push(victim.id);
-          }
+          if (!deaths.includes(victim.id)) deaths.push(victim.id);
           return;
         }
-
         if (isSaved) {
-          onLogEvent(`پزشک متعهد شهر با مهارت خود، ${victim.name} را از چنگال شلیک مرگبار ${atkType === 'police' ? 'پلیس' : 'ماسون‌ها'} رهانید.`, 'protect');
+          const attacker = atkType === 'police' ? t('night.logs.attackerPolice') : t('night.logs.attackerMason');
+          onLogEvent(t('night.logs.doctorSaved', { victim: victim.name, attacker }), 'protect');
           return;
         }
-
         const hasShieldActive = victim.hasShield && !victim.shieldBroken;
         if (hasShieldActive) {
           shieldBreaks.push(victim.id);
-          onLogEvent(`انفجار شلیک با اصابت به سپر رسمیِ بازیکن «${victim.name}» مهار شد و سپر شکست!`, 'protect');
+          onLogEvent(t('night.logs.shieldBreak', { name: victim.name }), 'protect');
           return;
         }
-
-        if (!deaths.includes(victim.id)) {
-          deaths.push(victim.id);
-        }
+        if (!deaths.includes(victim.id)) deaths.push(victim.id);
       });
     });
 
@@ -418,21 +318,18 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
       policeShotOccurred = false;
     }
 
-    // --- ACCRUE TERRORIST ABILITIES ---
     if (triggerTerroristCount > 0) {
       for (let i = 0; i < triggerTerroristCount; i++) {
         const alreadyDeadSet = new Set(deaths);
         let eligible = players.filter(
           (p) => p.isAlive && !p.isImprisoned && !p.hasTerroristAbility && !alreadyDeadSet.has(p.id)
         );
-
         if (eligible.length > 0) {
           const roleless = eligible.filter((p) => p.role === 'none');
           const pool = roleless.length > 0 ? roleless : eligible;
-
           const chosen = pool[Math.floor(Math.random() * pool.length)];
           terroristsAdded.push(chosen.id);
-          onLogEvent(`به واسطه وقایع شلیک، غبار ناامنی شهر را فرا گرفت و قابلیت تروریست تصادفی به بازیکن «${chosen.name}» واگذار شد.`, 'ability');
+          onLogEvent(t('night.logs.terroristAdded', { name: chosen.name }), 'ability');
         }
       }
     }
@@ -450,112 +347,65 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
     });
   };
 
-  // Pre-calculate Simulated Tonight Deaths for Journalist
   const simulateThisNightDeathsAndFactions = () => {
     const simulatedDeaths: string[] = [];
-    
     const isBlockedSim = (role: string) => {
       if (!priestActive) return false;
       if (!nightAction.priestTargetPlayerId) return false;
       const targetPlayer = players.find(p => p.id === nightAction.priestTargetPlayerId);
       if (!targetPlayer) return false;
-
-      if (role === 'terrorist') {
-        return targetPlayer.hasTerroristAbility;
-      }
-      if (role === 'freemason') {
-        return activeMasonCommander ? targetPlayer.id === activeMasonCommander.id : false;
-      }
+      if (role === 'terrorist') return targetPlayer.hasTerroristAbility;
+      if (role === 'freemason') return activeMasonCommander ? targetPlayer.id === activeMasonCommander.id : false;
       return targetPlayer.role === role;
     };
     const protectedId = doctorActive && !isBlockedSim('doctor') ? nightAction.doctorTargetId : null;
-    
     const attacks = new Map<string, Array<'police' | 'mason' | 'terrorist'>>();
     const addSimAtk = (pId: string, type: 'police' | 'mason' | 'terrorist') => {
       if (!attacks.has(pId)) attacks.set(pId, []);
       attacks.get(pId)?.push(type);
     };
-
     if (terroristActive && nightAction.terroristTargetId && !isBlockedSim('terrorist')) {
       const terrPlayer = players.find(p => p.hasTerroristAbility && p.isAlive && !p.isImprisoned);
       const targetP = players.find(p => p.id === nightAction.terroristTargetId);
       if (terrPlayer && targetP) {
-        if (!targetP.isImprisoned) {
-            addSimAtk(targetP.id, 'terrorist');
-        }
+        if (!targetP.isImprisoned) addSimAtk(targetP.id, 'terrorist');
         simulatedDeaths.push(terrPlayer.id);
       }
     }
-
-    if (policeActive && nightAction.policeTargetId && !isBlockedSim('police')) {
-      addSimAtk(nightAction.policeTargetId, 'police');
-    }
-
-    if (masonsActive && nightAction.masonTargetId && !isBlockedSim('freemason')) {
-      addSimAtk(nightAction.masonTargetId, 'mason');
-    }
-
+    if (policeActive && nightAction.policeTargetId && !isBlockedSim('police')) addSimAtk(nightAction.policeTargetId, 'police');
+    if (masonsActive && nightAction.masonTargetId && !isBlockedSim('freemason')) addSimAtk(nightAction.masonTargetId, 'mason');
     attacks.forEach((atkTypes, victimId) => {
       const victim = players.find(v => v.id === victimId);
       if (!victim) return;
-
       const isSaved = protectedId && protectedId.split(',').filter(Boolean).includes(victimId);
-      
       atkTypes.forEach((type) => {
-        if (type === 'terrorist') {
-          if (!simulatedDeaths.includes(victimId)) {
-            simulatedDeaths.push(victimId);
-          }
-          return;
-        }
-
+        if (type === 'terrorist') { if (!simulatedDeaths.includes(victimId)) simulatedDeaths.push(victimId); return; }
         if (isSaved) return;
-
         const hasShield = victim.hasShield && !victim.shieldBroken;
         if (hasShield) return;
-
-        if (!simulatedDeaths.includes(victimId)) {
-          simulatedDeaths.push(victimId);
-        }
+        if (!simulatedDeaths.includes(victimId)) simulatedDeaths.push(victimId);
       });
     });
-
-    let masonsCount = 0;
-    let citizensCount = 0;
+    let masonsCount = 0, citizensCount = 0;
     simulatedDeaths.forEach((id) => {
       const p = players.find(x => x.id === id);
-      if (p) {
-        if (p.identity === 'freemason') masonsCount++;
-        else citizensCount++;
-      }
+      if (p) { if (p.identity === 'freemason') masonsCount++; else citizensCount++; }
     });
-
     return { masons: masonsCount, citizens: citizensCount, count: simulatedDeaths.length };
   };
 
-  // Calculate Past Day's Deaths for Journalist
   const getPastDayDeathsAndFactions = () => {
-    const dayDeadPlayers = players.filter(p => 
-      !p.isAlive && 
+    const dayDeadPlayers = players.filter(p =>
+      !p.isAlive &&
       logs && logs.some(log => log.cycle === cycle && log.phase === 'day' && log.type === 'kill' && log.message.includes(p.name))
     );
-
-    let masonsCount = 0;
-    let citizensCount = 0;
-    dayDeadPlayers.forEach((p) => {
-      if (p.identity === 'freemason') masonsCount++;
-      else citizensCount++;
-    });
-
+    let masonsCount = 0, citizensCount = 0;
+    dayDeadPlayers.forEach((p) => { if (p.identity === 'freemason') masonsCount++; else citizensCount++; });
     return { masons: masonsCount, citizens: citizensCount, count: dayDeadPlayers.length };
   };
 
   const PlayerSelector = ({
-    targetId,
-    onChange,
-    excludeId,
-    includeImprisoned,
-    excludeRoles,
+    targetId, onChange, excludeId, includeImprisoned, excludeRoles,
   }: {
     targetId: string | null;
     onChange: (id: string) => void;
@@ -573,29 +423,31 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
               key={p.id}
               type="button"
               onClick={() => onChange(p.id)}
-              className={`py-2 px-3 rounded-lg text-xs font-semibold text-right transition border ${
+              className={`py-2 px-3 rounded-lg text-xs font-semibold transition border ${
                 targetId === p.id
                   ? 'bg-amber-500 text-slate-950 border-amber-400'
                   : 'bg-slate-950/40 border-slate-800 text-slate-300 hover:border-slate-700'
               }`}
             >
-              {p.name} {p.isImprisoned ? '(در زندان)' : ''}
+              {p.name} {p.isImprisoned ? t('night.common.inPrison') : ''}
             </button>
           ))}
       </div>
     );
   };
 
+  const playersWithRoleNames = (role: RoleType) =>
+    players.filter(p => p.role === role && p.isAlive && !p.isImprisoned).map(p => p.name).join(isRTL ? '، ' : ', ') || t('night.common.unknown');
+
   return (
-    <div className="bg-slate-900 border border-slate-850 rounded-2xl p-6 shadow-2xl max-w-3xl w-full mx-auto text-right text-slate-200" dir="rtl">
-      {/* Wizard Header */}
+    <div className="bg-slate-900 border border-slate-850 rounded-2xl p-6 shadow-2xl max-w-3xl w-full mx-auto text-slate-200" dir={i18n.dir()}>
       <div className="mb-6 flex items-center justify-between border-b border-slate-800 pb-4">
         <div>
-          <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block mb-1">جادوگر هوشمند فاز شب</span>
-          <h2 className="text-xl font-black text-white">ترتیب وقوع توانمندی‌های شبانه (فاز شب)</h2>
+          <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block mb-1">{t('night.header.eyebrow')}</span>
+          <h2 className="text-xl font-black text-white">{t('night.header.title')}</h2>
         </div>
         <div className="text-xs font-bold bg-slate-950 px-3 py-1 rounded-full text-slate-400">
-          مرحله {step} (نقش فعال)
+          {t('night.header.stepLabel', { step })}
         </div>
       </div>
 
@@ -606,85 +458,76 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
                 <Ban className="w-5 h-5 text-teal-400" />
-                ۱. مختل‌سازی کشیش (کشیش)
+                {t('night.step1.title')}
               </h3>
               <span className="text-[10px] font-black bg-teal-900/30 text-teal-400 px-2.5 py-0.5 rounded-full border border-teal-900/40">
-                {players.filter(p => p.role === 'priest' && p.isAlive && !p.isImprisoned).map(p => p.name).join('، ') || 'نامشخص'}
+                {playersWithRoleNames('priest')}
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              کشیش بزرگ بیدار می‌شود. او می‌تواند قابلیت ۱ بازیکن فعال را برای امشب به طور کامل مسدود کند.
-              در صورتی که بازیکن انتخاب شده نقش دار یا دارای قابلیت تروریستی یا فراماسونری باشد، آن مهار و مسدود می‌گردد.
-            </p>
+            <p className="text-xs text-slate-400 leading-relaxed">{t('night.step1.desc')}</p>
           </div>
 
           {priestActive ? (
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-4">
-                {players
-                  .filter((p) => p.isAlive && !p.isImprisoned)
-              .map((p) => {
-                const isSelected = nightAction.priestTargetPlayerId === p.id;
-                const isDisallowed = p.id === lastPriestBlockedId;
-                
-                // Get player active info
-                const blocks: string[] = [];
-                if (p.hasTerroristAbility) blocks.push('تروریسم');
-                if (p.identity === 'freemason') blocks.push('لژ فراماسون');
-                if (p.role && p.role !== 'none') {
-                  blocks.push(ROLE_DETAILS[p.role]?.nameFa || p.role);
-                }
-                const pDesc = blocks.join(' + ') || 'شهروند ساده (بدون قابلیت)';
+                {players.filter((p) => p.isAlive && !p.isImprisoned).map((p) => {
+                  const isSelected = nightAction.priestTargetPlayerId === p.id;
+                  const isDisallowed = p.id === lastPriestBlockedId;
+                  const blocks: string[] = [];
+                  if (p.hasTerroristAbility) blocks.push(t('night.blocks.terrorist'));
+                  if (p.identity === 'freemason') blocks.push(t('night.blocks.mason'));
+                  if (p.role && p.role !== 'none') blocks.push(roleName(p.role));
+                  const pDesc = blocks.join(' + ') || t('night.common.commoner');
 
-                return (
-                  <button
-                    key={p.id}
-                    disabled={isDisallowed}
-                    onClick={() => setNightAction({ 
-                      ...nightAction, 
-                      priestTargetPlayerId: p.id,
-                      priestTargetRole: p.role !== 'none' ? p.role : (p.hasTerroristAbility ? 'terrorist' as any : (p.identity === 'freemason' ? 'freemason' as any : null))
-                    })}
-                    className={`p-3 rounded-xl text-xs font-black text-right transition border flex flex-col gap-1.5 items-start justify-between min-h-[68px] leading-normal ${
-                      isSelected
-                        ? 'bg-amber-600 text-slate-950 border-amber-400 shadow-md shadow-amber-600/15'
-                        : isDisallowed
-                        ? 'bg-slate-950/20 border-rose-900/30 text-rose-800/60 opacity-50 cursor-not-allowed'
-                        : 'bg-slate-950/40 border-slate-800 text-slate-200 hover:border-slate-700 hover:bg-slate-900/60'
-                    }`}
-                  >
-                    <span className="text-xs font-extrabold flex items-center justify-between w-full">
-                      <span>{p.name} {p.role === 'priest' ? '(خود کشیش)' : ''}</span>
-                      {isDisallowed && <Ban className="w-3 h-3 text-rose-500/50" />}
-                    </span>
-                    <span className={`text-[9px] font-bold ${isSelected ? 'text-slate-900' : isDisallowed ? 'text-rose-900/50' : 'text-slate-500'}`}>
-                      {isDisallowed ? 'مسدود در شب قبل' : pDesc}
-                    </span>
-                  </button>
-                );
-              })}
+                  return (
+                    <button
+                      key={p.id}
+                      disabled={isDisallowed}
+                      onClick={() => setNightAction({
+                        ...nightAction,
+                        priestTargetPlayerId: p.id,
+                        priestTargetRole: p.role !== 'none' ? p.role : (p.hasTerroristAbility ? 'terrorist' as any : (p.identity === 'freemason' ? 'freemason' as any : null))
+                      })}
+                      className={`p-3 rounded-xl text-xs font-black transition border flex flex-col gap-1.5 items-start justify-between min-h-[68px] leading-normal ${
+                        isSelected
+                          ? 'bg-amber-600 text-slate-950 border-amber-400 shadow-md shadow-amber-600/15'
+                          : isDisallowed
+                          ? 'bg-slate-950/20 border-rose-900/30 text-rose-800/60 opacity-50 cursor-not-allowed'
+                          : 'bg-slate-950/40 border-slate-800 text-slate-200 hover:border-slate-700 hover:bg-slate-900/60'
+                      }`}
+                    >
+                      <span className="text-xs font-extrabold flex items-center justify-between w-full">
+                        <span>{p.name} {p.role === 'priest' ? t('night.common.selfPriest') : ''}</span>
+                        {isDisallowed && <Ban className="w-3 h-3 text-rose-500/50" />}
+                      </span>
+                      <span className={`text-[9px] font-bold ${isSelected ? 'text-slate-900' : isDisallowed ? 'text-rose-900/50' : 'text-slate-500'}`}>
+                        {isDisallowed ? t('night.common.blockedPrev') : pDesc}
+                      </span>
+                    </button>
+                  );
+                })}
 
-              <button
-                type="button"
-                onClick={() => setNightAction({ ...nightAction, priestTargetPlayerId: null, priestTargetRole: null })}
-                className={`p-3 rounded-xl text-xs font-black transition border flex flex-col items-start justify-center text-right leading-normal min-h-[68px] ${
-                  nightAction.priestTargetPlayerId === null
-                    ? 'bg-amber-600 text-slate-950 border-amber-400 font-extrabold'
-                    : 'bg-slate-950/10 border-slate-900 text-slate-400'
-                }`}
-              >
-                <span className="text-xs font-extrabold">بدون اقدام (انصراف)</span>
-                <span className="text-[9px] text-slate-500">حفظ قابلیت‌ها</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setNightAction({ ...nightAction, priestTargetPlayerId: null, priestTargetRole: null })}
+                  className={`p-3 rounded-xl text-xs font-black transition border flex flex-col items-start justify-center leading-normal min-h-[68px] ${
+                    nightAction.priestTargetPlayerId === null
+                      ? 'bg-amber-600 text-slate-950 border-amber-400 font-extrabold'
+                      : 'bg-slate-950/10 border-slate-900 text-slate-400'
+                  }`}
+                >
+                  <span className="text-xs font-extrabold">{t('night.common.noAction')}</span>
+                  <span className="text-[9px] text-slate-500">{t('night.common.noActionSub')}</span>
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed whitespace-pre-line">
+              {t('night.step1.inactive')}
             </div>
-          </>
-        ) : (
-          <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed">
-            کشیش امشب در مجمع حضور ندارد یا زندانی است.<br/>برای ادامه، به مرحله بعدی بروید.
-          </div>
-        )}
-      </div>
-    )}
+          )}
+        </div>
+      )}
 
       {/* STEP 2: DOCTOR */}
       {step === 2 && (
@@ -693,35 +536,31 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
             <div className="flex items-center gap-2 justify-between">
               <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
                 <Shield className="w-5 h-5 text-teal-400" />
-                ۲. تیمار اورژانسی پزشک (دکتر)
+                {t('night.step2.title')}
               </h3>
               <span className="text-[10px] font-black bg-teal-900/30 text-teal-400 px-2.5 py-0.5 rounded-full border border-teal-900/40">
-                {players.filter(p => p.role === 'doctor' && p.isAlive && !p.isImprisoned).map(p => p.name).join('، ') || 'نامشخص'}
+                {playersWithRoleNames('doctor')}
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed font-semibold">
-              دکتر شهر زنده و فعال گشته است. او می‌تواند جلیقه نجات را بر تن بیماران منتخب بگشاید. 
-              پزشک قادر است همواره خودش را نیز نجات دهد.
-            </p>
+            <p className="text-xs text-slate-400 leading-relaxed font-semibold">{t('night.step2.desc')}</p>
 
-            {/* Rules showcase */}
             <div className="mt-3 bg-[#080d15] border border-slate-850 rounded-xl p-3 space-y-2">
-              <span className="text-[11px] font-black text-amber-500 block">🩺 قوانین و ظرفیت رسمی درمان پزشک (بر اساس تعداد کل بازیکنان):</span>
+              <span className="text-[11px] font-black text-amber-500 block">{t('night.step2.rulesHeader')}</span>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[10px] font-bold text-slate-400">
                 <div className={`p-2 rounded-lg border transition ${players.length <= 10 ? 'bg-teal-950/25 border-teal-700/50 text-teal-300 shadow-md shadow-teal-950/20' : 'bg-slate-900/40 border-slate-800'}`}>
-                  <span>کمتر از ۱۰ بازیکن:</span>
-                  <span className="block text-xs font-black mt-1">۱ نفر درمان</span>
-                  {players.length <= 10 && <span className="text-[9px] text-teal-400 block mt-0.5">● فعال برای مجمع فعلی</span>}
+                  <span>{t('night.step2.rulesLt10Label')}</span>
+                  <span className="block text-xs font-black mt-1">{t('night.step2.rulesLt10Value')}</span>
+                  {players.length <= 10 && <span className="text-[9px] text-teal-400 block mt-0.5">{t('night.step2.activeAt')}</span>}
                 </div>
                 <div className={`p-2 rounded-lg border transition ${players.length >= 11 && players.length <= 20 ? 'bg-teal-950/25 border-teal-700/50 text-teal-300 shadow-md shadow-teal-950/20' : 'bg-slate-900/40 border-slate-800'}`}>
-                  <span>بین ۱۱ تا ۲۰ بازیکن:</span>
-                  <span className="block text-xs font-black mt-1">۲ نفر درمان</span>
-                  {players.length >= 11 && players.length <= 20 && <span className="text-[9px] text-teal-400 block mt-0.5">● فعال برای مجمع فعلی</span>}
+                  <span>{t('night.step2.rulesMidLabel')}</span>
+                  <span className="block text-xs font-black mt-1">{t('night.step2.rulesMidValue')}</span>
+                  {players.length >= 11 && players.length <= 20 && <span className="text-[9px] text-teal-400 block mt-0.5">{t('night.step2.activeAt')}</span>}
                 </div>
                 <div className={`p-2 rounded-lg border transition ${players.length >= 21 ? 'bg-teal-950/25 border-teal-700/50 text-teal-300 shadow-md shadow-teal-950/20' : 'bg-slate-900/40 border-slate-800'}`}>
-                  <span>بیشتر از ۲۰ بازیکن:</span>
-                  <span className="block text-xs font-black mt-1">۳ نفر درمان</span>
-                  {players.length >= 21 && <span className="text-[9px] text-teal-400 block mt-0.5">● فعال برای مجمع فعلی</span>}
+                  <span>{t('night.step2.rulesGtLabel')}</span>
+                  <span className="block text-xs font-black mt-1">{t('night.step2.rulesGtValue')}</span>
+                  {players.length >= 21 && <span className="text-[9px] text-teal-400 block mt-0.5">{t('night.step2.activeAt')}</span>}
                 </div>
               </div>
             </div>
@@ -732,7 +571,7 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
               {showSecrets && isRoleBlocked('doctor') && (
                 <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-3.5 rounded-xl text-xs font-bold flex items-center gap-2 mb-4 animate-fadeIn">
                   <Ban className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>⚠️ توجه: طبق اسرار عیان، این بازیکن (پزشک) توسط کشیش مسدود شده است و انتخاب او هیچ اثری در روند زنده بازی نخواهد داشت.</span>
+                  <span>{t('night.step2.blockedAlert')}</span>
                 </div>
               )}
 
@@ -745,32 +584,28 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
                       key={p.id}
                       onClick={() => {
                         let nextIds = [...selectedIds];
-                        if (isSelected) {
-                          nextIds = nextIds.filter((id) => id !== p.id);
-                        } else {
+                        if (isSelected) nextIds = nextIds.filter((id) => id !== p.id);
+                        else {
                           const maxAllowed = getDoctorMaxTargets();
                           if (nextIds.length >= maxAllowed) {
-                            alert(`⚠️ ظرفیت بیمارستانی پزشک پر گشته است! براساس تعداد کل بازیکنان مجمع شما مجاز به نجات حداکثر ${maxAllowed} نفر هستید.`);
+                            alert(t('night.step2.capacityFull', { max: maxAllowed }));
                             return;
                           }
                           nextIds.push(p.id);
                         }
-                        setNightAction({
-                          ...nightAction,
-                          doctorTargetId: nextIds.length > 0 ? nextIds.join(',') : null
-                        });
+                        setNightAction({ ...nightAction, doctorTargetId: nextIds.length > 0 ? nextIds.join(',') : null });
                       }}
-                      className={`py-2 px-3 rounded-lg text-xs font-extrabold text-right transition border flex items-center justify-between ${
+                      className={`py-2 px-3 rounded-lg text-xs font-extrabold transition border flex items-center justify-between ${
                         isSelected
                           ? 'bg-teal-600 text-slate-950 border-teal-400 shadow-md shadow-teal-600/15'
                           : 'bg-slate-950/40 border-slate-800 text-slate-350 hover:border-slate-700 hover:bg-slate-900/60'
                       }`}
                     >
-                      <span>{p.name} {p.role === 'doctor' ? '(خودتان)' : ''}</span>
+                      <span>{p.name} {p.role === 'doctor' ? t('night.common.you') : ''}</span>
                       {isSelected ? (
-                        <span className="text-[9px] bg-slate-950 p-1 py-0.5 rounded text-teal-400 font-black">انتخاب‌شده</span>
+                        <span className="text-[9px] bg-slate-950 p-1 py-0.5 rounded text-teal-400 font-black">{t('night.common.selected')}</span>
                       ) : (
-                        <span className="text-[10px] text-slate-500">انتخاب</span>
+                        <span className="text-[10px] text-slate-500">{t('night.common.select')}</span>
                       )}
                     </button>
                   );
@@ -779,7 +614,7 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
 
               {nightAction.doctorTargetId && (
                 <div className="bg-teal-500/10 border border-teal-500/20 text-teal-400 p-3.5 rounded-xl text-xs font-semibold text-center mt-3 animate-fadeIn">
-                  <span className="font-black block mb-1">بیماران معین‌شده امشب دکتر:</span>
+                  <span className="font-black block mb-1">{t('night.step2.selectedHeader')}</span>
                   <div className="flex flex-wrap gap-1.5 justify-center mt-1.5">
                     {nightAction.doctorTargetId.split(',').filter(Boolean).map((id) => (
                       <span key={id} className="bg-teal-950/60 border border-teal-900/50 px-3 py-1 rounded-lg text-teal-350 font-black text-[11px]">
@@ -791,125 +626,114 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
               )}
             </>
           ) : (
-            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed">
-              پزشک امشب در مجمع حضور ندارد یا زندانی است.<br/>برای ادامه، به مرحله بعدی بروید.
+            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed whitespace-pre-line">
+              {t('night.step2.inactive')}
             </div>
           )}
         </div>
       )}
 
       {/* STEP 3: TERRORIST */}
-      {step === 3 && (() => {
-        return (
-          <div className="space-y-4 animate-fadeIn">
-            <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-purple-400" />
-                  ۳. انتحار و فتنه تروریستی (تروریست‌های فعال)
-                </h3>
-                <span className="text-[10px] font-black bg-purple-900/30 text-purple-400 px-2.5 py-0.5 rounded-full border border-purple-900/40">
-                  {players.filter(p => p.hasTerroristAbility && p.isAlive && !p.isImprisoned).map(p => p.name).join('، ') || 'نامشخص'}
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed font-semibold">
-                عملیات تروریستی! دارندگان بمب می‌توانند روی یک نفر مسلماً انتحار کنند. (هر دو حذف می‌شوند؛ نجات دکتر و سپر بی‌اثر است).<br/>
-                <span className="text-rose-400/90 mt-1 block font-bold text-[10px]">- طول عمر: بمب‌ها ۱ شب و ۱ روز مهلت دارند. در صورتی که در طولِ شب توسط کشیش بن و خنثی شوند (در فرض اقدام)، می‌سوزند. چنانچه تا پایان مهلتِ مقرر انتحاری صورت نگیرد، ملغی می‌شوند.</span>
-                <span className="text-amber-400/90 mt-1 block font-bold text-[10px]">- زندان: انتحار بر روی بازیکن زندانی بی‌اثر است و فقط تروریست از بازی حذف می‌شود!</span>
-              </p>
-
-              <div className="bg-purple-950/20 border border-purple-900/40 p-3 rounded-xl text-xs space-y-2">
-                <span className="text-slate-400 text-[10px] block font-bold">تروریست‌های امشب با قابلیت بمب فعال:</span>
-                {activeTerrorists.length > 0 ? (
-                  <div className="flex flex-wrap gap-1.5">
-                    {activeTerrorists.map(p => (
-                      <span key={p.id} className="bg-purple-900/40 text-purple-300 px-2.5 py-1 rounded-lg font-extrabold border border-purple-850/60">
-                        💣 {p.name}
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-slate-500 font-black">هیچ تروریست فعالی امشب در مجمع وجود ندارد.</div>
-                )}
-              </div>
+      {step === 3 && (
+        <div className="space-y-4 animate-fadeIn">
+          <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-purple-400" />
+                {t('night.step3.title')}
+              </h3>
+              <span className="text-[10px] font-black bg-purple-900/30 text-purple-400 px-2.5 py-0.5 rounded-full border border-purple-900/40">
+                {players.filter(p => p.hasTerroristAbility && p.isAlive && !p.isImprisoned).map(p => p.name).join(isRTL ? '، ' : ', ') || t('night.common.unknown')}
+              </span>
             </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed font-semibold">
+              {t('night.step3.desc1')}<br/>
+              <span className="text-rose-400/90 mt-1 block font-bold text-[10px]">{t('night.step3.desc2')}</span>
+              <span className="text-amber-400/90 mt-1 block font-bold text-[10px]">{t('night.step3.desc3')}</span>
+            </p>
 
-            {terroristActive ? (
-              <>
-                {showSecrets && terroristShooterId && isPlayerBlocked(terroristShooterId) && (
-                  <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-3.5 rounded-xl text-xs font-bold flex items-center gap-2 mb-4 animate-fadeIn">
-                    <Ban className="w-4 h-4 text-amber-500 shrink-0" />
-                    <span>⚠️ توجه: طبق اسرار عیان، بازیکن تروریست منتخب ({players.find(x => x.id === terroristShooterId)?.name}) توسط کشیش مسدود شده است و انتخاب او هیچ اثری در روند زنده بازی نخواهد داشت.</span>
-                  </div>
-                )}
-                {activeTerrorists.length > 0 && (
-                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-3">
-                    <span className="text-xs font-black text-slate-300 block text-right">انتخاب تروریست فداکار (عامل امشب):</span>
-                    <div className="grid grid-cols-2 gap-2">
-                      {activeTerrorists.map((p) => {
-                        const isSelected = terroristShooterId === p.id;
-                        return (
-                          <button
-                            key={p.id}
-                            type="button"
-                            onClick={() => {
-                              setTerroristShooterId(isSelected ? null : p.id);
-                              setNightAction({ ...nightAction, terroristTargetId: null });
-                            }}
-                            className={`p-2.5 rounded-lg text-xs font-bold border transition text-center ${
-                              isSelected
-                                ? 'bg-purple-700 text-white border-purple-500 font-extrabold'
-                                : 'bg-slate-900/50 border-slate-800 text-slate-350 hover:border-slate-800'
-                            }`}
-                          >
-                            {p.name}
-                          </button>
-                        );
-                      })}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setTerroristShooterId(null);
-                          setNightAction({ ...nightAction, terroristTargetId: null });
-                        }}
-                        className={`p-2.5 rounded-lg text-xs font-bold border transition text-center ${
-                          terroristShooterId === null
-                            ? 'bg-slate-800 text-white border-slate-700'
-                            : 'bg-slate-950/10 border-slate-900 text-slate-400'
-                        }`}
-                      >
-                        بدون اقدام (انصراف)
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {terroristShooterId && (
-                  <div className="space-y-3 mt-4 bg-slate-950/30 p-4 rounded-xl border border-slate-850">
-                    <span className="text-xs font-black text-slate-300 block text-right">
-                      انتخاب هدف تروریستی (هدف‌گذاری بمب انتحاری توسط بازیکن منتخب):
+            <div className="bg-purple-950/20 border border-purple-900/40 p-3 rounded-xl text-xs space-y-2">
+              <span className="text-slate-400 text-[10px] block font-bold">{t('night.step3.activeListLabel')}</span>
+              {activeTerrorists.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {activeTerrorists.map(p => (
+                    <span key={p.id} className="bg-purple-900/40 text-purple-300 px-2.5 py-1 rounded-lg font-extrabold border border-purple-850/60">
+                      💣 {p.name}
                     </span>
-                    <PlayerSelector
-                      targetId={nightAction.terroristTargetId}
-                      onChange={(id) => setNightAction({ ...nightAction, terroristTargetId: id })}
-                      excludeId={terroristShooterId || undefined}
-                    />
-                    {nightAction.terroristTargetId && (
-                      <div className="bg-purple-500/10 border border-purple-500/20 text-purple-400 p-3 rounded-lg text-xs font-semibold text-center mt-3 animate-fadeIn">
-                        هدف نشانه رفته تروریست: <span className="font-bold underline">{players.find(p => p.id === nightAction.terroristTargetId)?.name}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed">
-                تروریست امشب در مجمع حضور ندارد یا بمب فعالی ندارد.<br/>برای ادامه، به مرحله بعدی بروید.
-              </div>
-            )}
+                  ))}
+                </div>
+              ) : (
+                <div className="text-slate-500 font-black">{t('night.step3.noActive')}</div>
+              )}
+            </div>
           </div>
-        );
-      })()}
+
+          {terroristActive ? (
+            <>
+              {showSecrets && terroristShooterId && isPlayerBlocked(terroristShooterId) && (
+                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-3.5 rounded-xl text-xs font-bold flex items-center gap-2 mb-4 animate-fadeIn">
+                  <Ban className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span>{t('night.step3.blockedAlert', { name: players.find(x => x.id === terroristShooterId)?.name })}</span>
+                </div>
+              )}
+              {activeTerrorists.length > 0 && (
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-3">
+                  <span className="text-xs font-black text-slate-300 block">{t('night.step3.shooterSelectLabel')}</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {activeTerrorists.map((p) => {
+                      const isSelected = terroristShooterId === p.id;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => {
+                            setTerroristShooterId(isSelected ? null : p.id);
+                            setNightAction({ ...nightAction, terroristTargetId: null });
+                          }}
+                          className={`p-2.5 rounded-lg text-xs font-bold border transition text-center ${
+                            isSelected ? 'bg-purple-700 text-white border-purple-500 font-extrabold' : 'bg-slate-900/50 border-slate-800 text-slate-350 hover:border-slate-800'
+                          }`}
+                        >
+                          {p.name}
+                        </button>
+                      );
+                    })}
+                    <button
+                      type="button"
+                      onClick={() => { setTerroristShooterId(null); setNightAction({ ...nightAction, terroristTargetId: null }); }}
+                      className={`p-2.5 rounded-lg text-xs font-bold border transition text-center ${
+                        terroristShooterId === null ? 'bg-slate-800 text-white border-slate-700' : 'bg-slate-950/10 border-slate-900 text-slate-400'
+                      }`}
+                    >
+                      {t('night.common.noAction')}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {terroristShooterId && (
+                <div className="space-y-3 mt-4 bg-slate-950/30 p-4 rounded-xl border border-slate-850">
+                  <span className="text-xs font-black text-slate-300 block">{t('night.step3.targetSelectLabel')}</span>
+                  <PlayerSelector
+                    targetId={nightAction.terroristTargetId}
+                    onChange={(id) => setNightAction({ ...nightAction, terroristTargetId: id })}
+                    excludeId={terroristShooterId || undefined}
+                  />
+                  {nightAction.terroristTargetId && (
+                    <div className="bg-purple-500/10 border border-purple-500/20 text-purple-400 p-3 rounded-lg text-xs font-semibold text-center mt-3 animate-fadeIn">
+                      {t('night.step3.targetAimed')} <span className="font-bold underline">{players.find(p => p.id === nightAction.terroristTargetId)?.name}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed whitespace-pre-line">
+              {t('night.step3.inactive')}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* STEP 4: POLICE */}
       {step === 4 && (
@@ -918,15 +742,13 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
                 <Skull className="w-5 h-5 text-red-500" />
-                ۴. شلیک مستقیم تفنگ پلیس (پلیس)
+                {t('night.step4.title')}
               </h3>
               <span className="text-[10px] font-black bg-red-900/30 text-red-400 px-2.5 py-0.5 rounded-full border border-red-900/40">
-                {players.filter(p => p.role === 'police' && p.isAlive && !p.isImprisoned).map(p => p.name).join('، ') || 'نامشخص'}
+                {playersWithRoleNames('police')}
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed font-semibold">
-              پلیس شهر بیدار می‌شود تا شلیک شبانه خود را بر روی یک بازیکن با تایید گرداننده مستقر نماید.
-            </p>
+            <p className="text-xs text-slate-400 leading-relaxed font-semibold">{t('night.step4.desc')}</p>
           </div>
 
           {policeActive ? (
@@ -934,23 +756,22 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
               {showSecrets && isRoleBlocked('police') && (
                 <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-3.5 rounded-xl text-xs font-bold flex items-center gap-2 mb-4 animate-fadeIn">
                   <Ban className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>⚠️ توجه: طبق اسرار عیان، این بازیکن (پلیس) توسط کشیش مسدود شده است و انتخاب او هیچ اثری در روند زنده بازی نخواهد داشت.</span>
+                  <span>{t('night.step4.blockedAlert')}</span>
                 </div>
               )}
               <PlayerSelector
                 targetId={nightAction.policeTargetId}
                 onChange={(id) => setNightAction({ ...nightAction, policeTargetId: id })}
               />
-
               {nightAction.policeTargetId && (
                 <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg text-xs font-semibold text-center mt-3 animate-fadeIn">
-                  مظنون نشانه رفته پلیس: <span className="font-bold underline">{players.find(p => p.id === nightAction.policeTargetId)?.name}</span>
+                  {t('night.step4.selected')} <span className="font-bold underline">{players.find(p => p.id === nightAction.policeTargetId)?.name}</span>
                 </div>
               )}
             </>
           ) : (
-            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed">
-              پلیس امشب در مجمع حضور ندارد یا زندانی است.<br/>برای ادامه، به مرحله بعدی بروید.
+            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed whitespace-pre-line">
+              {t('night.step4.inactive')}
             </div>
           )}
         </div>
@@ -963,15 +784,13 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
                 <Eye className="w-5 h-5 text-teal-400" />
-                ۵. حکم مستقیم جلب کارآگاه (کارآگاه)
+                {t('night.step5.title')}
               </h3>
               <span className="text-[10px] font-black bg-teal-900/30 text-teal-400 px-2.5 py-0.5 rounded-full border border-teal-900/40">
-                {players.filter(p => p.role === 'detective' && p.isAlive && !p.isImprisoned).map(p => p.name).join('، ') || 'نامشخص'}
+                {playersWithRoleNames('detective')}
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed font-semibold">
-              کارآگاه اینک اسناد پرونده بازیکن مورد نظر را باطل کرده و او را بی‌واسطه به تالار دادگاه روانه می‌کند (به جز رئیس‌جمهور، قاضی و پاپ).
-            </p>
+            <p className="text-xs text-slate-400 leading-relaxed font-semibold">{t('night.step5.desc')}</p>
           </div>
 
           {detectiveActive ? (
@@ -979,7 +798,7 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
               {showSecrets && isRoleBlocked('detective') && (
                 <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-3.5 rounded-xl text-xs font-bold flex items-center gap-2 mb-4 animate-fadeIn">
                   <Ban className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>⚠️ توجه: طبق اسرار عیان، این بازیکن (کارآگاه) توسط کشیش مسدود شده است و انتخاب او هیچ اثری در روند زنده بازی نخواهد داشت.</span>
+                  <span>{t('night.step5.blockedAlert')}</span>
                 </div>
               )}
               <PlayerSelector
@@ -987,16 +806,15 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
                 onChange={(id) => setNightAction({ ...nightAction, detectiveTargetId: id })}
                 excludeRoles={['president', 'judge', 'pope']}
               />
-
               {nightAction.detectiveTargetId && (
                 <div className="bg-teal-500/10 border border-teal-500/20 text-teal-400 p-3 rounded-lg text-xs font-semibold text-center mt-3 animate-fadeIn">
-                  متهم اعزامی کارآگاه به دادگاه: <span className="font-bold underline">{players.find(p => p.id === nightAction.detectiveTargetId)?.name}</span>
+                  {t('night.step5.selected')} <span className="font-bold underline">{players.find(p => p.id === nightAction.detectiveTargetId)?.name}</span>
                 </div>
               )}
             </>
           ) : (
-            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed">
-              کارآگاه امشب در مجمع حضور ندارد، زندانی است یا امشب شب استعلام نیست (فعالیت یک شب در میان).<br/>برای ادامه، به مرحله بعدی بروید.
+            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed whitespace-pre-line">
+              {t('night.step5.inactive')}
             </div>
           )}
         </div>
@@ -1009,27 +827,33 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
                 <Skull className="w-5 h-5 text-rose-500" />
-                ۶. تصمیم شلیک نهایی لژ مخفی (فراماسون‌ها)
+                {t('night.step6.title')}
               </h3>
               <span className="text-[10px] font-black bg-rose-900/30 text-rose-400 px-2.5 py-0.5 rounded-full border border-rose-900/40">
-                {players.filter(p => p.identity === 'freemason' && p.isAlive && !p.isImprisoned).map(p => p.name).join('، ') || 'نامشخص'}
+                {players.filter(p => p.identity === 'freemason' && p.isAlive && !p.isImprisoned).map(p => p.name).join(isRTL ? '، ' : ', ') || t('night.common.unknown')}
               </span>
             </div>
-            
-            {/* Added: Mason Information */}
+
             {(() => {
               const activeMasons = players.filter(p => p.identity === 'freemason' && p.isAlive && !p.isImprisoned);
               const imprisonedMasons = players.filter(p => p.identity === 'freemason' && p.isAlive && p.isImprisoned);
               const smallestMason = activeMasons.length > 0 ? activeMasons.reduce((prev, current) => (prev.masonNumber < current.masonNumber ? prev : current)) : null;
-              
+
               return (
                 <div className="space-y-2 mt-3 pt-3 border-t border-slate-800 text-[11px]">
                   <div className="bg-rose-900/10 border border-rose-500/20 p-2.5 rounded-lg text-rose-200 font-bold">
-                    فراماسون مسئول شلیک (کوچکترین شماره فعال): <span className="font-black text-rose-300">{smallestMason ? `${smallestMason.name} (شماره ${smallestMason.masonNumber})` : 'هیچ‌کس'}</span>
+                    {t('night.step6.shooterLabel')}{' '}
+                    <span className="font-black text-rose-300">
+                      {smallestMason ? t('night.step6.masonNumbered', { name: smallestMason.name, n: smallestMason.masonNumber }) : t('night.step6.nobody')}
+                    </span>
                   </div>
-                  <div className="text-slate-400 font-semibold">فعال: {activeMasons.length > 0 ? activeMasons.map(m => `${m.name} (${m.masonNumber})`).join('، ') : 'کسی در لژ فعال نیست'}</div>
+                  <div className="text-slate-400 font-semibold">
+                    {activeMasons.length > 0
+                      ? t('night.step6.active', { list: activeMasons.map(m => `${m.name} (${m.masonNumber})`).join(isRTL ? '، ' : ', ') })
+                      : t('night.step6.noActive')}
+                  </div>
                   {imprisonedMasons.length > 0 && (
-                    <div className="text-rose-400 font-semibold">زندانی (بیدار نمی‌شوند): {imprisonedMasons.map(m => m.name).join('، ')}</div>
+                    <div className="text-rose-400 font-semibold">{t('night.step6.imprisoned', { list: imprisonedMasons.map(m => m.name).join(isRTL ? '، ' : ', ') })}</div>
                   )}
                 </div>
               );
@@ -1041,23 +865,22 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
               {showSecrets && isMasonBlockedCurrent && (
                 <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-3.5 rounded-xl text-xs font-bold flex items-center gap-2 mb-4 animate-fadeIn">
                   <Ban className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>⚠️ توجه: اعضای لژ توسط کشیش مسدود شده‌اند. شلیک آن‌ها اثری نخواهد داشت اما اقدام آنان در سامانه ثبت می‌گردد.</span>
+                  <span>{t('night.step6.blockedAlert')}</span>
                 </div>
               )}
               <PlayerSelector
                 targetId={nightAction.masonTargetId}
                 onChange={(id) => setNightAction({ ...nightAction, masonTargetId: id })}
               />
-
               {nightAction.masonTargetId && (
                 <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 p-3 rounded-lg text-xs font-semibold text-center mt-3 animate-fadeIn">
-                  هدف نهایی شلیک فراماسون‌ها: <span className="font-bold underline">{players.find(p => p.id === nightAction.masonTargetId)?.name}</span>
+                  {t('night.step6.selected')} <span className="font-bold underline">{players.find(p => p.id === nightAction.masonTargetId)?.name}</span>
                 </div>
               )}
             </>
           ) : (
-            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed">
-              هیچ فراماسون زنده یا فعالی در صحنه حضور ندارد که شلیک کند.<br/>برای ادامه، به مرحله بعدی بروید.
+            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed whitespace-pre-line">
+              {t('night.step6.inactive')}
             </div>
           )}
         </div>
@@ -1070,15 +893,13 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
                 <Eye className="w-5 h-5 text-teal-400" />
-                ۷. ردیابی دوربین‌های زنده گزارشگر (گزارشگر)
+                {t('night.step7.title')}
               </h3>
               <span className="text-[10px] font-black bg-teal-900/30 text-teal-400 px-2.5 py-0.5 rounded-full border border-teal-900/40">
-                {players.filter(p => p.role === 'reporter' && p.isAlive && !p.isImprisoned).map(p => p.name).join('، ') || 'نامشخص'}
+                {playersWithRoleNames('reporter')}
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed font-semibold">
-              گزارشگر بیدار می‌شود تا با قرار دادن دوربین مخفی روی یکی از اعضا، رویدادهایی که امشب بر او گذشته است را رصد کند.
-            </p>
+            <p className="text-xs text-slate-400 leading-relaxed font-semibold">{t('night.step7.desc')}</p>
           </div>
 
           {reporterActive ? (
@@ -1086,7 +907,7 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
               {showSecrets && isRoleBlocked('reporter') && (
                 <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-3.5 rounded-xl text-xs font-bold flex items-center gap-2 mb-4 animate-fadeIn">
                   <Ban className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>⚠️ توجه: طبق اسرار عیان، این بازیکن (گزارشگر) توسط کشیش مسدود شده است و انتخاب او هیچ اثری در روند زنده بازی نخواهد داشت.</span>
+                  <span>{t('night.step7.blockedAlert')}</span>
                 </div>
               )}
               <PlayerSelector
@@ -1095,10 +916,10 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
               />
 
               {nightAction.reporterTargetId && (
-                <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-xl text-xs space-y-2 mt-4 text-right animate-fadeIn">
+                <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-xl text-xs space-y-2 mt-4 animate-fadeIn">
                   <div className="flex items-center gap-1.5 font-extrabold text-white mb-2 pb-1 border-b border-emerald-950">
                     <Sparkles className="w-4 h-4 text-emerald-400" />
-                    <span>رصد زنده گزارشگر بابت رویدادهای فاز شبِ «{players.find(p => p.id === nightAction.reporterTargetId)?.name}»:</span>
+                    <span>{t('night.step7.panelTitle', { name: players.find(p => p.id === nightAction.reporterTargetId)?.name })}</span>
                   </div>
                   <div className="space-y-1 text-slate-300 font-bold">
                     {(() => {
@@ -1109,71 +930,46 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
                       if (isReporterBlockedCurrent && !showSecrets) {
                         return (
                           <div className="bg-amber-950/40 border border-amber-900/40 p-3 rounded-lg text-amber-300 text-xs text-center font-black leading-relaxed shrink-0 mb-2">
-                             ⚠️ توجه: این بازیکن (گزارشگر) بن شده است و در نمای عمومی باید به بازیکن اطلاع داده شود:<br />
-                            <span className="text-white text-sm block mt-1.5 underline underline-offset-4 font-extrabold pb-1">«در شب گذشته برای او هیچ اتفاقی نیفتاده است»</span>
+                            {t('night.step7.blockedPublic')}<br />
+                            <span className="text-white text-sm block mt-1.5 underline underline-offset-4 font-extrabold pb-1">{t('night.step7.blockedPublicMsg')}</span>
                           </div>
                         );
                       }
 
                       const events: string[] = [];
-
                       const checkSimBlocked = (role: string) => {
                         if (!priestActive) return false;
                         if (!nightAction.priestTargetPlayerId) return false;
                         const p = players.find(x => x.id === nightAction.priestTargetPlayerId);
                         if (!p) return false;
                         if (role === 'terrorist' && p.hasTerroristAbility) return true;
-                        if (role === 'freemason') {
-                          return activeMasonCommander ? p.id === activeMasonCommander.id : false;
-                        }
+                        if (role === 'freemason') return activeMasonCommander ? p.id === activeMasonCommander.id : false;
                         return p.role === role;
                       };
 
-                      // Priest block
                       const isBlockedVal = priestActive && nightAction.priestTargetPlayerId === target.id;
-                      if (isBlockedVal) {
-                        events.push(`🚫 این بازیکن توسط کشیش مجمع مسدود شده است.`);
-                      }
+                      if (isBlockedVal) events.push(t('night.step7.events.priestBlock'));
 
-                      // Doctor save
                       const isSaved = doctorActive && nightAction.doctorTargetId?.split(',').filter(Boolean).includes(target.id) && !checkSimBlocked('doctor');
-                      if (isSaved) {
-                        events.push("🩺 پزشک متعهد شهر از این بازیکن محافظت و او را پانسمان کرده است.");
-                      }
+                      if (isSaved) events.push(t('night.step7.events.doctorSave'));
 
-                      // Terrorist target
                       const isTerrorTarget = terroristActive && nightAction.terroristTargetId === target.id && !checkSimBlocked('terrorist');
-                      if (isTerrorTarget) {
-                        events.push("💣 بازیکن مورد هدف مستقیم بمب انتحاری تروریست قرار گرفته است.");
-                      }
+                      if (isTerrorTarget) events.push(t('night.step7.events.terrorist'));
 
-                      // Police shot
                       const isPoliceTarget = policeActive && nightAction.policeTargetId === target.id && !checkSimBlocked('police');
-                      if (isPoliceTarget) {
-                        events.push("🔫 پلیس شهر شبانه به سمت این بازیکن شلیک مستقیم کرده است.");
-                      }
+                      if (isPoliceTarget) events.push(t('night.step7.events.police'));
 
-                      // Detective target
                       const isDetTarget = detectiveActive && nightAction.detectiveTargetId === target.id && !checkSimBlocked('detective');
-                      if (isDetTarget) {
-                        events.push("⚖️ پرونده قضایی مخفیانه توسط کارآگاه تشکیل شده و بازیکن مستقیم به دادگاه فرستاده شد.");
-                      }
+                      if (isDetTarget) events.push(t('night.step7.events.detective'));
 
-                      // Mason target
                       const isMasonTarget = masonsActive && nightAction.masonTargetId === target.id && !checkSimBlocked('freemason');
-                      if (isMasonTarget) {
-                        events.push("🌹 بازیکن با تصمیم مخفیانه لژ فراماسونری به نوشیدن فنجان زهرآگین مرگ مجمع دعوت شد.");
-                      }
+                      if (isMasonTarget) events.push(t('night.step7.events.mason'));
 
-                      if (events.length === 0) {
-                        events.push("امشب هیچ اقدام مستقیم یا سوءقصدی بر سر این بازیکن حادث نگردید و شب آرامی سپری شد.");
-                      }
+                      if (events.length === 0) events.push(t('night.step7.events.calm'));
 
                       return (
                         <ul className="list-disc list-inside space-y-1.5">
-                          {events.map((ev, idx) => (
-                            <li key={idx} className="text-slate-200">{ev}</li>
-                          ))}
+                          {events.map((ev, idx) => (<li key={idx} className="text-slate-200">{ev}</li>))}
                         </ul>
                       );
                     })()}
@@ -1182,8 +978,8 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
               )}
             </>
           ) : (
-            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed">
-              گزارشگر امشب در مجمع فعال نیست.<br/>برای ادامه، به مرحله بعدی بروید.
+            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed whitespace-pre-line">
+              {t('night.step7.inactive')}
             </div>
           )}
         </div>
@@ -1196,15 +992,13 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-amber-500" />
-                ۸. استعلام حقیقت روزنامه (خبرنگار)
+                {t('night.step8.title')}
               </h3>
               <span className="text-[10px] font-black bg-amber-900/30 text-amber-400 px-2.5 py-0.5 rounded-full border border-amber-900/40">
-                {players.filter(p => p.role === 'journalist' && p.isAlive && !p.isImprisoned).map(p => p.name).join('، ') || 'نامشخص'}
+                {playersWithRoleNames('journalist')}
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed font-semibold">
-              خبرنگار (آخرین نقشی که بیدار می‌شود) بیدار گشته و مطلع می‌شود چه هویت‌هایی در فازهای اخیر خارج شده‌اند. بازه زمانی بازرسی را معین کنید.
-            </p>
+            <p className="text-xs text-slate-400 leading-relaxed font-semibold">{t('night.step8.desc')}</p>
           </div>
 
           {journalistActive ? (
@@ -1212,7 +1006,7 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
               {isRoleBlocked('journalist') && (
                 <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-3.5 rounded-xl text-xs font-bold flex items-center gap-2 mb-4 animate-fadeIn">
                   <Ban className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>⚠️ توجه: طبق اسرار عیان، این بازیکن (خبرنگار) توسط کشیش مسدود شده است و انتخاب او هیچ اثری در روند زنده بازی نخواهد داشت.</span>
+                  <span>{t('night.step8.blockedAlert')}</span>
                 </div>
               )}
               <div className="flex justify-center gap-4 mt-4">
@@ -1224,7 +1018,7 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
                       : 'bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700'
                   }`}
                 >
-                  کشته‌شدگان همین شب جاری
+                  {t('night.step8.thisNight')}
                 </button>
                 <button
                   onClick={() => setNightAction({ ...nightAction, journalistTargetType: 'day' })}
@@ -1234,55 +1028,54 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
                       : 'bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700'
                   }`}
                 >
-                  کشته‌شدگان روز گذشته
+                  {t('night.step8.pastDay')}
                 </button>
               </div>
 
               {nightAction.journalistTargetType && (
-                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-4 rounded-xl text-xs space-y-2 mt-4 text-right animate-fadeIn">
+                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-4 rounded-xl text-xs space-y-2 mt-4 animate-fadeIn">
                   <div className="flex items-center gap-1.5 font-extrabold text-white mb-2 pb-1 border-b border-amber-955">
                     <Sparkles className="w-4 h-4 text-amber-400" />
-                    <span>جمع‌بندی نهایی استعلام خبرنگار (مخصوص ابلاغ به گرداننده):</span>
+                    <span>{t('night.step8.summaryTitle')}</span>
                   </div>
-                  
                   {(() => {
-                    const report = nightAction.journalistTargetType === 'night' 
-                      ? simulateThisNightDeathsAndFactions() 
+                    const report = nightAction.journalistTargetType === 'night'
+                      ? simulateThisNightDeathsAndFactions()
                       : getPastDayDeathsAndFactions();
-
                     return (
                       <div className="space-y-4 text-slate-300 font-bold">
                         <p className="text-slate-100 font-sans">
-                          بازه زمانی رصد: <span className="text-amber-400 underline">{nightAction.journalistTargetType === 'night' ? 'کشته‌شدگان همین فاز شب' : 'خارج‌شدگان فاز روز گذشته'}</span>
+                          {t('night.step8.rangeLabel')}{' '}
+                          <span className="text-amber-400 underline">
+                            {nightAction.journalistTargetType === 'night' ? t('night.step8.rangeNight') : t('night.step8.rangeDay')}
+                          </span>
                         </p>
                         <div className="grid grid-cols-2 gap-3 bg-slate-950/60 p-3 rounded-lg border border-slate-900 font-sans">
                           <div className="flex flex-col items-center justify-center p-2 bg-slate-900/40 rounded border border-slate-800 font-mono">
-                            <span className="text-slate-400 text-[10px] mb-1 font-sans">تعداد شهروندان خارج شده:</span>
-                            <span className="text-sky-400 text-lg font-black">{report.citizens} نفر</span>
+                            <span className="text-slate-400 text-[10px] mb-1 font-sans">{t('night.step8.citizensOut')}</span>
+                            <span className="text-sky-400 text-lg font-black">{report.citizens}{t('night.step8.peopleSuffix')}</span>
                           </div>
                           <div className="flex flex-col items-center justify-center p-2 bg-slate-900/40 rounded border border-slate-800 font-mono">
-                            <span className="text-slate-400 text-[10px] mb-1 font-sans">تعداد فراماسون‌های خارج شده:</span>
-                            <span className="text-rose-400 text-lg font-black">{report.masons} نفر</span>
+                            <span className="text-slate-400 text-[10px] mb-1 font-sans">{t('night.step8.masonsOut')}</span>
+                            <span className="text-rose-400 text-lg font-black">{report.masons}{t('night.step8.peopleSuffix')}</span>
                           </div>
                         </div>
-                        <p className="text-[10px] text-slate-500 text-center font-semibold font-sans">
-                          گرداننده موظف است نتایج جدول فوق را به عنوان فکت رسمی گزارش خبرنگار، مستقیماً به وی اعلام نماید.
-                        </p>
+                        <p className="text-[10px] text-slate-500 text-center font-semibold font-sans">{t('night.step8.noteFooter')}</p>
                       </div>
                     );
-              })()}
-            </div>
-          )}
+                  })()}
+                </div>
+              )}
             </>
           ) : (
-            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed">
-              خبرنگار امشب در مجمع حضور ندارد یا زندانی است.<br/>برای پایان فاز شب، ادامه دهید.
+            <div className="mt-4 p-4 text-center rounded-xl border border-slate-800 bg-slate-900/30 text-slate-400 text-xs font-bold leading-relaxed whitespace-pre-line">
+              {t('night.step8.inactive')}
             </div>
           )}
         </div>
       )}
 
-      {/* Wizard Footer Actions */}
+      {/* Footer */}
       <div className="flex justify-between items-center mt-8 pt-4 border-t border-slate-800">
         <button
           onClick={handlePrevStep}
@@ -1293,76 +1086,34 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
               : 'bg-slate-800 text-slate-200 hover:bg-slate-755'
           }`}
         >
-          <ArrowRight className="w-4 h-4" />
-          مقر قبل
+          <PrevArrow className="w-4 h-4" />
+          {t('night.footer.prev')}
         </button>
 
         <button
           onClick={handleNextStep}
           className="bg-teal-600 hover:bg-teal-700 text-slate-950 font-black px-6 py-2.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer"
         >
-          {step === getLastEnabledStep()
-            ? 'پایان رِفرِش شبانه و بررسی فاکتور مرگ'
-            : 'توانمندی بعدی'}
-          {step === getLastEnabledStep() ? <Play className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
+          {step === getLastEnabledStep() ? t('night.footer.finish') : t('night.footer.next')}
+          {step === getLastEnabledStep() ? <Play className="w-4 h-4" /> : <NextArrow className="w-4 h-4" />}
         </button>
       </div>
 
-      {/* Night Action Guide Panel */}
+      {/* Reference */}
       <div className="mt-8 bg-[#070b13] border border-slate-850 rounded-xl p-4">
         <h4 className="font-black text-slate-400 mb-3 border-b border-slate-850 pb-2 flex items-center gap-1.5 justify-start text-xs">
           <Eye className="w-4 h-4 text-teal-400" />
-          <span>لیست ترتیبی اقدامات و بیدارباش فاز شب (مرجع سریع گرداننده):</span>
+          <span>{t('night.footer.guideTitle')}</span>
         </h4>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] text-slate-400 font-semibold leading-normal font-sans">
-          <div className={`p-2 rounded border transition-all ${isStepEnabled(1) ? 'bg-slate-900/40 border-slate-800 text-slate-350 shadow-sm' : 'bg-slate-950 border-slate-900/10 text-slate-600 line-through opacity-45 border-dashed border-slate-900'}`}>
-            <span className={`${isStepEnabled(1) ? 'text-teal-400 font-extrabold' : 'text-slate-600'} block mb-0.5`}>
-              ۱. کشیش (مسدودساز) {isStepRemovedByPopulation(1) ? ' (حذف متغیر)' : ''}
-            </span>
-            ابطال توانایی یک نقش برای امشب
-          </div>
-          <div className={`p-2 rounded border transition-all ${isStepEnabled(2) ? 'bg-slate-900/40 border-slate-800 text-slate-350 shadow-sm' : 'bg-slate-950 border-slate-900/10 text-slate-600 line-through opacity-45 border-dashed border-slate-900'}`}>
-            <span className={`${isStepEnabled(2) ? 'text-teal-400 font-extrabold' : 'text-slate-600'} block mb-0.5`}>
-              ۲. دکتر (پزشک نجات)
-            </span>
-            پوشاندن جلیقه نجات بر تن متهم
-          </div>
-          <div className={`p-2 rounded border transition-all ${isStepEnabled(3) ? 'bg-slate-900/40 border-slate-800 text-slate-350 shadow-sm' : 'bg-slate-950 border-slate-900/10 text-slate-600 line-through opacity-45 border-dashed border-slate-900'}`}>
-            <span className={`${isStepEnabled(3) ? 'text-teal-400 font-extrabold' : 'text-slate-600'} block mb-0.5`}>
-              ۳. تروریست (انتحار)
-            </span>
-            کشیدن ضامن بمب بر بازیکن هدف
-          </div>
-          <div className={`p-2 rounded border transition-all ${isStepEnabled(4) ? 'bg-slate-900/40 border-slate-800 text-slate-350 shadow-sm' : 'bg-slate-950 border-slate-900/10 text-slate-600 line-through opacity-45 border-dashed border-slate-900'}`}>
-            <span className={`${isStepEnabled(4) ? 'text-teal-400 font-extrabold' : 'text-slate-600'} block mb-0.5`}>
-              ۴. پلیس (تک تیرانداز) {isStepRemovedByPopulation(4) ? ' (حذف متغیر)' : ''}
-            </span>
-            آتش مستقیم به مظنون (کسب تروریست)
-          </div>
-          <div className={`p-2 rounded border transition-all ${isStepEnabled(5) ? 'bg-slate-900/40 border-slate-800 text-slate-350 shadow-sm' : 'bg-slate-950 border-slate-900/10 text-slate-600 line-through opacity-45 border-dashed border-slate-900'}`}>
-            <span className={`${isStepEnabled(5) ? 'text-teal-400 font-extrabold' : 'text-slate-600'} block mb-0.5`}>
-              ۵. کارآگاه (جلب)
-            </span>
-            ارسال مستقیم متهم بومی به دادگاه
-          </div>
-          <div className={`p-2 rounded border transition-all ${isStepEnabled(6) ? 'bg-slate-900/40 border-slate-800 text-slate-350 shadow-sm' : 'bg-slate-950 border-slate-900/10 text-slate-600 line-through opacity-45 border-dashed border-slate-900'}`}>
-            <span className={`${isStepEnabled(6) ? 'text-teal-400 font-extrabold' : 'text-slate-600'} block mb-0.5`}>
-              ۶. فراماسون (شلیک لژ)
-            </span>
-            فنجان زهرآگین مقتدر مجمع
-          </div>
-          <div className={`p-2 rounded border transition-all ${isStepEnabled(7) ? 'bg-slate-900/40 border-slate-800 text-slate-350 shadow-sm' : 'bg-slate-950 border-slate-900/10 text-slate-600 line-through opacity-45 border-dashed border-slate-900'}`}>
-            <span className={`${isStepEnabled(7) ? 'text-teal-400 font-extrabold' : 'text-slate-600'} block mb-0.5`}>
-              ۷. گزارشگر (رصد زنده)
-            </span>
-            ردیابی اتفاقات رخ داده بر یک بازیکن
-          </div>
-          <div className={`p-2 rounded border transition-all ${isStepEnabled(8) ? 'bg-slate-900/40 border-slate-800 text-slate-350 shadow-sm' : 'bg-slate-950 border-slate-900/10 text-slate-600 line-through opacity-45 border-dashed border-slate-900'}`}>
-            <span className={`${isStepEnabled(8) ? 'text-teal-400 font-extrabold' : 'text-slate-600'} block mb-0.5`}>
-              ۸. خبرنگار (آماری)
-            </span>
-            فراوانی جناح خارج‌شدگان روز یا شب
-          </div>
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+            <div key={n} className={`p-2 rounded border transition-all ${isStepEnabled(n) ? 'bg-slate-900/40 border-slate-800 text-slate-350 shadow-sm' : 'bg-slate-950 border-slate-900/10 text-slate-600 line-through opacity-45 border-dashed border-slate-900'}`}>
+              <span className={`${isStepEnabled(n) ? 'text-teal-400 font-extrabold' : 'text-slate-600'} block mb-0.5`}>
+                {t(`night.reference.step${n}.title`)}{isStepRemovedByPopulation(n) ? t('night.common.removedVar') : ''}
+              </span>
+              {t(`night.reference.step${n}.desc`)}
+            </div>
+          ))}
         </div>
       </div>
     </div>
