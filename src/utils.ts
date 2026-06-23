@@ -90,7 +90,7 @@ export function initializePlayers(names: string[]): Player[] {
     
     return {
       id: generateId(),
-      name: name.trim() || `بازیکن ${index + 1}`,
+      name: name.trim() || (((typeof localStorage !== 'undefined' && localStorage.getItem('president_lang')) || 'fa').startsWith('en') ? `Player ${index + 1}` : `بازیکن ${index + 1}`),
       identity: isMason ? 'freemason' : 'citizen',
       masonNumber: masonNo,
       role: 'none',
