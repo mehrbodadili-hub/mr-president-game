@@ -48,7 +48,7 @@ import {
 } from 'lucide-react';
 
 import coverAsset from './assets/game_cover.jpg.asset.json';
-const coverImg = coverAsset.url;
+import coverAssetEn from './assets/game_cover_en.jpg.asset.json';
 
 const isDevMode = 
   (import.meta as any).env?.DEV || 
