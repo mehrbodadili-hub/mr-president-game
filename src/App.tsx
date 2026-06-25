@@ -109,6 +109,8 @@ export default function App() {
   const [authPassword, setAuthPassword] = useState('');
   const [authError, setAuthError] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup' | 'forgot'>('signin');
+  const [authInfo, setAuthInfo] = useState('');
 
   useEffect(() => {
     // Subscribe FIRST so we never miss an event, then hydrate the current session.
@@ -127,17 +129,38 @@ export default function App() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
+    setAuthInfo('');
     setAuthLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: authEmail.trim(),
-      password: authPassword,
-    });
-    setAuthLoading(false);
-    if (error) {
-      setAuthError(t('auth.error'));
-      return;
+    const email = authEmail.trim();
+    if (authMode === 'signin') {
+      const { error } = await supabase.auth.signInWithPassword({ email, password: authPassword });
+      setAuthLoading(false);
+      if (error) { setAuthError(t('auth.error')); return; }
+      setAuthPassword('');
+    } else if (authMode === 'signup') {
+      if (authPassword.length < 6) {
+        setAuthLoading(false);
+        setAuthError(t('auth.passwordMin'));
+        return;
+      }
+      const { error } = await supabase.auth.signUp({
+        email,
+        password: authPassword,
+        options: { emailRedirectTo: `${window.location.origin}/` },
+      });
+      setAuthLoading(false);
+      if (error) { setAuthError(error.message); return; }
+      setAuthInfo(t('auth.signUpSuccess'));
+      setAuthPassword('');
+      setAuthMode('signin');
+    } else {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      setAuthLoading(false);
+      if (error) { setAuthError(error.message); return; }
+      setAuthInfo(t('auth.resetSent'));
     }
-    setAuthPassword('');
   };
 
   const handleChaosVoteChange = (voterId: string, targetId: string) => {
@@ -2057,6 +2080,11 @@ export default function App() {
                   {authError}
                 </div>
               )}
+              {authInfo && (
+                <div className="bg-emerald-950/40 border border-emerald-900/50 text-emerald-400 text-xs p-3 rounded-xl text-center font-bold">
+                  {authInfo}
+                </div>
+              )}
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-400 mr-1 block" htmlFor="email">{t('auth.email')}</label>
                 <div className="relative">
@@ -2077,6 +2105,7 @@ export default function App() {
                 </div>
               </div>
               
+              {authMode !== 'forgot' && (
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-400 mr-1 block" htmlFor="password">{t('auth.password')}</label>
                 <div className="relative">
@@ -2086,6 +2115,7 @@ export default function App() {
                   <input
                     id="password"
                     type="password"
+                    autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
                     value={authPassword}
                     onChange={(e) => setAuthPassword(e.target.value)}
                     dir="ltr"
@@ -2095,14 +2125,43 @@ export default function App() {
                   />
                 </div>
               </div>
+              )}
 
               <button
                 type="submit"
                 disabled={authLoading}
                 className="w-full bg-amber-600 hover:bg-amber-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black text-sm py-3.5 rounded-xl transition shadow-lg shadow-amber-900/20 mt-4 flex items-center justify-center gap-2"
               >
-                {t('auth.submit')}
+                {authMode === 'signin' ? t('auth.signIn') : authMode === 'signup' ? t('auth.signUp') : t('auth.sendResetLink')}
               </button>
+              <div className="flex flex-col items-center gap-2 pt-2 text-xs">
+                {authMode === 'signin' && (
+                  <>
+                    <button type="button" onClick={() => { setAuthMode('forgot'); setAuthError(''); setAuthInfo(''); }} className="text-amber-400/80 hover:text-amber-300 font-bold">
+                      {t('auth.forgotPassword')}
+                    </button>
+                    <div className="text-slate-500">
+                      {t('auth.noAccount')}{' '}
+                      <button type="button" onClick={() => { setAuthMode('signup'); setAuthError(''); setAuthInfo(''); }} className="text-amber-400 hover:text-amber-300 font-bold">
+                        {t('auth.signUp')}
+                      </button>
+                    </div>
+                  </>
+                )}
+                {authMode === 'signup' && (
+                  <div className="text-slate-500">
+                    {t('auth.haveAccount')}{' '}
+                    <button type="button" onClick={() => { setAuthMode('signin'); setAuthError(''); setAuthInfo(''); }} className="text-amber-400 hover:text-amber-300 font-bold">
+                      {t('auth.signIn')}
+                    </button>
+                  </div>
+                )}
+                {authMode === 'forgot' && (
+                  <button type="button" onClick={() => { setAuthMode('signin'); setAuthError(''); setAuthInfo(''); }} className="text-amber-400/80 hover:text-amber-300 font-bold">
+                    {t('auth.backToLogin')}
+                  </button>
+                )}
+              </div>
             </form>
             <a
               href={SECRET_ROOM_URL}
