@@ -2101,6 +2101,13 @@ export default function App() {
                 {t('auth.submit')}
               </button>
             </form>
+            <a
+              href={SECRET_ROOM_URL}
+              className="mt-4 w-full bg-slate-900 hover:bg-slate-800 border border-amber-500/20 hover:border-amber-500/40 text-amber-300 font-bold text-xs py-3 rounded-xl transition flex items-center justify-center gap-2"
+            >
+              <Home className="w-4 h-4" />
+              {t('nav.backToSecretRoom')}
+            </a>
           </div>
         </div>
 
