@@ -64,9 +64,8 @@ const isDevMode =
 export default function App() {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language !== 'en';
-  const coverImg = gameLogoAsset.url;
-  // Keep legacy cover refs to avoid unused-import errors
-  void coverAsset; void coverAssetEn;
+  const coverImg = i18n.language === 'en' ? coverAssetEn.url : coverAsset.url;
+  const logoImg = gameLogoAsset.url;
   // Game Setup States
   const [playerInput, setPlayerInput] = useState<string>(() => {
     return localStorage.getItem('president_playerInput') || tl('مهرداد, نیما, سپیده, آرمان, صبا, کیوان, بهار, رامین, رویا, سینا', 'Mehrdad, Nima, Sepideh, Arman, Saba, Kayvan, Bahar, Ramin, Roya, Sina');
@@ -2140,7 +2139,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-16 h-16 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.2)] border border-amber-400/30 overflow-hidden shrink-0 bg-black">
-              <img src={coverImg} alt="Logo" className="w-full h-full object-contain" />
+              <img src={logoImg} alt="Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 id="app-title" className="text-lg font-black text-white tracking-wide gold-glow-text">{t('app.title')}</h1>
