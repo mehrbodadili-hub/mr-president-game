@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import LanguageToggle from './components/LanguageToggle';
 import { supabase } from '@/integrations/supabase/client';
+import { SECRET_ROOM_URL } from './lib/external-links';
 import { Player, RoleType, GamePhase, GameLog, Cabinet, Identity } from './types';
 import { initializePlayers, calculateMasonCount, calculatePrisonCapacity, hasInitialShield, generateId, playTimerSound } from './utils';
 import { ROLE_DETAILS } from './constants';
@@ -44,7 +45,8 @@ import {
   ChevronRight,
   Lock,
   User,
-  LogOut
+  LogOut,
+  Home
 } from 'lucide-react';
 
 import coverAsset from './assets/game_cover.jpg.asset.json';
@@ -2099,6 +2101,13 @@ export default function App() {
                 {t('auth.submit')}
               </button>
             </form>
+            <a
+              href={SECRET_ROOM_URL}
+              className="mt-4 w-full bg-slate-900 hover:bg-slate-800 border border-amber-500/20 hover:border-amber-500/40 text-amber-300 font-bold text-xs py-3 rounded-xl transition flex items-center justify-center gap-2"
+            >
+              <Home className="w-4 h-4" />
+              {t('nav.backToSecretRoom')}
+            </a>
           </div>
         </div>
 
@@ -2178,6 +2187,14 @@ export default function App() {
 
             {/* Logout Button */}
             <LanguageToggle />
+            <a
+              href={SECRET_ROOM_URL}
+              title={t('nav.backToSecretRoom')}
+              className="bg-slate-950 hover:bg-slate-900 border border-amber-500/30 hover:border-amber-500/60 text-amber-300 hover:text-amber-200 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+            >
+              <Home className="w-4 h-4" />
+              <span className="hidden md:inline">{t('nav.backToSecretRoom')}</span>
+            </a>
             <button
               onClick={handleLogout}
               className="bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-400 hover:text-red-400 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"

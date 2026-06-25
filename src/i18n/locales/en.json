@@ -12,6 +12,9 @@
     "logout": "Log out",
     "error": "Email or password is incorrect."
   },
+  "nav": {
+    "backToSecretRoom": "Back to Secret Room"
+  },
   "language": {
     "label": "Language",
     "fa": "فارسی",
