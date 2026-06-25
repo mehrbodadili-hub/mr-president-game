@@ -60,6 +60,7 @@ const isDevMode =
 export default function App() {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language !== 'en';
+  const coverImg = i18n.language === 'en' ? coverAssetEn.url : coverAsset.url;
   // Game Setup States
   const [playerInput, setPlayerInput] = useState<string>(() => {
     return localStorage.getItem('president_playerInput') || tl('مهرداد, نیما, سپیده, آرمان, صبا, کیوان, بهار, رامین, رویا, سینا', 'Mehrdad, Nima, Sepideh, Arman, Saba, Kayvan, Bahar, Ramin, Roya, Sina');
