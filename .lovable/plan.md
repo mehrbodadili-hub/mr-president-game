@@ -1,13 +1,31 @@
-## Plan
+## هدف
+اتصال این بازی به سایت «اتاق مخفی» (https://secret-room-maestro.lovable.app) به‌صورت دوطرفه؛ یعنی هم در صفحه ورود (کاور) و هم در هدر بازی، یک دکمه «بازگشت به اتاق مخفی» قرار می‌گیرد.
 
-Add an English version of the cover image and swap it based on the active language.
+## تغییرات
 
-### Steps
+1) افزودن یک ثابت مشترک
+- ایجاد فایل `src/lib/external-links.ts` با مقدار:
+  ```ts
+  export const SECRET_ROOM_URL = "https://secret-room-maestro.lovable.app";
+  ```
 
-1. Upload the attached English cover (`ChatGPT Image Jun 25, 2026, 04_13_42 PM.png`) via `lovable-assets` → create `src/assets/game_cover_en.jpg.asset.json`.
-2. In `src/App.tsx`:
-   - Import the new `coverAssetEn`.
-   - Pick image based on `i18n.language` (`en` → English cover, otherwise the existing Persian cover).
-3. Leave the Persian cover untouched for the Farsi UI.
+2) دکمه در صفحه ورود/کاور (`src/App.tsx` بخش لاگین)
+- زیر دکمه ورود (یا کنار LanguageToggle بالای کاور)، یک دکمه ثانویه با آیکن `ArrowLeft` (در حالت RTL راست‌چین، در LTR چپ‌چین) اضافه شود:
+  - متن FA: «بازگشت به اتاق مخفی»
+  - متن EN: "Back to Secret Room"
+  - رفتار: `window.location.href = SECRET_ROOM_URL` (همان تب)
 
-No other behavior changes.
+3) دکمه در هدر اصلی بازی (`src/App.tsx` بخش HUD بالای صفحه پس از ورود)
+- در نوار بالایی کنار LanguageToggle و دکمه خروج، یک دکمه آیکن‌دار «خانه/اتاق مخفی» با `Tooltip` اضافه شود.
+- آیکن: `Home` از lucide-react. کلیک: انتقال به `SECRET_ROOM_URL`.
+- در موبایل فقط آیکن، در دسکتاپ آیکن + متن کوتاه.
+
+4) i18n
+- افزودن کلیدهای `nav.backToSecretRoom` در `src/i18n/locales/fa.json` و `en.json`.
+
+5) (اختیاری – در صورت تایید بعدی) افزودن لینک به این بازی از سمت پروژه «اتاق مخفی». این مرحله نیاز به ویرایش پروژه دیگر دارد و باید در همان پروژه انجام شود (cross-project یک‌طرفه است). آدرس بازگشت برای آنجا: `https://my-ai-playmate.lovable.app`.
+
+## نکات فنی
+- لینک‌ها هم‌ریشه نیستند، پس از `<a href>` معمولی (نه `<Link>` تنستک) استفاده می‌شود.
+- جهت آیکن بر اساس `i18n.dir()` تنظیم می‌شود تا با RTL/LTR سازگار باشد.
+- بدون تغییر در منطق بازی، احراز هویت، یا پایگاه داده.
