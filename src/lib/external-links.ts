@@ -1,0 +1,1 @@
+export const SECRET_ROOM_URL = "https://secret-room-maestro.lovable.app";
