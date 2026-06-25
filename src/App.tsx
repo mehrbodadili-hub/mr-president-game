@@ -2108,13 +2108,16 @@ export default function App() {
               rel="noopener noreferrer"
               title={t('nav.backToSecretRoom')}
               aria-label={t('nav.backToSecretRoom')}
-              className="group mt-4 w-full bg-gradient-to-b from-slate-900 to-slate-950 hover:from-slate-800 hover:to-slate-900 border border-amber-500/20 hover:border-amber-500/50 rounded-xl transition py-3 flex items-center justify-center shadow-lg shadow-black/40 hover:shadow-amber-500/10"
+              className="group mt-4 w-full bg-gradient-to-b from-slate-900 to-slate-950 hover:from-slate-800 hover:to-slate-900 border border-amber-500/30 hover:border-amber-500/60 rounded-xl transition py-4 flex items-center justify-center gap-3 shadow-lg shadow-black/40 hover:shadow-amber-500/10"
             >
               <img
                 src={secretRoomMark.url}
                 alt=""
-                className="h-8 w-auto object-contain drop-shadow-[0_0_8px_rgba(245,158,11,0.25)] transition group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.55)] group-hover:scale-105"
+                className="h-12 w-12 object-contain drop-shadow-[0_0_10px_rgba(245,158,11,0.4)] transition group-hover:drop-shadow-[0_0_16px_rgba(245,158,11,0.7)] group-hover:scale-110"
               />
+              <span className="text-amber-400/90 group-hover:text-amber-300 font-bold text-sm tracking-wide transition">
+                {t('nav.backToSecretRoom')}
+              </span>
             </a>
           </div>
         </div>
