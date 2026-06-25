@@ -2052,19 +2052,20 @@ export default function App() {
                 </div>
               )}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-400 mr-1 block" htmlFor="username">{t('auth.username')}</label>
+                <label className="text-[11px] font-bold text-slate-400 mr-1 block" htmlFor="email">{t('auth.email')}</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <User className="h-4 w-4 text-slate-500" />
                   </div>
                   <input
-                    id="username"
-                    type="text"
-                    value={authUsername}
-                    onChange={(e) => setAuthUsername(e.target.value)}
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
                     dir="ltr"
                     className="w-full bg-[#050609] border border-slate-800 text-sm text-slate-200 rounded-xl p-3 focus:outline-none focus:border-amber-500/50 transition pl-10"
-                    placeholder={t('auth.username')}
+                    placeholder={t('auth.email')}
                     required
                   />
                 </div>
@@ -2091,7 +2092,8 @@ export default function App() {
 
               <button
                 type="submit"
-                className="w-full bg-amber-600 hover:bg-amber-500 text-white font-black text-sm py-3.5 rounded-xl transition shadow-lg shadow-amber-900/20 mt-4 flex items-center justify-center gap-2"
+                disabled={authLoading}
+                className="w-full bg-amber-600 hover:bg-amber-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black text-sm py-3.5 rounded-xl transition shadow-lg shadow-amber-900/20 mt-4 flex items-center justify-center gap-2"
               >
                 {t('auth.submit')}
               </button>
