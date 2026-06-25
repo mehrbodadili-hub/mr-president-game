@@ -45,7 +45,8 @@ import {
   ChevronRight,
   Lock,
   User,
-  LogOut
+  LogOut,
+  Home
 } from 'lucide-react';
 
 import coverAsset from './assets/game_cover.jpg.asset.json';
