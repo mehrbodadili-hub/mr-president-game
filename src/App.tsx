@@ -216,11 +216,11 @@ export default function App() {
     }, 100);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setIsAuthenticated(false);
-    setAuthUsername('');
+    setAuthEmail('');
     setAuthPassword('');
-    localStorage.removeItem('president_isAuthenticated');
   };
 
   // Cabinet structure
