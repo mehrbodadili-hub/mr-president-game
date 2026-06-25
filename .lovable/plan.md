@@ -1,34 +1,13 @@
-## ادامه و تکمیل ترجمه دوزبانه
+## Plan
 
-تمام کامپوننت‌ها و متون باقی‌مانده به سیستم `i18next` منتقل می‌شوند تا بازی به‌طور کامل فارسی/انگلیسی شود.
+Add an English version of the cover image and swap it based on the active language.
 
-### مرحله ۱ — `NightWizard.tsx` (۱۳۷۰ خط)
-- افزودن `useTranslation` و `dir={i18n.dir()}`
-- ترجمه تمام مراحل شب: بیداری نقش‌ها، پرسش‌ها، دکمه‌های ناوبری
-- ترجمه پیام‌های log روایی (بیداری مافیا، شلیک، استعلام، شفا، و…)
-- جابجایی آیکن‌های جهت‌دار بر اساس RTL/LTR
-- افزودن کلیدها به `fa.json` و `en.json` تحت namespace `night`
+### Steps
 
-### مرحله ۲ — `Night0Terrorist.tsx` و `ChaosPhase.tsx`
-- ترجمه کامل UI، alertها و logها
-- namespaceهای `night0` و `chaos`
+1. Upload the attached English cover (`ChatGPT Image Jun 25, 2026, 04_13_42 PM.png`) via `lovable-assets` → create `src/assets/game_cover_en.jpg.asset.json`.
+2. In `src/App.tsx`:
+   - Import the new `coverAssetEn`.
+   - Pick image based on `i18n.language` (`en` → English cover, otherwise the existing Persian cover).
+3. Leave the Persian cover untouched for the Farsi UI.
 
-### مرحله ۳ — کامپوننت‌های کمکی
-- `GameGuide.tsx` — راهنمای کامل بازی (namespace `guide`)
-- `SearchManager.tsx` — مدیریت جستجو (namespace `search`)
-- `SpeakingTimer.tsx` — تایمر صحبت (namespace `timer`)
-- `CollapsibleGuide.tsx` و `ConditionsModal.tsx`
-
-### مرحله ۴ — `App.tsx` (HUD اصلی و فاز روز)
-- ترجمه هدر بازی، نمایش فاز فعلی، شمارنده‌ها
-- ترجمه wizard فاز روز (رأی‌گیری، دفاع، اعدام)
-- ترجمه تمام پیام‌های log باقی‌مانده در `App.tsx`
-- ترجمه دیالوگ‌های پایان بازی و اعلام برنده
-
-### مرحله ۵ — اعتبارسنجی نهایی
-- جستجوی regex برای کاراکترهای فارسی باقی‌مانده در `src/components/**` و `src/App.tsx`
-- اطمینان از همگامی کامل کلیدها بین `fa.json` و `en.json`
-- تست دستی تعویض زبان در preview و بررسی RTL/LTR
-
-### یادداشت فنی
-به‌دلیل حجم بالا (بیش از ۳۰۰۰ خط باقی‌مانده)، این کار در چند پاسخ متوالی تحویل داده می‌شود. در هر پاسخ یک مرحله کامل می‌شود و پیشرفت گزارش می‌گردد. قاعده memory (`mem/design/i18n.md`) رعایت می‌شود: هر کلید جدید همزمان در هر دو فایل locale اضافه می‌شود.
+No other behavior changes.
