@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import LanguageToggle from './components/LanguageToggle';
+import { supabase } from '@/integrations/supabase/client';
 import { Player, RoleType, GamePhase, GameLog, Cabinet, Identity } from './types';
 import { initializePlayers, calculateMasonCount, calculatePrisonCapacity, hasInitialShield, generateId, playTimerSound } from './utils';
 import { ROLE_DETAILS } from './constants';
