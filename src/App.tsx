@@ -109,6 +109,8 @@ export default function App() {
   const [authPassword, setAuthPassword] = useState('');
   const [authError, setAuthError] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup' | 'forgot'>('signin');
+  const [authInfo, setAuthInfo] = useState('');
 
   useEffect(() => {
     // Subscribe FIRST so we never miss an event, then hydrate the current session.
@@ -127,17 +129,38 @@ export default function App() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
+    setAuthInfo('');
     setAuthLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: authEmail.trim(),
-      password: authPassword,
-    });
-    setAuthLoading(false);
-    if (error) {
-      setAuthError(t('auth.error'));
-      return;
+    const email = authEmail.trim();
+    if (authMode === 'signin') {
+      const { error } = await supabase.auth.signInWithPassword({ email, password: authPassword });
+      setAuthLoading(false);
+      if (error) { setAuthError(t('auth.error')); return; }
+      setAuthPassword('');
+    } else if (authMode === 'signup') {
+      if (authPassword.length < 6) {
+        setAuthLoading(false);
+        setAuthError(t('auth.passwordMin'));
+        return;
+      }
+      const { error } = await supabase.auth.signUp({
+        email,
+        password: authPassword,
+        options: { emailRedirectTo: `${window.location.origin}/` },
+      });
+      setAuthLoading(false);
+      if (error) { setAuthError(error.message); return; }
+      setAuthInfo(t('auth.signUpSuccess'));
+      setAuthPassword('');
+      setAuthMode('signin');
+    } else {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      setAuthLoading(false);
+      if (error) { setAuthError(error.message); return; }
+      setAuthInfo(t('auth.resetSent'));
     }
-    setAuthPassword('');
   };
 
   const handleChaosVoteChange = (voterId: string, targetId: string) => {
