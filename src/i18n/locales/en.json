@@ -6,10 +6,11 @@
   "auth": {
     "title": "Moderator Login",
     "username": "Username",
+    "email": "Email",
     "password": "Password",
     "submit": "Sign in",
     "logout": "Log out",
-    "error": "Username or password is incorrect."
+    "error": "Email or password is incorrect."
   },
   "language": {
     "label": "Language",
