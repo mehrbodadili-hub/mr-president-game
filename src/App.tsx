@@ -52,6 +52,7 @@ import {
 
 import coverAsset from './assets/game_cover.jpg.asset.json';
 import coverAssetEn from './assets/game_cover_en.jpg.asset.json';
+import gameLogoAsset from './assets/game-logo.png.asset.json';
 
 const isDevMode = 
   (import.meta as any).env?.DEV || 
