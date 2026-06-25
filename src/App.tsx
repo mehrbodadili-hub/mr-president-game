@@ -2187,6 +2187,14 @@ export default function App() {
 
             {/* Logout Button */}
             <LanguageToggle />
+            <a
+              href={SECRET_ROOM_URL}
+              title={t('nav.backToSecretRoom')}
+              className="bg-slate-950 hover:bg-slate-900 border border-amber-500/30 hover:border-amber-500/60 text-amber-300 hover:text-amber-200 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+            >
+              <Home className="w-4 h-4" />
+              <span className="hidden md:inline">{t('nav.backToSecretRoom')}</span>
+            </a>
             <button
               onClick={handleLogout}
               className="bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-400 hover:text-red-400 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
