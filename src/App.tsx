@@ -2104,6 +2104,8 @@ export default function App() {
             </form>
             <a
               href={SECRET_ROOM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               title={t('nav.backToSecretRoom')}
               aria-label={t('nav.backToSecretRoom')}
               className="group mt-4 w-full bg-gradient-to-b from-slate-900 to-slate-950 hover:from-slate-800 hover:to-slate-900 border border-amber-500/20 hover:border-amber-500/50 rounded-xl transition py-3 flex items-center justify-center shadow-lg shadow-black/40 hover:shadow-amber-500/10"
@@ -2195,6 +2197,8 @@ export default function App() {
             <LanguageToggle />
             <a
               href={SECRET_ROOM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               title={t('nav.backToSecretRoom')}
               aria-label={t('nav.backToSecretRoom')}
               className="group bg-slate-950 hover:bg-slate-900 border border-amber-500/30 hover:border-amber-500/60 rounded-lg transition flex items-center justify-center h-9 w-9 shadow-sm cursor-pointer overflow-hidden"
