@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import LanguageToggle from './components/LanguageToggle';
 import { supabase } from '@/integrations/supabase/client';
 import { SECRET_ROOM_URL } from './lib/external-links';
+import secretRoomMark from './assets/secret-room-mark.png.asset.json';
 import { Player, RoleType, GamePhase, GameLog, Cabinet, Identity } from './types';
 import { initializePlayers, calculateMasonCount, calculatePrisonCapacity, hasInitialShield, generateId, playTimerSound } from './utils';
 import { ROLE_DETAILS } from './constants';
@@ -2103,10 +2104,15 @@ export default function App() {
             </form>
             <a
               href={SECRET_ROOM_URL}
-              className="mt-4 w-full bg-slate-900 hover:bg-slate-800 border border-amber-500/20 hover:border-amber-500/40 text-amber-300 font-bold text-xs py-3 rounded-xl transition flex items-center justify-center gap-2"
+              title={t('nav.backToSecretRoom')}
+              aria-label={t('nav.backToSecretRoom')}
+              className="group mt-4 w-full bg-gradient-to-b from-slate-900 to-slate-950 hover:from-slate-800 hover:to-slate-900 border border-amber-500/20 hover:border-amber-500/50 rounded-xl transition py-3 flex items-center justify-center shadow-lg shadow-black/40 hover:shadow-amber-500/10"
             >
-              <Home className="w-4 h-4" />
-              {t('nav.backToSecretRoom')}
+              <img
+                src={secretRoomMark.url}
+                alt=""
+                className="h-8 w-auto object-contain drop-shadow-[0_0_8px_rgba(245,158,11,0.25)] transition group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.55)] group-hover:scale-105"
+              />
             </a>
           </div>
         </div>
@@ -2190,10 +2196,14 @@ export default function App() {
             <a
               href={SECRET_ROOM_URL}
               title={t('nav.backToSecretRoom')}
-              className="bg-slate-950 hover:bg-slate-900 border border-amber-500/30 hover:border-amber-500/60 text-amber-300 hover:text-amber-200 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+              aria-label={t('nav.backToSecretRoom')}
+              className="group bg-slate-950 hover:bg-slate-900 border border-amber-500/30 hover:border-amber-500/60 rounded-lg transition flex items-center justify-center h-9 w-9 shadow-sm cursor-pointer overflow-hidden"
             >
-              <Home className="w-4 h-4" />
-              <span className="hidden md:inline">{t('nav.backToSecretRoom')}</span>
+              <img
+                src={secretRoomMark.url}
+                alt=""
+                className="h-6 w-6 object-contain transition group-hover:scale-110 drop-shadow-[0_0_6px_rgba(245,158,11,0.3)]"
+              />
             </a>
             <button
               onClick={handleLogout}
