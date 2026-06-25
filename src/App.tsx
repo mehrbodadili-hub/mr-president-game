@@ -97,26 +97,41 @@ export default function App() {
   });
 
   // Auth State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem('president_isAuthenticated') === 'true';
-  });
-  const [authUsername, setAuthUsername] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [authChecked, setAuthChecked] = useState<boolean>(false);
+  const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
   const [authError, setAuthError] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Subscribe FIRST so we never miss an event, then hydrate the current session.
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+      setAuthChecked(true);
+    });
+    return () => {
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (authUsername === 'Mehrbod' && authPassword === 'Mehrb@d1366616') {
-      setIsAuthenticated(true);
-      localStorage.setItem('president_isAuthenticated', 'true');
-      setAuthError('');
-    } else if (authUsername === 'Said' && authPassword === 'S@id1367') {
-      setIsAuthenticated(true);
-      localStorage.setItem('president_isAuthenticated', 'true');
-      setAuthError('');
-    } else {
+    setAuthError('');
+    setAuthLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: authEmail.trim(),
+      password: authPassword,
+    });
+    setAuthLoading(false);
+    if (error) {
       setAuthError(t('auth.error'));
+      return;
     }
+    setAuthPassword('');
   };
 
   const handleChaosVoteChange = (voterId: string, targetId: string) => {
