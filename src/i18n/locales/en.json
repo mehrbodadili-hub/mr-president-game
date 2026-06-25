@@ -10,7 +10,21 @@
     "password": "Password",
     "submit": "Sign in",
     "logout": "Log out",
-    "error": "Email or password is incorrect."
+    "error": "Email or password is incorrect.",
+    "signUp": "Create account",
+    "signIn": "Sign in",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "forgotPassword": "Forgot password?",
+    "sendResetLink": "Send reset link",
+    "resetSent": "If an account exists for that email, a reset link was sent.",
+    "signUpSuccess": "Account created. Check your email to confirm, then sign in.",
+    "passwordMin": "Password must be at least 6 characters.",
+    "newPassword": "New password",
+    "updatePassword": "Update password",
+    "passwordUpdated": "Password updated. You can now sign in.",
+    "resetTitle": "Reset your password",
+    "backToLogin": "Back to login"
   },
   "nav": {
     "backToSecretRoom": "Back to Secret Room"
