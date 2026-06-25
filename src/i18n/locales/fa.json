@@ -6,6 +6,7 @@
   "auth": {
     "title": "ورود راوی",
     "username": "نام کاربری",
+    "email": "ایمیل",
     "password": "رمز عبور",
     "submit": "ورود",
     "logout": "خروج",
