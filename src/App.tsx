@@ -14,7 +14,7 @@ import { initializePlayers, calculateMasonCount, calculatePrisonCapacity, hasIni
 import { ROLE_DETAILS } from './constants';
 import PlayerCard from './components/PlayerCard';
 import { CollapsibleGuide } from './components/CollapsibleGuide';
-import GameGuide from './components/GameGuide';
+import ModeratorGuide from './components/ModeratorGuide';
 import Day0Setup from './components/Day0Setup';
 import NightWizard from './components/NightWizard';
 import Night0Terrorist from './components/Night0Terrorist';
@@ -331,8 +331,8 @@ export default function App() {
     const saved = localStorage.getItem('president_presidentSwappedToday');
     return saved ? saved === 'true' : false;
   });
-  const [guideDefaultMode, setGuideDefaultMode] = useState<'players' | 'moderator' | 'roles'>('players');
-  const [guideDefaultSearch, setGuideDefaultSearch] = useState('');
+  const [showModeratorGuide, setShowModeratorGuide] = useState(false);
+  const [moderatorGuideScrollId, setModeratorGuideScrollId] = useState<string | undefined>(undefined);
   const [mayorRevoltedToday, setMayorRevoltedToday] = useState<boolean>(() => {
     const saved = localStorage.getItem('president_mayorRevoltedToday');
     return saved ? saved === 'true' : false;
