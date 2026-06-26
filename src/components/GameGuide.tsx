@@ -99,16 +99,16 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
               <div className="md:col-span-2">
                 <CollapsibleGuide title={tl("مقدمه و هدف سناریو مجمع", "مقدمه and target سناریو assembly")} defaultOpen={true}>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                    بازی سناریو <strong>{tl('«آقای رئیس‌جمهور»', 'tl("آقای President", "آقای President")')}</strong>{tl(' یک بازی استنتاجی، استراتژیک و مذاکره‌محور است که در مجمعی عالی اتفاق می‌افتد. شهر بین دو جناح ', 'a game استنتاجی, strategic and negotiation‌محور است که in assemblyی عالی اتفاق می‌افتد. city بین two جناح')}<strong>{tl('شهروندان مجمع', 'citizens assembly')}</strong>{tl(' و ', 'and')}<strong>{tl('فراماسون‌های وفادار به مجمع مخفی', 'Freemasons loyal to assembly hidden')}</strong> تقسیم شده است. 
+                    بازی «آقای رئیس‌جمهور» یک بازی استنتاجی، استراتژیک و مذاکره‌محور است که در قالب یک شهر خیالی اتفاق می‌افتد. بازی بین دو گروه شهروندان و فراماسون‌ها تقسیم شده است.
                   </p>
                   <div className="space-y-2 text-xs text-slate-400">
                     <div className="flex gap-2 items-start">
                       <span className="text-amber-500">•</span>
-                      <p><strong>{tl('هدف فراماسون‌ها:', 'target Freemasons:')}</strong>{tl(' کسب اکثریت یا برابری عددی در مجمع از طریق نفوذ، فریب در رای‌گیری یا اعدام و زندانی کردن شهروندان.', 'کسب majority or برابری عددی in assembly from طریق infiltration, deceit in voting or execution and prisoner کردن citizens.')}</p>
+                      <p><strong>هدف فراماسون‌ها:</strong> با نفوذ، فریب و حذف مخالفان، اکثریت بازی را در دست بگیرند.</p>
                     </div>
                     <div className="flex gap-2 items-start">
                       <span className="text-amber-500">•</span>
-                      <p><strong>{tl('هدف شهروندان:', 'target citizens:')}</strong>{tl(' کشف فراماسون‌ها، دفاع از ارکان جمهوری مجمع و نابودسازی یا اسارت کامل آن‌ها در پشت میله‌های زندان.', 'کشف Freemasons, defense from ارکان جمهوری assembly and نابودسازی or اسارت کامل آن‌ها in پشت میله‌های prison.')}</p>
+                      <p><strong>هدف شهروندان:</strong> فراماسون‌ها را شناسایی و پیش از آنکه دیر شود، آن‌ها را از بازی حذف کنند.</p>
                     </div>
                   </div>
                 </CollapsibleGuide>
