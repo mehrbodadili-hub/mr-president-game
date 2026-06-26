@@ -14,7 +14,7 @@ import { initializePlayers, calculateMasonCount, calculatePrisonCapacity, hasIni
 import { ROLE_DETAILS } from './constants';
 import PlayerCard from './components/PlayerCard';
 import { CollapsibleGuide } from './components/CollapsibleGuide';
-import GameGuide from './components/GameGuide';
+import ModeratorGuide from './components/ModeratorGuide';
 import Day0Setup from './components/Day0Setup';
 import NightWizard from './components/NightWizard';
 import Night0Terrorist from './components/Night0Terrorist';
@@ -331,8 +331,8 @@ export default function App() {
     const saved = localStorage.getItem('president_presidentSwappedToday');
     return saved ? saved === 'true' : false;
   });
-  const [guideDefaultMode, setGuideDefaultMode] = useState<'players' | 'moderator' | 'roles'>('players');
-  const [guideDefaultSearch, setGuideDefaultSearch] = useState('');
+  const [showModeratorGuide, setShowModeratorGuide] = useState(false);
+  const [moderatorGuideScrollId, setModeratorGuideScrollId] = useState<string | undefined>(undefined);
   const [mayorRevoltedToday, setMayorRevoltedToday] = useState<boolean>(() => {
     const saved = localStorage.getItem('president_mayorRevoltedToday');
     return saved ? saved === 'true' : false;
@@ -2613,10 +2613,9 @@ export default function App() {
                   <SearchManager 
                     players={players} 
                     showSecrets={showSecrets} 
-                    onNavigateToGuide={(roleType, roleNameFa) => {
-                      setGuideDefaultMode('roles');
-                      setGuideDefaultSearch(roleNameFa);
-                      setShowRoleGuide(true);
+                    onNavigateToGuide={(id) => {
+                      setModeratorGuideScrollId(id);
+                      setShowModeratorGuide(true);
                     }}
                   />
                 </div>
@@ -3958,15 +3957,14 @@ export default function App() {
         )}
       </main>
 
-      {/* Global Guide Modal Dialog */}
-      {showRoleGuide && (
+      {/* Moderator Guide Modal */}
+      {showModeratorGuide && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="relative max-w-5xl w-full my-auto animate-fadeIn">
-            <GameGuide 
-              key={`modal-${guideDefaultMode}-${guideDefaultSearch}`}
-              onClose={() => setShowRoleGuide(false)} 
-              defaultActiveMode={guideDefaultMode}
-              defaultSearchTerm={guideDefaultSearch}
+          <div className="relative w-full my-auto animate-fadeIn flex justify-center">
+            <ModeratorGuide
+              key={`mod-${moderatorGuideScrollId ?? 'none'}`}
+              onClose={() => { setShowModeratorGuide(false); setModeratorGuideScrollId(undefined); }}
+              defaultScrollToId={moderatorGuideScrollId}
             />
           </div>
         </div>
@@ -4417,13 +4415,22 @@ export default function App() {
       {/* Global Bottom Footer */}
       {(isAuthenticated && gamePhase) && (
         <footer className="border-t border-amber-950/20 bg-[#0a0d14]/90 backdrop-blur sticky bottom-0 z-40 px-6 py-4 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] mt-auto mt-8 flex flex-wrap items-center justify-center gap-4">
-          {/* Help & Rules Button (Always Visible) */}
-          <button
-            onClick={() => setShowRoleGuide(true)}
+          {/* Help & Rules — external full guide */}
+          <a
+            href="https://id-preview--d46a3565-74ad-4e97-a73a-804ec777d128.lovable.app/games/mr-president"
+            target="_blank"
+            rel="noopener noreferrer"
             className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
           >
             <HelpCircle className="w-4 h-4 text-amber-500" />
-            {tl('راهنما و قوانین بازی', 'guide and rules game')}
+            📖 راهنمای کامل بازی ↗
+          </a>
+          {/* Moderator quick guide */}
+          <button
+            onClick={() => { setModeratorGuideScrollId(undefined); setShowModeratorGuide(true); }}
+            className="bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+          >
+            📋 راهنمای گرداننده
           </button>
 
           {gamePhase !== 'setup' && (
