@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Player } from '../types';
 import { ROLE_DETAILS } from '../constants';
-import { UserX, Shield, Search, BookOpen, ArrowLeft, ArrowUpRight } from 'lucide-react';
+import { UserX, Shield, Search, ArrowUpRight, ClipboardList } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { tl } from '../i18n';
+import { MODERATOR_GUIDE_ITEMS } from '../constants/moderatorGuideData';
 
 interface SearchManagerProps {
   players: Player[];
   showSecrets?: boolean;
-  onNavigateToGuide?: (roleType: string, roleNameFa: string) => void;
+  onNavigateToGuide?: (id: string, title: string) => void;
 }
 
 export default function SearchPlayers({ players, showSecrets = false, onNavigateToGuide }: SearchManagerProps) {
@@ -62,24 +63,17 @@ export default function SearchPlayers({ players, showSecrets = false, onNavigate
   });
 
   // Filter 2: Game Wiki Roles / Guide
-  const filteredRoles = Object.values(ROLE_DETAILS).filter((role) => {
+  const filteredGuide = MODERATOR_GUIDE_ITEMS.filter((item) => {
     const term = searchTerm.toLowerCase().trim();
     if (!term) return false;
-
-    // Filter by title, abilities, description, or system identifier
     return (
-      (role.nameFa && role.nameFa.toLowerCase().includes(term)) ||
-      (role.dayAbilityFa && role.dayAbilityFa.toLowerCase().includes(term)) ||
-      (role.nightAbilityFa && role.nightAbilityFa.toLowerCase().includes(term)) ||
-      (role.chooserFa && role.chooserFa.toLowerCase().includes(term)) ||
-      (role.descriptionFa && role.descriptionFa.toLowerCase().includes(term)) ||
-      (role.type && role.type.toLowerCase().includes(term)) ||
-      (localizedName(role.type) || '').toLowerCase().includes(term) ||
-      (localizedDesc(role.type) || '').toLowerCase().includes(term)
+      item.title.toLowerCase().includes(term) ||
+      item.content.toLowerCase().includes(term) ||
+      item.tags.some((tag) => tag.toLowerCase().includes(term))
     );
   });
 
-  const totalResults = filteredPlayers.length + filteredRoles.length;
+  const totalResults = filteredPlayers.length + filteredGuide.length;
 
   return (
     <div className={`bg-[#0b0f19] border border-slate-800 rounded-xl p-3.5 shadow-xl w-full ${isRTL ? 'text-right' : 'text-left'}`} dir={i18n.dir()} id="search-manager-panel">
@@ -226,53 +220,42 @@ export default function SearchPlayers({ players, showSecrets = false, onNavigate
                 </div>
               )}
 
-              {/* SECTION 2: GAME GUIDE WIKI */}
-              {filteredRoles.length > 0 && (
+              {/* SECTION 2: MODERATOR GUIDE */}
+              {filteredGuide.length > 0 && (
                 <div>
                   <div className="bg-slate-900/45 px-2 py-1 text-[9px] font-black text-teal-400 border-r-2 border-teal-400 flex justify-between items-center">
-                    <span>{tl(`راهنمای سناریو و شناسنامه نقش‌ها (${filteredRoles.length})`, `Scenario guide & role data (${filteredRoles.length})`)}</span>
-                    <span className="text-[8px] text-slate-500 font-medium">{tl('برای انتقال به بخش راهنما کلیک کنید', 'Click to open the guide section')}</span>
+                    <span>{`راهنمای گرداننده (${filteredGuide.length})`}</span>
+                    <span className="text-[8px] text-slate-500 font-medium">برای مشاهده کامل گام کلیک کنید</span>
                   </div>
 
-                  {filteredRoles.map((role) => (
+                  {filteredGuide.map((item) => (
                     <div
-                      key={role.type}
+                      key={item.id}
                       onClick={() => {
                         if (onNavigateToGuide) {
-                          onNavigateToGuide(role.type, role.nameFa);
+                          onNavigateToGuide(item.id, item.title);
                         }
                       }}
                       className={`p-2.5 hover:bg-slate-900/90 cursor-pointer transition-all border-r border-transparent hover:border-r-teal-500 hover:bg-teal-950/10 flex flex-col gap-1 text-xs ${isRTL ? 'text-right' : 'text-left'}`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-teal-400"></span>
-                          <span className="font-extrabold text-[#e2e8f0]">{localizedName(role.type)}</span>
+                          <ClipboardList className="w-3 h-3 text-teal-400" />
+                          <span className="font-extrabold text-[#e2e8f0]">{item.title}</span>
                           <span className="text-[8.5px] uppercase font-mono px-1 py-0.2 bg-teal-950 text-teal-400 rounded">
-                            {role.type}
+                            {item.phase === 'night' ? 'شب' : item.phase === 'day' ? 'روز' : 'روز/شب'}
                           </span>
                         </div>
-                        
+
                         <span className="text-[9px] text-teal-400 font-bold flex items-center gap-0.5 group">
-                          {tl('مشاهده کامل در راهنما', 'Open full guide')}
+                          مشاهده در راهنما
                           <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
                         </span>
                       </div>
-                      
-                      <p className="text-[10px] text-slate-400 leading-relaxed font-medium">
-                        {localizedDesc(role.type)}
-                      </p>
 
-                      <div className="grid grid-cols-2 gap-2 mt-1 bg-slate-950/40 p-1.5 rounded border border-slate-900/30 text-[9.5px]">
-                        <div>
-                          <span className="text-slate-500 font-bold">{tl('توانایی روز:', 'Day ability:')}</span>{' '}
-                          <span className="text-amber-200/90 font-medium">{localizedDay(role.type) || tl('بدون توانایی روزانه', 'No daytime ability')}</span>
-                        </div>
-                        <div>
-                          <span className="text-slate-500 font-bold">{tl('قدرت شب:', 'Night ability:')}</span>{' '}
-                          <span className="text-teal-200/90 font-medium">{localizedNight(role.type) || tl('بدون توانایی شبانه', 'No nighttime ability')}</span>
-                        </div>
-                      </div>
+                      <p className="text-[10px] text-slate-400 leading-relaxed font-medium">
+                        {item.content}
+                      </p>
                     </div>
                   ))}
                 </div>
