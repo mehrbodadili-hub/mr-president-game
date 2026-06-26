@@ -2613,10 +2613,9 @@ export default function App() {
                   <SearchManager 
                     players={players} 
                     showSecrets={showSecrets} 
-                    onNavigateToGuide={(roleType, roleNameFa) => {
-                      setGuideDefaultMode('roles');
-                      setGuideDefaultSearch(roleNameFa);
-                      setShowRoleGuide(true);
+                    onNavigateToGuide={(id) => {
+                      setModeratorGuideScrollId(id);
+                      setShowModeratorGuide(true);
                     }}
                   />
                 </div>
@@ -3958,15 +3957,14 @@ export default function App() {
         )}
       </main>
 
-      {/* Global Guide Modal Dialog */}
-      {showRoleGuide && (
+      {/* Moderator Guide Modal */}
+      {showModeratorGuide && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="relative max-w-5xl w-full my-auto animate-fadeIn">
-            <GameGuide 
-              key={`modal-${guideDefaultMode}-${guideDefaultSearch}`}
-              onClose={() => setShowRoleGuide(false)} 
-              defaultActiveMode={guideDefaultMode}
-              defaultSearchTerm={guideDefaultSearch}
+          <div className="relative w-full my-auto animate-fadeIn flex justify-center">
+            <ModeratorGuide
+              key={`mod-${moderatorGuideScrollId ?? 'none'}`}
+              onClose={() => { setShowModeratorGuide(false); setModeratorGuideScrollId(undefined); }}
+              defaultScrollToId={moderatorGuideScrollId}
             />
           </div>
         </div>
