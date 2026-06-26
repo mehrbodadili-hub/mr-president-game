@@ -97,7 +97,7 @@ export default function GameGuide({ onClose, defaultActiveMode = 'players', defa
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Introduction Card */}
               <div className="md:col-span-2">
-                <CollapsibleGuide title={tl("مقدمه و هدف سناریو مجمع", "مقدمه and target سناریو assembly")} defaultOpen={true}>
+                <CollapsibleGuide title="مقدمه و هدف سناریو مجمع" defaultOpen={true}>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
                     بازی «آقای رئیس‌جمهور» یک بازی استنتاجی، استراتژیک و مذاکره‌محور است که در قالب یک شهر خیالی اتفاق می‌افتد. بازی بین دو گروه شهروندان و فراماسون‌ها تقسیم شده است.
                   </p>
