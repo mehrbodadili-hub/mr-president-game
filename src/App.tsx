@@ -2062,6 +2062,9 @@ export default function App() {
                   src={coverImg}
                   referrerPolicy="no-referrer"
                   alt="Mr. President Game Cover"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                   className="w-full h-auto object-cover block mx-auto opacity-100 rounded-2xl"
                 />
               </div>
@@ -2197,7 +2200,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-16 h-16 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.2)] border border-amber-400/30 overflow-hidden shrink-0 bg-black">
-              <img src={logoImg} alt="Logo" className="w-full h-full object-contain" />
+              <img src={logoImg} alt="Logo" loading="lazy" decoding="async" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 id="app-title" className="text-lg font-black text-white tracking-wide gold-glow-text">{t('app.title')}</h1>
@@ -2424,6 +2427,8 @@ export default function App() {
                 src={coverImg}
                 referrerPolicy="no-referrer"
                 alt="Mr. President Game Cover"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-auto object-cover block mx-auto opacity-100 rounded-2xl"
               />
             </div>
