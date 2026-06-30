@@ -1,3 +1,4 @@
+// راهنمای گرداننده - نسخه ۱.۲
 export interface ModeratorGuideItem {
   id: string;
   title: string;
