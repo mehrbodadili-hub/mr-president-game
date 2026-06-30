@@ -108,7 +108,15 @@ export default function Day0Setup({
       }
     } else {
       const currentMasonsCount = updatedPlayers.filter(x => x.identity === 'freemason').length;
-      updatedPlayers[playerIndex] = { ...p, identity: 'freemason', masonNumber: currentMasonsCount + 1 };
+      // Assign a random number in 1..currentMasonsCount+1 with no repetition:
+      // pick a random slot and shift existing masons at or above it up by one.
+      const randomNumber = Math.floor(Math.random() * (currentMasonsCount + 1)) + 1;
+      for (let i = 0; i < updatedPlayers.length; i++) {
+        if (updatedPlayers[i].identity === 'freemason' && (updatedPlayers[i].masonNumber || 0) >= randomNumber) {
+          updatedPlayers[i] = { ...updatedPlayers[i], masonNumber: (updatedPlayers[i].masonNumber || 0) + 1 };
+        }
+      }
+      updatedPlayers[playerIndex] = { ...p, identity: 'freemason', masonNumber: randomNumber };
     }
 
     onUpdatePlayers(updatedPlayers);
