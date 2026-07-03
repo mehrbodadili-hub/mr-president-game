@@ -44,6 +44,7 @@ import {
   BookOpen,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Lock,
   User,
   LogOut,
@@ -331,6 +332,7 @@ export default function App() {
     return saved ? saved === 'true' : false;
   });
   const [showModeratorGuide, setShowModeratorGuide] = useState(false);
+  const [showMasonRule, setShowMasonRule] = useState<boolean>(false);
   const [moderatorGuideScrollId, setModeratorGuideScrollId] = useState<string | undefined>(undefined);
   const [mayorRevoltedToday, setMayorRevoltedToday] = useState<boolean>(() => {
     const saved = localStorage.getItem('president_mayorRevoltedToday');
@@ -2452,14 +2454,7 @@ export default function App() {
 
               {/* Informational Box on Masons Calculation */}
               <div className="bg-[#0e121b] border border-amber-950/20 p-4 rounded-xl">
-                <h4 className="text-xs font-bold text-amber-400 mb-1.5 flex items-center gap-1.5">
-                  <TrendingUp className="w-4 h-4 text-amber-500" />
-                  محاسبه قانونی حد نصاب مجمع (۲۹٪):
-                </h4>
-                <p className="text-[11px] text-slate-400 leading-relaxed text-right">
-                  {tl('طبق پیوست اساس‌نامه مجمع، تعداد اعضای لژ فراماسونری دقیقاً ۲۹ درصد کل جمعیت مجمع خواهد بود. اعداد اعشاری برتر از ۰.۵۰ رو به بالا و کمتر رو به پایین گرد می‌شوند.', 'طبق پیوست اساس‌nameه assembly, count اعضای lodge Freemasonری دقیقاً 29 درصد کل جمعیت assembly خواهد بود. اعداد اعشاری برتر from 0.50 رو to بالا and کمتر رو to پایین گرد می‌شوند.')}
-                </p>
-                <div className="mt-3 text-xs font-semibold text-slate-300 bg-[#04060a] p-2.5 rounded-lg border border-slate-900 flex justify-between items-center">
+                <div className="text-xs font-semibold text-slate-300 bg-[#04060a] p-2.5 rounded-lg border border-slate-900 flex justify-between items-center gap-2">
                   <span>{tl('تعداد اعضای مخفی لژ با این جمعیت:', 'count اعضای hidden lodge with this جمعیت:')}</span>
                   <span className="text-rose-400 bg-rose-950/30 border border-rose-900/40 px-2.5 py-0.5 rounded font-mono font-bold">
                     {calculateMasonCount(
@@ -2471,6 +2466,22 @@ export default function App() {
                     {tl('نفر فراماسون', 'نفر Freemason')}
                   </span>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setShowMasonRule((v) => !v)}
+                  className="mt-2 w-full flex items-center justify-between gap-1.5 text-[11px] font-bold text-amber-400/90 hover:text-amber-300 transition-colors"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <TrendingUp className="w-3.5 h-3.5 text-amber-500" />
+                    محاسبه قانونی حد نصاب مجمع (۲۹٪)
+                  </span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${showMasonRule ? 'rotate-180' : ''}`} />
+                </button>
+                {showMasonRule && (
+                  <p className="mt-2 text-[11px] text-slate-400 leading-relaxed text-right border-t border-slate-900 pt-2">
+                    طبق پیوست اساس‌نامه مجمع، تعداد اعضای لژ فراماسونری دقیقاً ۲۹ درصد کل جمعیت مجمع خواهد بود. اعداد اعشاری برتر از ۰.۵۰ رو به بالا و کمتر رو به پایین گرد می‌شوند.
+                  </p>
+                )}
               </div>
 
               {/* Collapsible Rules and Demographic Requirements */}
