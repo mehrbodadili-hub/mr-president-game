@@ -758,7 +758,9 @@ export default function Day0Setup({
                 {popeVetoed ? t('day0.step5.vetoActive') : t('day0.step5.vetoInactive')}
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed">{t('day0.step5.vetoDesc')}</p>
+            <CollapsibleGuide title={t('day0.step5.vetoGuideTitle')} defaultOpen={false}>
+              <p className="text-[11px] text-slate-400 leading-relaxed w-full">{t('day0.step5.vetoDesc')}</p>
+            </CollapsibleGuide>
             <button
               type="button"
               onClick={() => {
