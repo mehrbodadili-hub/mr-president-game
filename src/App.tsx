@@ -2486,7 +2486,7 @@ export default function App() {
                         <span className="font-black text-teal-400 block mb-0.5">{tl('👥 جمعیت ۸ تا ۱۱ نفر:', '👥 جمعیت 8 until 11 نفر:')}</span>
                         <ul className="list-disc list-inside space-y-1 text-[11px] font-semibold text-slate-400 pr-1">
                           <li>{tl('حق رای معاون اول ملغی و به ۱ رای تقلیل می‌یابد.', 'حق vote Vice President ملغی and to 1 vote تقلیل می‌یابد.')}</li>
-                          <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('پلیس مسلح', 'Police مسلح')}</strong>{tl(' به‌طور کامل از مجمع حذف می‌شود.', 'به‌طور کامل from assembly remove می‌شود.')}</li>
+                          <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('پلیس', 'Police')}</strong>{tl(' به‌طور کامل از مجمع حذف می‌شود.', 'به‌طور کامل from assembly remove می‌شود.')}</li>
                         </ul>
                       </div>
 
