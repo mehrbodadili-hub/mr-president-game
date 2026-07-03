@@ -2501,7 +2501,7 @@ export default function App() {
                       <div className="bg-slate-950/50 p-2.5 rounded-lg border border-slate-850">
                         <span className="font-black text-teal-400 block mb-0.5">{tl('👥 جمعیت ۸ نفر:', '👥 جمعیت 8 نفر:')}</span>
                         <ul className="list-disc list-inside space-y-1 text-[11px] font-semibold text-slate-400 pr-1">
-                          <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('وکیل مدافع', 'defense Lawyer')}</strong>{tl(' حذف شده و انتصابی برای آن صورت نخواهد پذیرفت.', 'remove شده and appointmentی بvote that صورت نخواهد پذیرفت.')}</li>
+                          <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('وکیل', 'Lawyer')}</strong>{tl(' حذف شده و انتصابی برای آن صورت نخواهد پذیرفت.', 'remove شده and appointmentی بvote that صورت نخواهد پذیرفت.')}</li>
                         </ul>
                       </div>
                     </div>
