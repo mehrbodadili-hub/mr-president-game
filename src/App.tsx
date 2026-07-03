@@ -332,6 +332,7 @@ export default function App() {
     return saved ? saved === 'true' : false;
   });
   const [showModeratorGuide, setShowModeratorGuide] = useState(false);
+  const [showMasonRule, setShowMasonRule] = useState<boolean>(false);
   const [moderatorGuideScrollId, setModeratorGuideScrollId] = useState<string | undefined>(undefined);
   const [mayorRevoltedToday, setMayorRevoltedToday] = useState<boolean>(() => {
     const saved = localStorage.getItem('president_mayorRevoltedToday');
