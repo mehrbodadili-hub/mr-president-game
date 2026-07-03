@@ -698,17 +698,21 @@ export default function Day0Setup({
             </h3>
             <div className="text-xs text-slate-400 space-y-2.5 leading-relaxed">
               <p>{t('day0.step5.intro')}</p>
-              <div className="bg-amber-500/5 p-3 rounded-lg border border-amber-500/10 space-y-1.5 text-[11px]">
-                <p>
-                  <strong className="text-amber-400">{t('day0.step5.candidacyLabel')}</strong> {t('day0.step5.candidacyBody')}
-                </p>
-                <p>
-                  <strong className="text-amber-400">{t('day0.step5.debateLabel')}</strong> {t('day0.step5.debateBody')}
-                </p>
-                <p className="font-semibold text-rose-400">
-                  <strong className="text-rose-400">{t('day0.step5.popeVetoLabel')}</strong> {t('day0.step5.popeVetoBody')}
-                </p>
-              </div>
+
+              <CollapsibleGuide title={t('day0.step5.guideTitle')} defaultOpen={false}>
+                <div className="bg-amber-500/5 p-3 rounded-lg border border-amber-500/10 space-y-1.5 text-[11px] w-full">
+                  <p>
+                    <strong className="text-amber-400">{t('day0.step5.candidacyLabel')}</strong> {t('day0.step5.candidacyBody')}
+                  </p>
+                  <p>
+                    <strong className="text-amber-400">{t('day0.step5.debateLabel')}</strong> {t('day0.step5.debateBody')}
+                  </p>
+                  <p className="font-semibold text-rose-400">
+                    <strong className="text-rose-400">{t('day0.step5.popeVetoLabel')}</strong> {t('day0.step5.popeVetoBody')}
+                  </p>
+                </div>
+              </CollapsibleGuide>
+
               <p className="text-[10px] font-bold text-amber-500/80 mt-1">{t('day0.step5.finalNote')}</p>
             </div>
           </div>
