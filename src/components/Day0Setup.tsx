@@ -170,7 +170,7 @@ export default function Day0Setup({
     }
 
     if (step === 6) {
-      const requiresVice = players.length >= 10;
+      const requiresVice = players.length >= 11;
       if ((requiresVice && !viceId) || !mayorId || !judgeId) {
         alert(
           requiresVice
@@ -191,7 +191,7 @@ export default function Day0Setup({
       const judgeName = players.find(p => p.id === judgeId)?.name || '';
       const presName = players.find(p => p.id === presidentId)?.name || '';
       onLogEvent(
-        players.length >= 10
+        players.length >= 11
           ? t('day0.logs.completionWithVice', { president: presName, vice: viceName, mayor: mayorName, judge: judgeName })
           : t('day0.logs.completionNoVice', { president: presName, mayor: mayorName, judge: judgeName }),
         'system'
@@ -211,7 +211,7 @@ export default function Day0Setup({
       ].filter(Boolean).join(sep);
       if (viceSub) {
         onLogEvent(
-          players.length >= 10 
+          players.length >= 11 
             ? t('day0.logs.viceSubgroupVice', { members: viceSub })
             : t('day0.logs.viceSubgroupPres', { members: viceSub }),
           'system'
@@ -315,7 +315,7 @@ export default function Day0Setup({
     setReporterId(id);
     if (id) {
       onSetRole(id, 'reporter');
-      const key = players.length >= 10 ? 'day0.logs.reporterByVice' : 'day0.logs.reporterByPres';
+      const key = players.length >= 11 ? 'day0.logs.reporterByVice' : 'day0.logs.reporterByPres';
       onLogEvent(t(key, { name: players.find(p => p.id === id)?.name }), 'system');
     }
   };
@@ -327,7 +327,7 @@ export default function Day0Setup({
     setJournalistId(id);
     if (id) {
       onSetRole(id, 'journalist');
-      const key = players.length >= 10 ? 'day0.logs.journalistByVice' : 'day0.logs.journalistByPres';
+      const key = players.length >= 11 ? 'day0.logs.journalistByVice' : 'day0.logs.journalistByPres';
       onLogEvent(t(key, { name: players.find(p => p.id === id)?.name }), 'system');
     }
   };
@@ -791,7 +791,7 @@ export default function Day0Setup({
 
           <div className="space-y-4">
             {/* Vice President */}
-            {players.length >= 10 && (
+            {players.length >= 11 && (
               <div className="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
                 <label className="block text-xs font-semibold text-slate-300 mb-2">{t('day0.step6.vicePresident')}</label>
                 <select
@@ -857,13 +857,13 @@ export default function Day0Setup({
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-850">
             <h3 className="text-base font-bold text-slate-100 flex items-center gap-2 mb-2">
               <User className="w-5 h-5 text-amber-500" />
-              {players.length < 10 
+              {players.length < 11 
                 ? t('day0.step7.titlePres', { name: players.find(p => p.id === presidentId)?.name || t('day0.step7.fallbackPres') })
                 : t('day0.step7.titleVice', { name: players.find(p => p.id === viceId)?.name || t('day0.step7.fallbackVice') })
               }
             </h3>
             <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              {players.length < 10 ? t('day0.step7.descPres') : t('day0.step7.descVice')}
+              {players.length < 11 ? t('day0.step7.descPres') : t('day0.step7.descVice')}
               <strong className="text-amber-400">{t('day0.step7.descReporter')}</strong>{t('day0.step7.descAnd')}<strong className="text-amber-400">{t('day0.step7.descJournalist')}</strong>{t('day0.step7.descTail')}
             </p>
           </div>

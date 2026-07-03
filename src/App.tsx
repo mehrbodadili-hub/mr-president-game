@@ -829,10 +829,10 @@ export default function App() {
 
     // Role mappings and assignments
     const crucialRoles: RoleType[] = ['president', 'mayor', 'judge', 'pope'];
-    if (currentPlayers.length >= 10) {
+    if (currentPlayers.length >= 11) {
       crucialRoles.push('vice_president');
     }
-    if (currentPlayers.length >= 10) {
+    if (currentPlayers.length >= 11) {
       crucialRoles.push('priest');
     }
 
@@ -2842,7 +2842,7 @@ export default function App() {
                           </span>
                         </div>
                         <div className="p-2 bg-slate-904/60 rounded-lg border border-slate-900/50">
-                          {players.length < 10 ? (
+                          {players.length < 11 ? (
                             <>
                               <span className="block text-slate-500 font-bold">{tl('معاون اول:', 'Vice President:')}</span>
                               <span className="text-slate-600 italic">{tl('حذف شده در شروع', 'remove شده in start')}</span>
@@ -3338,7 +3338,7 @@ export default function App() {
                                       
                                       const otherCanonical: RoleType[] = ['reporter', 'journalist', 'doctor', 'detective'];
                                       if (players.length >= 12) otherCanonical.push('police');
-                                      if (players.length >= 10) otherCanonical.push('vice_president');
+                                      if (players.length >= 11) otherCanonical.push('vice_president');
                                       if (players.length >= 9) otherCanonical.push('lawyer');
                                       const otherVacant = otherCanonical.filter(r => !aliveRoles.has(r));
                                       
@@ -3407,7 +3407,7 @@ export default function App() {
                                       const aliveRoles = new Set(players.filter(pl => pl.isAlive && !pl.isImprisoned).map(pl => pl.role));
                                       const canonicalRoles: RoleType[] = ['judge', 'mayor', 'reporter', 'journalist', 'doctor', 'detective'];
                                       if (players.length >= 12) canonicalRoles.push('police');
-                                      if (players.length >= 10) canonicalRoles.push('vice_president');
+                                      if (players.length >= 11) canonicalRoles.push('vice_president');
                                       if (players.length >= 9) canonicalRoles.push('lawyer');
                                       const isVacant = canonicalRoles.includes(rValue) && !aliveRoles.has(rValue);
                                       
