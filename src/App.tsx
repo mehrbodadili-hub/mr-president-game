@@ -44,6 +44,7 @@ import {
   BookOpen,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Lock,
   User,
   LogOut,
