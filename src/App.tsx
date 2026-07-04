@@ -486,6 +486,7 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
   const [chaosModalData, setChaosModalData] = useState<{ isTie: boolean, tiedNames: string[], eliminatedName: string, eliminatedId: string } | null>(null);
+  const [chaosPrisonerModal, setChaosPrisonerModal] = useState<{ prisonerNames: string[] } | null>(null);
   
   const [lastNightPriestBlockedId, setLastNightPriestBlockedId] = useState<string | null>(() => {
     return localStorage.getItem('president_lastNightPriestBlockedId') || null;
@@ -643,6 +644,43 @@ export default function App() {
     localStorage.setItem('president_chaosSpeakerOrder', JSON.stringify(chaosSpeakerOrder));
   }, [chaosSpeakerOrder]);
 
+  // Performs the actual transition into the chaos phase: shuffles speaking order,
+  // clears active players' roles, executes imprisoned players, and logs the event.
+  const enterChaosPhase = () => {
+    const activeAlivePlayers = players.filter((p) => p.isAlive && !p.isImprisoned);
+    const chaosThreshold = players.length <= 8 ? 4 : 5;
+
+    setGamePhase('chaos');
+
+    // Randomly shuffle active players for speaking order
+    const shuffled = [...activeAlivePlayers].sort(() => Math.random() - 0.5).map(p => p.id);
+    setChaosSpeakerOrder(shuffled);
+    setChaosVotes({});
+
+    // All active players lose their roles, and imprisoned players are executed
+    setPlayers((prev) =>
+      prev.map((p) => {
+        if (p.isAlive && !p.isImprisoned) {
+          return { ...p, role: 'none' };
+        }
+        if (p.isAlive && p.isImprisoned) {
+          return { ...p, isAlive: false }; // Kill imprisoned players
+        }
+        return p;
+      })
+    );
+    handleLogEvent(
+      tl(`🚨 مجمع اضطراری آشوب دایر گردید! شمار بازماندگان فعال مجمع به لایحه اضطراریِ ${chaosThreshold} نفر رسید. زندانیان از بازی حذف و کلیه حقوق مدنی باطل شدند. فاز آشوب مستقر گردید!`, `🚨 assembly emergency chaos دایر گردید! شمار survivors active assembly to لایحه emergencyِ ${chaosThreshold} نفر رسید. prisoners from game remove and کلیه حقوق civil باطل شدند. phase chaos مستقر گردید!`),
+      'system'
+    );
+  };
+
+  // Confirmation handler for the pre-chaos prisoner modal.
+  const handleConfirmChaosPrisoners = () => {
+    enterChaosPhase();
+    setChaosPrisonerModal(null);
+  };
+
   // Chaos Phase auto-trigger
   useEffect(() => {
     if (
@@ -656,34 +694,19 @@ export default function App() {
       const activeAlivePlayers = players.filter((p) => p.isAlive && !p.isImprisoned);
       const activeCount = activeAlivePlayers.length;
       const chaosThreshold = players.length <= 8 ? 4 : 5;
-      
+
       if (activeCount <= chaosThreshold) {
-        setGamePhase('chaos');
-        
-        // Randomly shuffle active players for speaking order
-        const shuffled = [...activeAlivePlayers].sort(() => Math.random() - 0.5).map(p => p.id);
-        setChaosSpeakerOrder(shuffled);
-        setChaosVotes({});
-        
-        // All active players lose their roles, and imprisoned players are executed
-        setPlayers((prev) =>
-          prev.map((p) => {
-            if (p.isAlive && !p.isImprisoned) {
-              return { ...p, role: 'none' };
-            }
-            if (p.isAlive && p.isImprisoned) {
-              return { ...p, isAlive: false }; // Kill imprisoned players
-            }
-            return p;
-          })
-        );
-        handleLogEvent(
-          tl(`🚨 مجمع اضطراری آشوب دایر گردید! شمار بازماندگان فعال مجمع به لایحه اضطراریِ ${chaosThreshold} نفر رسید. زندانیان از بازی حذف و کلیه حقوق مدنی باطل شدند. فاز آشوب مستقر گردید!`, `🚨 assembly emergency chaos دایر گردید! شمار survivors active assembly to لایحه emergencyِ ${chaosThreshold} نفر رسید. prisoners from game remove and کلیه حقوق civil باطل شدند. phase chaos مستقر گردید!`),
-          'system'
-        );
+        const imprisoned = players.filter((p) => p.isAlive && p.isImprisoned);
+        if (imprisoned.length === 0) {
+          // No prisoners to execute: enter chaos phase directly.
+          enterChaosPhase();
+        } else if (!chaosPrisonerModal) {
+          // Show a confirmation modal listing the prisoners about to be executed.
+          setChaosPrisonerModal({ prisonerNames: imprisoned.map((p) => p.name) });
+        }
       }
     }
-  }, [players, gamePhase]);
+  }, [players, gamePhase, chaosPrisonerModal]);
 
   // President succession management effect
   useEffect(() => {
@@ -1036,6 +1059,7 @@ export default function App() {
       setChaosSpeakerOrder([]);
       setChaosTiedPlayers([]);
       setChaosModalData(null);
+      setChaosPrisonerModal(null);
     }
   };
 
@@ -2366,6 +2390,33 @@ export default function App() {
                  className="w-full bg-rose-700 hover:bg-rose-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition"
                >
                  {tl('اعمال حذف و ادامه', 'اعمال remove and continue')}
+               </button>
+            </div>
+          </div>
+        )}
+
+        {/* PRE-CHAOS PRISONER EXECUTION MODAL */}
+        {chaosPrisonerModal && (
+          <div className="fixed inset-0 bg-[#04060b]/95 z-50 flex items-center justify-center p-6 animate-fadeIn">
+            <div className="max-w-md w-full bg-[#0b0f19] border-2 border-rose-900 rounded-2xl p-8 text-center shadow-[0_0_50px_rgba(225,29,72,0.15)] relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-rose-900 via-rose-500 to-rose-900"></div>
+               <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center bg-slate-950 border border-slate-800">
+                 <Skull className="w-10 h-10 text-rose-500 animate-pulse" />
+               </div>
+               <h2 className="text-2xl font-black text-rose-500 tracking-tight mb-4">
+                 {tl('فاز آشوب شهر آغاز می‌شود', 'City chaos phase is beginning')}
+               </h2>
+               <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 mb-6">
+                 <p className="text-sm font-bold text-amber-500 mb-3">{tl('زندانیان زیر بلافاصله کشته می‌شوند:', 'The following prisoners will be executed immediately:')}</p>
+                 <p className="text-sm text-slate-300 bg-slate-900/50 p-3 rounded-lg border border-slate-800">
+                   {chaosPrisonerModal.prisonerNames.join('، ')}
+                 </p>
+               </div>
+               <button
+                 onClick={handleConfirmChaosPrisoners}
+                 className="w-full bg-rose-700 hover:bg-rose-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition"
+               >
+                 {tl('مشاهده شد', 'Seen')}
                </button>
             </div>
           </div>
