@@ -185,7 +185,7 @@ export default function SearchPlayers({ players, showSecrets = false, onNavigate
                             )}
                           </div>
                           <span className="text-[10px] text-slate-400 font-bold mt-0.5">
-                            {tl('نقش مجمع: ', 'Role: ')}{localizedName(p.role) || tl('شهروند ساده (بدون نقش)', 'Plain citizen (no role)')}
+                            {tl('نقش مجمع: ', 'Role: ')}{localizedName(p.role) || tl('شهروند (بدون نقش)', 'Plain citizen (no role)')}
                           </span>
                         </div>
 
