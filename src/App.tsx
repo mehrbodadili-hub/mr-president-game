@@ -3880,7 +3880,7 @@ export default function App() {
                           <div className="flex items-center gap-1.5 justify-between">
                             <h4 className="text-[10px] font-extrabold text-slate-300 flex items-center gap-1">
                               <Users className="w-3.5 h-3.5 text-amber-500" />
-                              <span>سلول‌های هلدینگ زندان مجمع ({players.filter(p => p.isAlive && p.isImprisoned).length} از {prisonCapacity} نفر)</span>
+                              <span>سلول‌های زندان مجمع ({players.filter(p => p.isAlive && p.isImprisoned).length} از {prisonCapacity} نفر)</span>
                             </h4>
                             <span className="text-[8.5px] font-mono text-slate-500">حداکثر ظرفیت: {prisonCapacity}</span>
                           </div>

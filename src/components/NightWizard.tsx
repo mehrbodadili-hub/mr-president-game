@@ -868,6 +868,14 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
                   <span>{t('night.step6.blockedAlert')}</span>
                 </div>
               )}
+              {(() => {
+                const imprisonedMasons = players.filter(p => p.identity === 'freemason' && p.isImprisoned && p.isAlive);
+                return imprisonedMasons.length > 0 ? (
+                  <div className="text-[11px] text-slate-500 mb-3">
+                    {t('night.step6.imprisonedReminder', { list: imprisonedMasons.map(m => m.name).join('، ') })}
+                  </div>
+                ) : null;
+              })()}
               <PlayerSelector
                 targetId={nightAction.masonTargetId}
                 onChange={(id) => setNightAction({ ...nightAction, masonTargetId: id })}
