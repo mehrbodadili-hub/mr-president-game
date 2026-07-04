@@ -41,7 +41,7 @@ export const ROLE_DETAILS: Record<RoleType, RoleDetail> = {
   },
   vice_president: {
     type: 'vice_president',
-    nameFa: 'معاون رئیس‌جمهور',
+    nameFa: 'معاون',
     dayAbilityFa: 'در تمام رای‌گیری‌های دادگاه، رای او ۲ بار شمرده می‌شود. در صورت خروج رئیس‌جمهور از بازی، جانشین او می‌شود.',
     nightAbilityFa: 'ـ',
     chooserFa: 'گزارشگر و خبرنگار',
@@ -113,7 +113,7 @@ export const ROLE_DETAILS: Record<RoleType, RoleDetail> = {
   },
   none: {
     type: 'none',
-    nameFa: 'بدون نقش / شهروند ساده',
+    nameFa: 'بدون نقش / شهروند',
     dayAbilityFa: 'رای‌دهی و تلاش برای شناسایی فراماسون‌ها.',
     nightAbilityFa: 'ـ',
     chooserFa: 'ـ',

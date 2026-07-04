@@ -780,7 +780,7 @@ export default function App() {
         })
       );
       handleLogEvent(
-        tl(`🚨 جانشینی عالی پاپ اعظم! با فقدان پاپ اعظم، کشیشِ مجمع «${priest.name}» ردای سرخ پاپ اعظم را به دوش افکند.`, `🚨 succession عالی High Pope! with فقدان High Pope, Priestِ assembly "${priest.name}" ردای سرخ High Pope را to twoش افکند.`),
+        tl(`🚨 جانشینی عالی پاپ! با فقدان پاپ، کشیشِ مجمع «${priest.name}» ردای سرخ پاپ را به دوش افکند.`, `🚨 succession عالی High Pope! with فقدان High Pope, Priestِ assembly "${priest.name}" ردای سرخ High Pope را to twoش افکند.`),
         'system'
       );
     }
@@ -1106,7 +1106,7 @@ export default function App() {
           // Log the terrorist assignment
           setTimeout(() => {
             handleLogEvent(
-              tl(`[وتوی پاپ اعظم] به واسطه حق ابطال تصمیمات مجمع توسط پاپ اعظم بر صندلی ریاست‌جمهوری، هسته‌های خشونت‌امیز فعال شدند! بازیکن «${chosen.name}» به صورت کاملاً پنهانی به عنوان «تروریست مجمع» انتصاب گردید.`, `[veto High Pope] to واسطه حق ابطال تصمیمات assembly توسط High Pope on seat presidency, هسته‌های خشونت‌امیز active شدند! player "${chosen.name}" to صورت fully covertly to عنوان "terrorist assembly" appointment گردید.`),
+              tl(`[وتوی پاپ] به واسطه حق ابطال تصمیمات مجمع توسط پاپ بر صندلی ریاست‌جمهوری، هسته‌های خشونت‌امیز فعال شدند! بازیکن «${chosen.name}» به صورت کاملاً پنهانی به عنوان «تروریست مجمع» انتصاب گردید.`, `[veto High Pope] to واسطه حق ابطال تصمیمات assembly توسط High Pope on seat presidency, هسته‌های خشونت‌امیز active شدند! player "${chosen.name}" to صورت fully covertly to عنوان "terrorist assembly" appointment گردید.`),
               'ability'
             );
           }, 100);
@@ -1119,7 +1119,7 @@ export default function App() {
     setSelectedTab('logs');
     handleLogEvent(
       `مجمع روز صفر تشکیل و کابینه منصوب شد. اینک وارد فاز «شب صفر» می‌شویم. فراماسون‌ها بیدار شده و ۳۰ ثانیه دیالوگ آغازین دارند.${
-        isVetoed ? tl(' (توجه: حق وتوی پاپ اعظم فعال شده و تروریست مخفی گمارده شد)', '(note: حق veto High Pope active شده and terrorist hidden assigned شد)') : ''
+        isVetoed ? tl(' (توجه: حق وتوی پاپ فعال شده و تروریست مخفی گمارده شد)', '(note: حق veto High Pope active شده and terrorist hidden assigned شد)') : ''
       }`,
       'system'
     );
@@ -1193,7 +1193,7 @@ export default function App() {
       })
     );
 
-    const identityName = newIdentity === 'freemason' ? tl('فراماسون', 'Freemason') : tl('شهروند ساده', 'citizen plain');
+    const identityName = newIdentity === 'freemason' ? tl('فراماسون', 'Freemason') : tl('شهروند', 'citizen plain');
     handleLogEvent(tl(`هویت اصلی بازیکن «${targetPlayer.name}» به «${identityName}» تغییر یافت.`, `identity اصلی player "${targetPlayer.name}" to "${identityName}" change یافت.`), 'system');
   };
 
@@ -1427,7 +1427,7 @@ export default function App() {
     );
 
     handleLogEvent(
-      tl(`به دلیل فوت همزمان پاپ و کشیش، رئیس‌جمهور مجمع بازیکن زنده «${nominee.name}» را به مقام پاپ اعظم منصوب نمود.`, `to دلیل death همزمان Pope and Priest, President open assemblyیکن alive "${nominee.name}" را to office High Pope appointed نمود.`),
+      tl(`به دلیل فوت همزمان پاپ و کشیش، رئیس‌جمهور مجمع بازیکن زنده «${nominee.name}» را به مقام پاپ منصوب نمود.`, `to دلیل death همزمان Pope and Priest, President open assemblyیکن alive "${nominee.name}" را to office High Pope appointed نمود.`),
       'system'
     );
   };
@@ -1620,7 +1620,7 @@ export default function App() {
     );
 
     handleLogEvent(
-      tl(`کلیسای پاپ دخالت کرد! پاپ اعظم مجمع لایحه انقلاب شهردار را باطل اعلام نمود. مقام رئیس‌جمهور و شهردار به جایگاه پیشین خود بازگشتند.`, `کلیسای Pope دخالت کرد! High Pope assembly لایحه Mayor revolution را باطل اعلام نمود. office President and Mayor to position پیشین خود بازگشتند.`),
+      tl(`کلیسای پاپ دخالت کرد! پاپ مجمع لایحه انقلاب شهردار را باطل اعلام نمود. مقام رئیس‌جمهور و شهردار به جایگاه پیشین خود بازگشتند.`, `کلیسای Pope دخالت کرد! High Pope assembly لایحه Mayor revolution را باطل اعلام نمود. office President and Mayor to position پیشین خود بازگشتند.`),
       'ability'
     );
 
@@ -1651,7 +1651,7 @@ export default function App() {
     );
 
     handleLogEvent(
-      tl(`کلیسای پاپ دخالت کرد! حکم اعدام اعلام شده قاضی دادگاه برای بازیکن «${target.name}» توسط پاپ اعظم ابطال و متهم بخشیده شد.`, `کلیسای Pope دخالت کرد! verdict execution اعلام شده Judge court بvote player "${target.name}" توسط High Pope ابطال and defendant بخشیده شد.`),
+      tl(`کلیسای پاپ دخالت کرد! حکم اعدام اعلام شده قاضی دادگاه برای بازیکن «${target.name}» توسط پاپ ابطال و متهم بخشیده شد.`, `کلیسای Pope دخالت کرد! verdict execution اعلام شده Judge court بvote player "${target.name}" توسط High Pope ابطال and defendant بخشیده شد.`),
       'ability'
     );
 
@@ -1682,7 +1682,7 @@ export default function App() {
     );
 
     handleLogEvent(
-      tl(`کلیسای پاپ دخالت کرد! حکم اعدام زندانیِ بندِ تالار «${target.name}» توسط پاپ اعظم ابطال گردید و ایشان در سلول زنده باقی ماند.`, `کلیسای Pope دخالت کرد! verdict execution prisonerِ بندِ hall "${target.name}" توسط High Pope ابطال گردید and ایشان in cell alive باقی ماند.`),
+      tl(`کلیسای پاپ دخالت کرد! حکم اعدام زندانیِ بندِ تالار «${target.name}» توسط پاپ ابطال گردید و ایشان در سلول زنده باقی ماند.`, `کلیسای Pope دخالت کرد! verdict execution prisonerِ بندِ hall "${target.name}" توسط High Pope ابطال گردید and ایشان in cell alive باقی ماند.`),
       'ability'
     );
 
@@ -2496,7 +2496,7 @@ export default function App() {
                       <div className="bg-slate-950/50 p-2.5 rounded-lg border border-slate-850">
                         <span className="font-black text-teal-400 block mb-0.5">{tl('👥 جمعیت ۸ تا ۱۱ نفر:', '👥 جمعیت 8 until 11 نفر:')}</span>
                         <ul className="list-disc list-inside space-y-1 text-[11px] font-semibold text-slate-400 pr-1">
-                          <li>{tl('حق رای معاون اول ملغی و به ۱ رای تقلیل می‌یابد.', 'حق vote Vice President ملغی and to 1 vote تقلیل می‌یابد.')}</li>
+                          <li>{tl('حق رای معاون ملغی و به ۱ رای تقلیل می‌یابد.', 'حق vote Vice President ملغی and to 1 vote تقلیل می‌یابد.')}</li>
                           <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('پلیس', 'Police')}</strong>{tl(' به‌طور کامل از مجمع حذف می‌شود.', 'به‌طور کامل from assembly remove می‌شود.')}</li>
                         </ul>
                       </div>
@@ -2504,7 +2504,7 @@ export default function App() {
                       <div className="bg-slate-950/50 p-2.5 rounded-lg border border-slate-850">
                         <span className="font-black text-teal-400 block mb-0.5">{tl('👥 جمعیت ۸ و ۹ نفر:', '👥 جمعیت 8 and 9 نفر:')}</span>
                         <ul className="list-disc list-inside space-y-1 text-[11px] font-semibold text-slate-400 pr-1">
-                          <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('معاون اول', 'Vice President')}</strong>{tl(' حذف گردیده و فرآیند انتصاب رده‌های تحت امر وی (خبرنگار و گزارشگر) مستقیماً توسط خود ', 'remove گردیده and فرآیند appointment رده‌های تحت امر وی (Journalist and Reporter) مستقیماً توسط خود')}<strong className="text-slate-200">{tl('رئیس‌جمهور', 'President')}</strong>{tl(' در فاز روز صفر صورت می‌گیرد.', 'in phase Day Zero صورت می‌گیرد.')}</li>
+                          <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('معاون', 'Vice President')}</strong>{tl(' حذف گردیده و فرآیند انتصاب رده‌های تحت امر وی (خبرنگار و گزارشگر) مستقیماً توسط خود ', 'remove گردیده and فرآیند appointment رده‌های تحت امر وی (Journalist and Reporter) مستقیماً توسط خود')}<strong className="text-slate-200">{tl('رئیس‌جمهور', 'President')}</strong>{tl(' در فاز روز صفر صورت می‌گیرد.', 'in phase Day Zero صورت می‌گیرد.')}</li>
                           <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('کشیش', 'Priest')}</strong>{tl(' به‌طور کامل از بازی حذف گردیده و شب صفر او نادیده گرفته می‌شود.', 'به‌طور کامل from game remove گردیده and Night Zero او نادیده گرفته می‌شود.')}</li>
                         </ul>
                       </div>
@@ -2855,12 +2855,12 @@ export default function App() {
                         <div className="p-2 bg-slate-904/60 rounded-lg border border-slate-900/50">
                           {players.length < 11 ? (
                             <>
-                              <span className="block text-slate-500 font-bold">{tl('معاون اول:', 'Vice President:')}</span>
+                              <span className="block text-slate-500 font-bold">{tl('معاون:', 'Vice President:')}</span>
                               <span className="text-slate-600 italic">{tl('حذف شده در شروع', 'remove شده in start')}</span>
                             </>
                           ) : (
                             <>
-                              <span className="block text-slate-500 font-bold">معاون اول ({players.length < 12 ? tl('۱ رای', '1 vote') : tl('۲ رای', '2 vote')}):</span>
+                              <span className="block text-slate-500 font-bold">معاون ({players.length < 12 ? tl('۱ رای', '1 vote') : tl('۲ رای', '2 vote')}):</span>
                               <span className={`font-semibold ${cabinet.vicePresidentId ? 'text-slate-300' : 'text-slate-600'}`}>
                                 {cabinet.vicePresidentId ? players.find((p) => p.id === cabinet.vicePresidentId)?.name : tl('بدون تصدی', 'without تصدی')}
                               </span>
@@ -2884,7 +2884,7 @@ export default function App() {
                       <CollapsibleGuide title={tl("ساختار کابینه و مسئولین منصوب", "ساختار cabinet and مسئولین appointed")} defaultOpen={false}>
                           <div className="space-y-3 pt-2">
                               <div className="border border-slate-700/30 rounded-lg p-2 bg-slate-900/50">
-                                  <p className="font-bold text-xs text-amber-400 mb-1">{tl('دستیاران معاون رئیس‌جمهور:', 'assistantان Vice President President:')}</p>
+                                  <p className="font-bold text-xs text-amber-400 mb-1">{tl('دستیاران معاون:', 'assistantان Vice President President:')}</p>
                                   <p className="text-[10px] text-slate-400">گزارشگر: {players.find(p => p.role === 'reporter')?.name || tl('نامشخص', 'nameشخص')} | خبرنگار: {players.find(p => p.role === 'journalist')?.name || tl('نامشخص', 'nameشخص')}</p>
                               </div>
                               <div className="border border-slate-700/30 rounded-lg p-2 bg-slate-900/50">
@@ -2944,7 +2944,7 @@ export default function App() {
                           <p className="text-[10px] text-slate-400 leading-normal mt-0.5">
                             {tl('خروجی خودکار شب گذشته اعم از اعدام ها، ترورهای مستقیم لژ و سپرهای مخدوش شده را به حضار اعلام بفرمایید.', 'exitی خودکار night گذشته اعم from execution ها, ترورهای مستقیم lodge and shieldهای مخtwoش شده را to حضار اعلام بفرمایید.')}
                             <br/><br/>
-                            <strong className="text-teal-400">{tl('راهنمای جانشینی کشیش (قاعده ۴):', 'guide of succession Priest (قاعده 4):')}</strong>{tl(' در صورت کشته شدن کشیش مجمع، پاپ اعظم مجاز است یکی از ', 'in صورت killed شدن Priest assembly, High Pope مجاز است یکی from')}<strong>{tl('شهروندان ساده و بدون نقش', 'citizens plain and without role')}</strong>{tl(' را به مقام کشیش جدید منصوب کند. این انتصاب کاملاً ', 'را to office Priest new appointed کند. this appointment fully')}<strong>{tl('اختیاری', 'optional')}</strong> است، اما در صورت عدم انتصاب، قابلیت مشترک پاپ و کشیش (ابطال اعدام زندانی) منجمد می‌شود. پاپ فقط مجاز به تعیین افراد بدون نقش (ساده) است.
+                            <strong className="text-teal-400">{tl('راهنمای جانشینی کشیش (قاعده ۴):', 'guide of succession Priest (قاعده 4):')}</strong>{tl(' در صورت کشته شدن کشیش مجمع، پاپ مجاز است یکی از ', 'in صورت killed شدن Priest assembly, High Pope مجاز است یکی from')}<strong>{tl('شهروندان و بدون نقش', 'citizens plain and without role')}</strong>{tl(' را به مقام کشیش جدید منصوب کند. این انتصاب کاملاً ', 'را to office Priest new appointed کند. this appointment fully')}<strong>{tl('اختیاری', 'optional')}</strong> است، اما در صورت عدم انتصاب، قابلیت مشترک پاپ و کشیش (ابطال اعدام زندانی) منجمد می‌شود. پاپ فقط مجاز به تعیین افراد بدون نقش (ساده) است.
                           </p>
                         </CollapsibleGuide>
 
@@ -2986,12 +2986,12 @@ export default function App() {
                         {/* 1. Priest Dead and Pope Alive -> Assign a new priest */}
                         {!players.some(p => p.role === 'priest' && p.isAlive) && players.some(p => p.role === 'pope' && p.isAlive) && (
                           <div className="p-3 bg-indigo-950/40 border border-indigo-900/60 rounded-xl space-y-2 mt-2">
-                            <span className="text-[10px] font-extrabold text-teal-400 block mb-1">{tl('⛪ انتصاب جانشین کشیش توسط پاپ اعظم (قاعده ۴)', '⛪ appointment successor Priest توسط High Pope (قاعده 4)')}</span>
+                            <span className="text-[10px] font-extrabold text-teal-400 block mb-1">{tl('⛪ انتصاب جانشین کشیش توسط پاپ (قاعده ۴)', '⛪ appointment successor Priest توسط High Pope (قاعده 4)')}</span>
                             {(() => {
                               const pope = players.find(p => p.role === 'pope' && p.isAlive);
                               return pope ? (
                                 <div className="text-[10px] font-bold text-teal-300">
-                                  👤 پاپ اعظم مجری اقدام: <span className="underline decoration-teal-500/50 decoration-2 underline-offset-2 text-white font-extrabold">{pope.name}</span>
+                                  👤 پاپ مجری اقدام: <span className="underline decoration-teal-500/50 decoration-2 underline-offset-2 text-white font-extrabold">{pope.name}</span>
                                 </div>
                               ) : null;
                             })()}
@@ -3287,7 +3287,7 @@ export default function App() {
                             <br/><br/>
                             🚨 <strong className="text-amber-400">{tl('قانون محدودیت مهره دوم:', 'rule محtwoدیت second piece:')}</strong>{tl(' طبق مصوبات جدید مجمع، اگر نقش انتخاب شده در ', 'طبق مصوبات new assembly, اگر role select شده in')}<strong>{tl('مهره نخست (مهر اول)', 'first piece (مهر اول)')}</strong>{tl(' خالی و بدون بازیکن بوده باشد (نقش مقتول)، بازیکنانِ تالار که دارای نقش‌های زنده و فعالِ ', 'خالی and without player بوده باشد (role killed), playersِ hall که داvote roles alive and activeِ')}<strong>{tl('قاضی', 'Judge')}</strong>{tl(' یا ', 'or')}<strong>{tl('شهردار', 'Mayor')}</strong>{tl(' هستند، هرگز نباید به عنوان برگزیده در ', 'هستند, هرگز نmust to عنوان برگزیده in')}<strong>{tl('مهره دوم (مهر دوم)', 'second piece (مهر twoم)')}</strong> دیده شوند یا این نقش‌ها را تصاحب نمایند.
                             <br/><br/>
-                            <strong className="text-rose-400">{tl('راهنمای بحران کلیسا (قاعده ۸ - فوت همزمان):', 'guide of crisis کلیسا (قاعده 8 - death همزمان):')}</strong>{tl(' در صورتی که ', 'in صورتی که')}<strong>{tl('پاپ و کشیش به صورت همزمان', 'Pope and Priest to صورت همزمان')}</strong>{tl(' کشته شده باشند (مثلاً با بمب تروریست)، رئیس‌جمهور مجاز و ', 'killed شده باشند (مثلاً with bomb terrorist), President مجاز and')}<strong>{tl('موظف', 'موظف')}</strong> است یک نفر را برای مقام پاپ اعظم منصوب کند. (اولویت اول با بازیکنان بدون نقش است. در غیر این صورت از میان سایر بازیکنان واجد شرایط به صورت چرخشی استفاده می‌شود.)
+                            <strong className="text-rose-400">{tl('راهنمای بحران کلیسا (قاعده ۸ - فوت همزمان):', 'guide of crisis کلیسا (قاعده 8 - death همزمان):')}</strong>{tl(' در صورتی که ', 'in صورتی که')}<strong>{tl('پاپ و کشیش به صورت همزمان', 'Pope and Priest to صورت همزمان')}</strong>{tl(' کشته شده باشند (مثلاً با بمب تروریست)، رئیس‌جمهور مجاز و ', 'killed شده باشند (مثلاً with bomb terrorist), President مجاز and')}<strong>{tl('موظف', 'موظف')}</strong> است یک نفر را برای مقام پاپ منصوب کند. (اولویت اول با بازیکنان بدون نقش است. در غیر این صورت از میان سایر بازیکنان واجد شرایط به صورت چرخشی استفاده می‌شود.)
                           </p>
                         </CollapsibleGuide>
 
@@ -3452,8 +3452,8 @@ export default function App() {
                             {/* Both Dead emergency Assign Pope (Rule 8) */}
                             {!players.some(p => p.role === 'pope' && p.isAlive) && !players.some(p => p.role === 'priest' && p.isAlive) && (
                               <div className="p-3 bg-rose-950/20 border border-rose-900/40 rounded-xl space-y-2 mt-2">
-                                <span className="text-[10px] font-black text-rose-400 block mb-1">{tl('⛪ تعیین اضطراری پاپ اعظم جدید (قاعده ۸)', '⛪ set emergency High Pope new (قاعده 8)')}</span>
-                                <p className="text-[8.5px] text-slate-400 leading-normal">{tl('رئیس‌جمهور موظف است در فوت همزمان پاپ و کشیش، پاپ جدید را با اولویت شهروند ساده (قاضی و کشیش مجاز نیستند) برگزیند.', 'President موظف است in death همزمان Pope and Priest, Pope new را with اولویت citizen plain (Judge and Priest مجاز نیستند) برگزیند.')}</p>
+                                <span className="text-[10px] font-black text-rose-400 block mb-1">{tl('⛪ تعیین اضطراری پاپ جدید (قاعده ۸)', '⛪ set emergency High Pope new (قاعده 8)')}</span>
+                                <p className="text-[8.5px] text-slate-400 leading-normal">{tl('رئیس‌جمهور موظف است در فوت همزمان پاپ و کشیش، پاپ جدید را با اولویت شهروند (قاضی و کشیش مجاز نیستند) برگزیند.', 'President موظف است in death همزمان Pope and Priest, Pope new را with اولویت citizen plain (Judge and Priest مجاز نیستند) برگزیند.')}</p>
                                 <div className="flex gap-2">
                                   <select
                                     id="president-assign-pope-select"
@@ -3468,7 +3468,7 @@ export default function App() {
                                         return 0;
                                       })
                                       .map(p => (
-                                        <option key={p.id} value={p.id}>{p.name} {p.role === 'none' ? tl('(اولویت: شهروند ساده)', '(اولویت: citizen plain)') : `(${(ROLE_DETAILS[p.role] || ROLE_DETAILS['none']).nameFa})`}</option>
+                                        <option key={p.id} value={p.id}>{p.name} {p.role === 'none' ? tl('(اولویت: شهروند)', '(اولویت: citizen plain)') : `(${(ROLE_DETAILS[p.role] || ROLE_DETAILS['none']).nameFa})`}</option>
                                       ))}
                                   </select>
                                   <button
@@ -3659,7 +3659,7 @@ export default function App() {
                       <div className="space-y-4 animate-fadeIn">
                         <CollapsibleGuide title={tl("گام ۶ از ۶: رای نهایی قاضی، سیاهچال و صیانت پاپ", "step 6 from 6: vote نهایی Judge, سیاهچال and صیانت Pope")} defaultOpen={false}>
                           <p className="text-[10px] text-slate-400 leading-normal mt-0.5">
-                            {tl('قاضی تالار مجمع رای نهایی را اعمال می‌سازد. در صورت محکومیتِ اعدام، پاپ اعظم کلیسا می‌تواند آن را به طور زنده وتو کند.', 'Judge assembly hall vote نهایی را اعمال می‌سازد. in صورت محکومیتِ execution, High Pope کلیسا can that را to طور alive veto کند.')}
+                            {tl('قاضی تالار مجمع رای نهایی را اعمال می‌سازد. در صورت محکومیتِ اعدام، پاپ کلیسا می‌تواند آن را به طور زنده وتو کند.', 'Judge assembly hall vote نهایی را اعمال می‌سازد. in صورت محکومیتِ execution, High Pope کلیسا can that را to طور alive veto کند.')}
                           </p>
                         </CollapsibleGuide>
 
@@ -3673,7 +3673,7 @@ export default function App() {
                                 <span className="font-extrabold text-white underline decoration-amber-500/50 underline-offset-2">{judge ? judge.name : tl('فاقد قاضی فعال/زنده', 'فاقد Judge active/alive')}</span>
                               </div>
                               <div className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 p-2.5 rounded-xl font-bold font-sans flex items-center justify-between">
-                                <span>{tl('⛪ پاپ اعظم (وتوکننده):', '⛪ High Pope (vetoکننده):')}</span>
+                                <span>{tl('⛪ پاپ (وتوکننده):', '⛪ High Pope (vetoکننده):')}</span>
                                 <span className="font-extrabold text-white underline decoration-indigo-500/50 underline-offset-2">{pope ? pope.name : tl('فاقد پاپ فعال/زنده', 'فاقد Pope active/alive')}</span>
                               </div>
                             </div>
@@ -3687,11 +3687,11 @@ export default function App() {
                             : 'bg-slate-950 border-slate-900'
                         }`}>
                           <div className="flex items-center justify-between">
-                            <span className="text-[9.5px] text-slate-400 font-bold">{tl('⛪ جایگاه صیانت کلیسایی (پاپ اعظم):', '⛪ position صیانت کلیسایی (High Pope):')}</span>
+                            <span className="text-[9.5px] text-slate-400 font-bold">{tl('⛪ جایگاه صیانت کلیسایی (پاپ):', '⛪ position صیانت کلیسایی (High Pope):')}</span>
                             <span className={players.some(p => p.role === 'pope' && p.isAlive && !p.isImprisoned) ? 'text-emerald-400 text-[10px] font-black' : 'text-slate-600 text-[10px] font-black'}>
                               {players.some(p => p.role === 'pope' && p.isAlive && !p.isImprisoned) 
                                 ? tl(`زنده و حاکم: «${players.find(p => p.role === 'pope' && p.isAlive && !p.isImprisoned)?.name}»`, `alive and حاکم: "${players.find(p => p.role === 'pope' && p.isAlive && !p.isImprisoned)?.name}"`) 
-                                : tl('فاقد پاپ اعظم فعال یا زندانی شده', 'فاقد High Pope active or prisoner شده')}
+                                : tl('فاقد پاپ فعال یا زندانی شده', 'فاقد High Pope active or prisoner شده')}
                             </span>
                           </div>
 
