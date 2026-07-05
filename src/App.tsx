@@ -2475,14 +2475,14 @@ export default function App() {
         {gamePhase === 'setup' && (
           <div className="max-w-2xl mx-auto bg-[#0a0d14] border border-amber-950/20 rounded-2xl p-6 md:p-8 shadow-2xl animate-fadeIn">
             {/* Cinematic Game Cover Banner */}
-            <div className="relative w-full max-w-sm mx-auto rounded-2xl overflow-hidden border border-amber-500/25 mb-6 bg-slate-950 shadow-2xl animate-fadeIn">
+            <div className="w-full max-w-sm mx-auto mb-6 animate-fadeIn">
               <img
                 src={coverImg}
                 referrerPolicy="no-referrer"
                 alt="Mr. President Game Cover"
                 loading="lazy"
                 decoding="async"
-                className="w-full h-auto object-cover block mx-auto opacity-100 rounded-2xl"
+                className="w-full h-auto block"
               />
             </div>
 
