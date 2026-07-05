@@ -748,7 +748,7 @@ export default function App() {
         );
         setCabinet((prev) => ({ ...prev, presidentId: mayor.id, mayorId: null }));
         handleLogEvent(
-          tl(`🚨 جانشینی اضطراری ریاست جمهوری! با فوت رئیس‌جمهور و معاون مجمع، شهردار مقتدر «${mayor.name}» عهده‌دار کرسی ریاست جمهوری گردید.`, `🚨 succession emergency presidency! with death President and Vice President assembly, Mayor مقتدر "${mayor.name}" عهده‌دار کرسی presidency گردید.`),
+          tl(`🚨 جانشینی اضطراری ریاست جمهوری! با فوت رئیس‌جمهور و معاون مجمع، شهردار «${mayor.name}» عهده‌دار کرسی ریاست جمهوری گردید.`, `🚨 succession emergency presidency! with death President and Vice President assembly, Mayor مقتدر "${mayor.name}" عهده‌دار کرسی presidency گردید.`),
           'system'
         );
         return;
@@ -1424,7 +1424,7 @@ export default function App() {
     );
 
     handleLogEvent(
-      tl(`پاپ مقتدر با صدور فرمان معنوی، بازیکن زنده «${nominee.name}» را به مقام کشیش جدید مجمع منصوب فرمود.`, `Pope مقتدر with issue order معنوی, player alive "${nominee.name}" را to office Priest new assembly appointed فرمود.`),
+      tl(`پاپ با صدور فرمان معنوی، بازیکن زنده «${nominee.name}» را به مقام کشیش جدید مجمع منصوب فرمود.`, `Pope مقتدر with issue order معنوی, player alive "${nominee.name}" را to office Priest new assembly appointed فرمود.`),
       'system'
     );
   };
