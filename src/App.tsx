@@ -2566,6 +2566,13 @@ export default function App() {
                           <li>{tl('نقش ', 'role')}<strong className="text-slate-200">{tl('وکیل', 'Lawyer')}</strong>{tl(' حذف شده و انتصابی برای آن صورت نخواهد پذیرفت.', 'remove شده and appointmentی بvote that صورت نخواهد پذیرفت.')}</li>
                         </ul>
                       </div>
+
+                      <div className="bg-slate-950/50 p-2.5 rounded-lg border border-slate-850">
+                        <span className="font-black text-teal-400 block mb-0.5">{tl('🔒 ظرفیت زندان مجمع:', '🔒 Assembly prison capacity:')}</span>
+                        <ul className="list-disc list-inside space-y-1 text-[11px] font-semibold text-slate-400 pr-1">
+                          <li>{tl('ظرفیت زندان بر اساس تعداد بازیکنان در شروع بازی: ۸ تا ۱۰ نفره ← ۱ سلول | ۱۱ تا ۲۰ نفره ← ۲ سلول | ۲۱ تا ۳۰ نفره ← ۳ سلول.', 'Prison capacity based on player count at game start: 8–10 players → 1 cell | 11–20 players → 2 cells | 21–30 players → 3 cells.')}</li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </CollapsibleGuide>
