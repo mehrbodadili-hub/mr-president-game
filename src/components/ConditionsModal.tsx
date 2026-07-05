@@ -144,7 +144,7 @@ export const ConditionsModal: React.FC<ConditionsModalProps> = ({
                     <strong className="text-slate-300">{tl('۱. وتوی مدنی شهردار:', '1. Mayor civil veto:')}</strong> {tl('فقط زمانی فعال است که شهردار زنده و بیرون از انفرادی باشد. شهردار مجاز است حکم دادگاه در فاز دفاعیه را وتو کند (حداکثر ۱ بار در کل بازی).', 'Only active while the Mayor is alive and out of solitary. The Mayor may veto a court verdict during defense (once per game).')}
                   </p>
                   <p>
-                    <strong className="text-slate-300">{tl('۲. وتوی مذهبی پاپ (رهایی از سلول):', '2. Pope religious veto (cell pardon):')}</strong> {tl('پاپ مقتدر می‌تواند اجرای حکم اعدام زندانیان را لغو کرده و آن‌ها را به سلول بازگرداند. این وتو کوول‌داون دارد و ', 'The Pope can cancel an execution and send the prisoner back to the cell. This veto has a cooldown and ')}<span className="text-teal-400 font-semibold">{tl('تنها در حضور کشیش فعال زنده', 'only works while an active living Priest exists')}</span>{tl(' کار می‌کند. در صورت عدم انتصاب/مرگ کشیش، وتوی مذهبی نیز غیرفعال است!', '. Without a Priest, the religious veto is disabled!')}
+                    <strong className="text-slate-300">{tl('۲. وتوی مذهبی پاپ (رهایی از سلول):', '2. Pope religious veto (cell pardon):')}</strong> {tl('پاپ می‌تواند اجرای حکم اعدام زندانیان را لغو کرده و آن‌ها را به سلول بازگرداند. این وتو کوول‌داون دارد و ', 'The Pope can cancel an execution and send the prisoner back to the cell. This veto has a cooldown and ')}<span className="text-teal-400 font-semibold">{tl('تنها در حضور کشیش فعال زنده', 'only works while an active living Priest exists')}</span>{tl(' کار می‌کند. در صورت عدم انتصاب/مرگ کشیش، وتوی مذهبی نیز غیرفعال است!', '. Without a Priest, the religious veto is disabled!')}
                   </p>
                 </div>
               </div>
@@ -239,7 +239,7 @@ export const ConditionsModal: React.FC<ConditionsModalProps> = ({
                   </span>
                 ) : (
                   <span className="text-rose-400 flex items-center gap-1 font-bold">
-                    <AlertTriangle className="w-3.5 h-3.5" /> {tl('غیرفعال (به دلیل فقدان کشیش یا پاپ مقتدر)', 'Disabled (no active Priest or Pope)')}
+                    <AlertTriangle className="w-3.5 h-3.5" /> {tl('غیرفعال (به دلیل فقدان کشیش یا پاپ)', 'Disabled (no active Priest or Pope)')}
                   </span>
                 )}
               </div>

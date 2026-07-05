@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Player, RoleType, NightState, GameLog } from '../types';
 import { Shield, Skull, Ban, Eye, Target, Sparkles, ArrowLeft, ArrowRight, Zap, Play } from 'lucide-react';
+import { CollapsibleGuide } from './CollapsibleGuide';
 
 interface NightWizardProps {
   players: Player[];
@@ -104,9 +105,9 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
   const alivePlayers = players.filter((p) => p.isAlive && !p.isImprisoned);
 
   const getDoctorMaxTargets = () => {
-    const n = players.length;
-    if (n < 10) return 1;
-    if (n >= 11 && n <= 20) return 2;
+    const activeCount = players.filter(p => p.isAlive && !p.isImprisoned).length;
+    if (activeCount <= 10) return 1;
+    if (activeCount <= 20) return 2;
     return 3;
   };
 
@@ -544,9 +545,8 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
             </div>
             <p className="text-xs text-slate-400 leading-relaxed font-semibold">{t('night.step2.desc')}</p>
 
-            <div className="mt-3 bg-[#080d15] border border-slate-850 rounded-xl p-3 space-y-2">
-              <span className="text-[11px] font-black text-amber-500 block">{t('night.step2.rulesHeader')}</span>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[10px] font-bold text-slate-400">
+            <CollapsibleGuide title={t('night.step2.rulesHeader')} defaultOpen={false}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[10px] font-bold text-slate-400 w-full">
                 <div className={`p-2 rounded-lg border transition ${players.length <= 10 ? 'bg-teal-950/25 border-teal-700/50 text-teal-300 shadow-md shadow-teal-950/20' : 'bg-slate-900/40 border-slate-800'}`}>
                   <span>{t('night.step2.rulesLt10Label')}</span>
                   <span className="block text-xs font-black mt-1">{t('night.step2.rulesLt10Value')}</span>
@@ -563,7 +563,7 @@ export default function NightWizard({ players, cycle, showSecrets = false, logs 
                   {players.length >= 21 && <span className="text-[9px] text-teal-400 block mt-0.5">{t('night.step2.activeAt')}</span>}
                 </div>
               </div>
-            </div>
+            </CollapsibleGuide>
           </div>
 
           {doctorActive ? (

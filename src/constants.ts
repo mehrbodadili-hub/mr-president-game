@@ -77,7 +77,7 @@ export const ROLE_DETAILS: Record<RoleType, RoleDetail> = {
     dayAbilityFa: 'ـ',
     nightAbilityFa: 'هر شب نجات یک نفر از شلیک مافیا/پلیس. می‌تواند خودش را نیز هر شب نجات دهد. محافظت او فقط روی خروج شبانه تاثیر دارد.',
     chooserFa: 'ـ',
-    descriptionFa: 'پزشک دلسوز شهر که جان لرزان شهروندان را در برابر تفنگ‌ها محافظت می‌کند.'
+    descriptionFa: 'پزشک شهر که جان لرزان شهروندان را در برابر تفنگ‌ها محافظت می‌کند.'
   },
   police: {
     type: 'police',
