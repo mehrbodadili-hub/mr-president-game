@@ -2091,7 +2091,7 @@ export default function App() {
                   loading="eager"
                   decoding="async"
                   fetchPriority="high"
-                  className="w-full h-auto object-cover block mx-auto opacity-100 rounded-2xl"
+                  className="w-full h-auto block mx-auto opacity-100 rounded-2xl"
                 />
               </div>
               <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-l from-amber-200 via-amber-400 to-amber-600 tracking-tight font-sans">
@@ -2475,14 +2475,14 @@ export default function App() {
         {gamePhase === 'setup' && (
           <div className="max-w-2xl mx-auto bg-[#0a0d14] border border-amber-950/20 rounded-2xl p-6 md:p-8 shadow-2xl animate-fadeIn">
             {/* Cinematic Game Cover Banner */}
-            <div className="w-full max-w-sm mx-auto mb-6 animate-fadeIn">
+            <div className="w-full max-w-sm mx-auto mb-6 rounded-2xl overflow-hidden border border-amber-500/25 bg-slate-950 shadow-2xl animate-fadeIn">
               <img
                 src={coverImg}
                 referrerPolicy="no-referrer"
                 alt="Mr. President Game Cover"
                 loading="lazy"
                 decoding="async"
-                className="w-full h-auto block"
+                className="w-full h-auto block mx-auto rounded-2xl"
               />
             </div>
 
