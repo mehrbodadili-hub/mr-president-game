@@ -52,6 +52,7 @@ import {
 } from 'lucide-react';
 
 import coverAsset from './assets/game_cover.jpg.asset.json';
+import coverAssetV2 from './assets/game_cover_v2.jpg.asset.json';
 import gameLogoAsset from './assets/game-logo.webp.asset.json';
 
 const isDevMode = 
@@ -65,6 +66,7 @@ export default function App() {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language !== 'en';
   const coverImg = coverAsset.url;
+  const coverImgV2 = coverAssetV2.url;
   const logoImg = gameLogoAsset.url;
   // Game Setup States
   const [playerInput, setPlayerInput] = useState<string>(() => {
@@ -2082,6 +2084,16 @@ export default function App() {
             <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-50"></div>
             
             <div className="text-center mb-8 pt-4">
+              <div className="mb-5 rounded-2xl overflow-hidden border border-amber-500/30 shadow-2xl ring-1 ring-amber-500/10">
+                <img
+                  src={coverImgV2}
+                  alt="Mr. President Game Cover"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                  className="w-full h-auto block"
+                />
+              </div>
               <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-l from-amber-200 via-amber-400 to-amber-600 tracking-tight font-sans">
                 {t('app.title')}
               </h1>
@@ -2462,6 +2474,15 @@ export default function App() {
         {/* 1. SETUP PHASE */}
         {gamePhase === 'setup' && (
           <div className="max-w-2xl mx-auto bg-[#0a0d14] border border-amber-950/20 rounded-2xl p-6 md:p-8 shadow-2xl animate-fadeIn">
+            <div className="mb-6 rounded-2xl overflow-hidden border border-amber-500/30 shadow-2xl ring-1 ring-amber-500/10">
+              <img
+                src={coverImgV2}
+                alt="Mr. President Game Cover"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-auto block"
+              />
+            </div>
             <h2 className="text-xl sm:text-2xl font-black text-white text-center mb-1 tracking-tight">{tl('آماده‌سازی لژ و مجمع آغازین', 'آماده‌سازی lodge and assembly beginین')}</h2>
             <p className="text-xs text-slate-400 text-center mb-6">
               {tl('جهت تقسیم هویت‌های ۲۹ درصدی و سازمان‌دهی لژ فراماسونری، اسامی بازیکنان مجمع را وارد نمایید.', 'جهت تقسیم identities 29 درصدی and سازمان‌دهی lodge Freemasonری, اسامی players assembly را وارد نمایید.')}
