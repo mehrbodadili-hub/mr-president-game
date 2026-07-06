@@ -53,7 +53,7 @@ export const ROLE_DETAILS: Record<RoleType, RoleDetail> = {
     dayAbilityFa: 'ـ',
     nightAbilityFa: 'اشاره به یک فرد و مطلع شدن از اتفاقاتی که در طول شب گذشته بر او رخ داده است.',
     chooserFa: 'ـ',
-    descriptionFa: 'دیده‌بان حقیقت‌جو که جزئیات رویدادهای شبانه بازیکنان را برملا می‌کند.'
+    descriptionFa: 'دیده‌بان که جزئیات رویدادهای شبانه بازیکنان را برملا می‌کند.'
   },
   journalist: {
     type: 'journalist',
@@ -101,7 +101,7 @@ export const ROLE_DETAILS: Record<RoleType, RoleDetail> = {
     dayAbilityFa: 'حکم نهایی متهمان دادگاه (اعدام، زندان یا بخشش). زندان ۳ جا ظرفیت دارد (زندانی حق رای ندارد و شمرده نمی‌شود ولی نقش دارد). رای‌گیری برای ورود او به دادگاه وجود ندارد.',
     nightAbilityFa: 'دارای یک سپر دفاعی در برابر شلیک یا عملیات تروریستی.',
     chooserFa: 'وکیل',
-    descriptionFa: 'مقتدرترین بازوی قضایی بازی که احکام ماندن، اعدام یا اسارت در پشت میله‌های زندان را صادر می‌کند.'
+    descriptionFa: 'بازوی قضایی بازی که احکام ماندن، اعدام یا اسارت در پشت میله‌های زندان را صادر می‌کند.'
   },
   lawyer: {
     type: 'lawyer',
@@ -109,7 +109,7 @@ export const ROLE_DETAILS: Record<RoleType, RoleDetail> = {
     dayAbilityFa: 'در هر دادگاه قبل اعلام حکم، می‌تواند به مدت ۱ دقیقه درباره افراد متهم صحبت و دفاع کند.',
     nightAbilityFa: 'ـ',
     chooserFa: 'ـ',
-    descriptionFa: 'حقوق‌دان وفادار که در تالار دادگاه برای دفاع یا تسهیل احکام برای متهمین تلاش می‌کند.'
+    descriptionFa: 'حقوق‌دان که در تالار دادگاه برای دفاع یا تسهیل احکام برای متهمین تلاش می‌کند.'
   },
   none: {
     type: 'none',
@@ -117,6 +117,6 @@ export const ROLE_DETAILS: Record<RoleType, RoleDetail> = {
     dayAbilityFa: 'رای‌دهی و تلاش برای شناسایی فراماسون‌ها.',
     nightAbilityFa: 'ـ',
     chooserFa: 'ـ',
-    descriptionFa: 'توده ناآگاه جامعه که هدف نجات شهر از یوغ تسلط فراماسون‌های مرموز را دنبال می‌کنند.'
+    descriptionFa: 'بازیکنانی از جامعه که هدف نجات شهر از یوغ تسلط فراماسون‌های مرموز را دنبال می‌کنند.'
   }
 };
