@@ -2082,18 +2082,6 @@ export default function App() {
             <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-50"></div>
             
             <div className="text-center mb-8 pt-4">
-              {/* Cinematic Game Cover Banner */}
-              <div className="w-full mb-6">
-                <img
-                  src={coverImg}
-                  referrerPolicy="no-referrer"
-                  alt="Mr. President Game Cover"
-                  loading="eager"
-                  decoding="async"
-                  fetchPriority="high"
-                  className="w-full h-auto block mx-auto opacity-100"
-                />
-              </div>
               <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-l from-amber-200 via-amber-400 to-amber-600 tracking-tight font-sans">
                 {t('app.title')}
               </h1>
@@ -2474,18 +2462,6 @@ export default function App() {
         {/* 1. SETUP PHASE */}
         {gamePhase === 'setup' && (
           <div className="max-w-2xl mx-auto bg-[#0a0d14] border border-amber-950/20 rounded-2xl p-6 md:p-8 shadow-2xl animate-fadeIn">
-            {/* Cinematic Game Cover Banner */}
-            <div className="w-full max-w-sm mx-auto mb-6 animate-fadeIn">
-              <img
-                src={coverImg}
-                referrerPolicy="no-referrer"
-                alt="Mr. President Game Cover"
-                loading="lazy"
-                decoding="async"
-                className="w-full h-auto block mx-auto"
-              />
-            </div>
-
             <h2 className="text-xl sm:text-2xl font-black text-white text-center mb-1 tracking-tight">{tl('آماده‌سازی لژ و مجمع آغازین', 'آماده‌سازی lodge and assembly beginین')}</h2>
             <p className="text-xs text-slate-400 text-center mb-6">
               {tl('جهت تقسیم هویت‌های ۲۹ درصدی و سازمان‌دهی لژ فراماسونری، اسامی بازیکنان مجمع را وارد نمایید.', 'جهت تقسیم identities 29 درصدی and سازمان‌دهی lodge Freemasonری, اسامی players assembly را وارد نمایید.')}
