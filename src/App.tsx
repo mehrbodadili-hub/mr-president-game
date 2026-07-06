@@ -431,10 +431,6 @@ export default function App() {
     localStorage.setItem('president_pendingPoliceTerrorists', pendingPoliceTerrorists.toString());
   }, [pendingPoliceTerrorists]);
 
-  const [revolutionToVeto, setRevolutionToVeto] = useState<{ presidentId: string; mayorId: string } | null>(() => {
-    const saved = localStorage.getItem('president_revolutionToVeto');
-    return saved ? JSON.parse(saved) : null;
-  });
   const [courtExecutionToVeto, setCourtExecutionToVeto] = useState<string | null>(() => {
     return localStorage.getItem('president_courtExecutionToVeto') || null;
   });
@@ -599,14 +595,6 @@ export default function App() {
   }, [popeVetoedOnDay0]);
 
   useEffect(() => {
-    if (revolutionToVeto) {
-      localStorage.setItem('president_revolutionToVeto', JSON.stringify(revolutionToVeto));
-    } else {
-      localStorage.removeItem('president_revolutionToVeto');
-    }
-  }, [revolutionToVeto]);
-
-  useEffect(() => {
     if (courtExecutionToVeto) {
       localStorage.setItem('president_courtExecutionToVeto', courtExecutionToVeto);
     } else {
@@ -750,7 +738,7 @@ export default function App() {
         );
         setCabinet((prev) => ({ ...prev, presidentId: mayor.id, mayorId: null }));
         handleLogEvent(
-          tl(`🚨 جانشینی اضطراری ریاست جمهوری! با فوت رئیس‌جمهور و معاون مجمع، شهردار «${mayor.name}» عهده‌دار کرسی ریاست جمهوری گردید.`, `🚨 succession emergency presidency! with death President and Vice President assembly, Mayor مقتدر "${mayor.name}" عهده‌دار کرسی presidency گردید.`),
+          tl(`🚨 جانشینی اضطراری ریاست جمهوری! با فوت رئیس‌جمهور و معاون مجمع، شهردار «${mayor.name}» عهده‌دار کرسی ریاست جمهوری گردید.`, `🚨 succession emergency presidency! with death President and Vice President assembly, Mayor "${mayor.name}" عهده‌دار کرسی presidency گردید.`),
           'system'
         );
         return;
@@ -1022,7 +1010,6 @@ export default function App() {
         'president_mayorRevoltedToday',
         'president_nightResults',
         'president_popeVetoedOnDay0',
-        'president_revolutionToVeto',
         'president_courtExecutionToVeto',
         'president_prisonerExecutionToVeto',
         'president_pendingPoliceTerrorists',
@@ -1051,7 +1038,6 @@ export default function App() {
       setMayorRevoltedToday(false);
       setPendingPoliceTerrorists(0);
       setPopeVetoedOnDay0(false);
-      setRevolutionToVeto(null);
       setCourtExecutionToVeto(null);
       setPrisonerExecutionToVeto(null);
       setSimulatedWinner(null);
@@ -1426,7 +1412,7 @@ export default function App() {
     );
 
     handleLogEvent(
-      tl(`پاپ با صدور فرمان معنوی، بازیکن زنده «${nominee.name}» را به مقام کشیش جدید مجمع منصوب فرمود.`, `Pope مقتدر with issue order معنوی, player alive "${nominee.name}" را to office Priest new assembly appointed فرمود.`),
+      tl(`پاپ با صدور فرمان معنوی، بازیکن زنده «${nominee.name}» را به مقام کشیش جدید مجمع منصوب فرمود.`, `Pope with issue order معنوی, player alive "${nominee.name}" را to office Priest new assembly appointed فرمود.`),
       'system'
     );
   };
@@ -1616,43 +1602,6 @@ export default function App() {
       );
       handleLogEvent(tl(`به جهت ابطال تصمیمات قانونی مجمع توسط پاپ مصلح، قابلیت تروریست تصادفی جدید به بازیکن «${chosen.name}» اهدا شد.`, `to جهت ابطال تصمیمات ruleی assembly توسط Pope مصلح, قابلیت terrorist random new to player "${chosen.name}" اهدا شد.`), 'ability');
     }
-  };
-
-  const handleVetoRevolution = () => {
-    if (cycleNumber < 1 || gamePhase !== 'day') {
-      alert(tl('وتوی پاپ فقط از روز اول به بعد در فاز گفتگو فعال است.', 'veto Pope only from day اول to بعد in phase discussion active است.'));
-      return;
-    }
-    if (popeVetoCooldown > 0) {
-      alert(tl('وتوی پاپ در دوره خنک‌سازی (یک روز در میان) به سر می‌برد.', 'veto Pope in roundه خنک‌سازی (a day in میان) to سر می‌برد.'));
-      return;
-    }
-    if (!revolutionToVeto) {
-      alert(tl('هیچ انقلاب موفقی امروز رخ نداده است تا وتو شود.', 'no revolution successfulی امday رخ نداده است until veto شود.'));
-      return;
-    }
-
-    const { presidentId, mayorId } = revolutionToVeto;
-    setPlayers((prev) =>
-      prev.map((p) => {
-        if (p.id === presidentId) {
-          return { ...p, role: 'president', hasShield: true, shieldBroken: false };
-        }
-        if (p.id === mayorId) {
-          return { ...p, role: 'mayor', hasShield: false };
-        }
-        return p;
-      })
-    );
-
-    handleLogEvent(
-      tl(`کلیسای پاپ دخالت کرد! پاپ مجمع لایحه انقلاب شهردار را باطل اعلام نمود. مقام رئیس‌جمهور و شهردار به جایگاه پیشین خود بازگشتند.`, `کلیسای Pope دخالت کرد! High Pope assembly لایحه Mayor revolution را باطل اعلام نمود. office President and Mayor to position پیشین خود بازگشتند.`),
-      'ability'
-    );
-
-    addRandomTerroristOnVeto();
-    setPopeVetoCooldown(2);
-    setRevolutionToVeto(null);
   };
 
   const handleVetoCourtExecution = () => {
@@ -1937,7 +1886,6 @@ export default function App() {
     setCourtExecutedToday(false);
     setPrisonerVerdictGivenToday(false);
     setCurrentDayStep(1);
-    setRevolutionToVeto(null);
     setCourtExecutionToVeto(null);
     setPrisonerExecutionToVeto(null);
     
@@ -2443,7 +2391,7 @@ export default function App() {
               </h2>
               <p className="text-xs text-slate-400 leading-relaxed mb-6">
                 {winStatus === 'freemason'
-                  ? tl('برابری آرای غاصبانه برقرار شد. فراماسون‌های مقتدر توانستند ارکان دولت و ریاست جمهوری را در این نبرد سیاسی تصاحب کنند.', 'برابری آvote غاSabaنه برقرار شد. Freemasons مقتدر توانستند ارکان government and presidency را in this نبرد political تصاحب کنند.')
+                  ? tl('برابری آرای غاصبانه برقرار شد. فراماسون‌ها توانستند ارکان دولت و ریاست جمهوری را در این نبرد سیاسی تصاحب کنند.', 'برابری آvote غاSabaنه برقرار شد. Freemasons توانستند ارکان government and presidency را in this نبرد political تصاحب کنند.')
                   : tl('تلاش‌ها ثمر داد. آخرین نطفه نفوذی‌های فراماسونری توسط قانون قوی و آگاهی مدنی شهر کشف، زندانی یا تیرباران گردید.', 'تلاش‌ها ثمر داد. آخرین نطفه infiltrationی‌های Freemasonری توسط rule قوی and آگاهی civil city کشف, prisoner or shotباران گردید.')}
               </p>
 
@@ -4309,7 +4257,7 @@ export default function App() {
                     <button
                       onClick={() => handleJumpToNightStep(7)}
                       className="p-1 rounded bg-slate-950 border border-slate-850 hover:bg-slate-900 transition text-slate-300 font-bold"
-                      title={tl("شلیک ماسون مقتدر", "shot ماسون مقتدر")}
+                      title={tl("شلیک ماسون", "shot ماسون")}
                     >
                       {tl('۷: ماسون', '7: ماسون')}
                     </button>
@@ -4457,8 +4405,7 @@ export default function App() {
                         setMayorRevoltedToday(false);
                         setPendingPoliceTerrorists(0);
                         setPopeVetoedOnDay0(false);
-                        setRevolutionToVeto(null);
-                        setCourtExecutionToVeto(null);
+                                          setCourtExecutionToVeto(null);
                         setPrisonerExecutionToVeto(null);
                         setSimulatedWinner(null);
                         setRolesInPlay([]);
