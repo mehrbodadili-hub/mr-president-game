@@ -2084,6 +2084,16 @@ export default function App() {
             <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-50"></div>
             
             <div className="text-center mb-8 pt-4">
+              <div className="mb-5 rounded-2xl overflow-hidden border border-amber-500/30 shadow-2xl ring-1 ring-amber-500/10">
+                <img
+                  src={coverImgV2}
+                  alt="Mr. President Game Cover"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                  className="w-full h-auto block"
+                />
+              </div>
               <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-l from-amber-200 via-amber-400 to-amber-600 tracking-tight font-sans">
                 {t('app.title')}
               </h1>
