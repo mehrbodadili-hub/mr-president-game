@@ -52,6 +52,7 @@ import {
 } from 'lucide-react';
 
 import coverAsset from './assets/game_cover.jpg.asset.json';
+import coverAssetV2 from './assets/game_cover_v2.jpg.asset.json';
 import gameLogoAsset from './assets/game-logo.webp.asset.json';
 
 const isDevMode = 
@@ -65,6 +66,7 @@ export default function App() {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language !== 'en';
   const coverImg = coverAsset.url;
+  const coverImgV2 = coverAssetV2.url;
   const logoImg = gameLogoAsset.url;
   // Game Setup States
   const [playerInput, setPlayerInput] = useState<string>(() => {
