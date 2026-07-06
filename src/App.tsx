@@ -2474,6 +2474,15 @@ export default function App() {
         {/* 1. SETUP PHASE */}
         {gamePhase === 'setup' && (
           <div className="max-w-2xl mx-auto bg-[#0a0d14] border border-amber-950/20 rounded-2xl p-6 md:p-8 shadow-2xl animate-fadeIn">
+            <div className="mb-6 rounded-2xl overflow-hidden border border-amber-500/30 shadow-2xl ring-1 ring-amber-500/10">
+              <img
+                src={coverImgV2}
+                alt="Mr. President Game Cover"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-auto block"
+              />
+            </div>
             <h2 className="text-xl sm:text-2xl font-black text-white text-center mb-1 tracking-tight">{tl('آماده‌سازی لژ و مجمع آغازین', 'آماده‌سازی lodge and assembly beginین')}</h2>
             <p className="text-xs text-slate-400 text-center mb-6">
               {tl('جهت تقسیم هویت‌های ۲۹ درصدی و سازمان‌دهی لژ فراماسونری، اسامی بازیکنان مجمع را وارد نمایید.', 'جهت تقسیم identities 29 درصدی and سازمان‌دهی lodge Freemasonری, اسامی players assembly را وارد نمایید.')}
