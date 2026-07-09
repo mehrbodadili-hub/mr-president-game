@@ -48,7 +48,12 @@ import {
   Lock,
   User,
   LogOut,
-  Home
+  Home,
+  ShieldAlert,
+  Sliders,
+  Sparkles,
+  ClipboardList,
+  ExternalLink
 } from 'lucide-react';
 
 import coverAsset from './assets/game_cover.jpg.asset.json';
