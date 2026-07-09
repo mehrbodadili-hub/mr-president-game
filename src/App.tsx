@@ -490,6 +490,7 @@ export default function App() {
   });
   const [chaosModalData, setChaosModalData] = useState<{ isTie: boolean, tiedNames: string[], eliminatedName: string, eliminatedId: string } | null>(null);
   const [chaosPrisonerModal, setChaosPrisonerModal] = useState<{ prisonerNames: string[] } | null>(null);
+  const [popeDay0VetoModal, setPopeDay0VetoModal] = useState<boolean>(false);
   
   const [lastNightPriestBlockedId, setLastNightPriestBlockedId] = useState<string | null>(() => {
     return localStorage.getItem('president_lastNightPriestBlockedId') || null;
@@ -1053,6 +1054,7 @@ export default function App() {
       setChaosTiedPlayers([]);
       setChaosModalData(null);
       setChaosPrisonerModal(null);
+      setPopeDay0VetoModal(false);
     }
   };
 
@@ -1132,6 +1134,16 @@ export default function App() {
       return updated;
     });
 
+    if (isVetoed) {
+      // Warn the moderator to manually swap in the runner-up before continuing to Night 0.
+      setPopeDay0VetoModal(true);
+      return;
+    }
+
+    proceedToNight0AfterDay0(false);
+  };
+
+  const proceedToNight0AfterDay0 = (isVetoed: boolean) => {
     setGamePhase('night0');
     setSelectedTab('logs');
     handleLogEvent(
@@ -1140,6 +1152,11 @@ export default function App() {
       }`,
       'system'
     );
+  };
+
+  const handleConfirmPopeDay0Veto = () => {
+    setPopeDay0VetoModal(false);
+    proceedToNight0AfterDay0(true);
   };
 
   // Begin regular Day cycle
@@ -2390,6 +2407,32 @@ export default function App() {
                  className="w-full bg-rose-700 hover:bg-rose-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition"
                >
                  {tl('مشاهده شد', 'Seen')}
+               </button>
+            </div>
+          </div>
+        )}
+
+        {/* POPE DAY-0 ELECTION VETO WARNING MODAL */}
+        {popeDay0VetoModal && (
+          <div className="fixed inset-0 bg-[#04060b]/95 z-50 flex items-center justify-center p-6 animate-fadeIn">
+            <div className="max-w-md w-full bg-[#0b0f19] border-2 border-amber-700 rounded-2xl p-8 text-center shadow-[0_0_50px_rgba(245,158,11,0.15)] relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-amber-900 via-amber-500 to-amber-900"></div>
+               <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center bg-slate-950 border border-slate-800">
+                 <ShieldAlert className="w-10 h-10 text-amber-500 animate-pulse" />
+               </div>
+               <h2 className="text-2xl font-black text-amber-500 tracking-tight mb-4">
+                 {tl('وتوی پاپ در انتخاب رئیس‌جمهور', 'Pope vetoed the president election')}
+               </h2>
+               <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 mb-6">
+                 <p className="text-sm text-slate-300 leading-relaxed">
+                   {tl('⚠️ پاپ انتخاب رئیس‌جمهور را وتو کرد. لطفاً پیش از ادامه بازی، نامزدی که در رأی‌گیری رأی کمتر آورده است را به‌عنوان رئیس‌جمهور جدید تعیین کنید. این جابجایی به‌صورت دستی و خارج از نرم‌افزار انجام می‌شود.', '⚠️ The Pope vetoed the president election. Before continuing, please manually assign the runner-up candidate as the new President. This swap is handled outside the app.')}
+                 </p>
+               </div>
+               <button
+                 onClick={handleConfirmPopeDay0Veto}
+                 className="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition"
+               >
+                 {tl('متوجه شدم', 'Understood')}
                </button>
             </div>
           </div>
