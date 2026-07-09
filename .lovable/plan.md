@@ -1,22 +1,31 @@
-## Fix game cover image framing
+## هدف
+کاهش شلوغی هدر و فوتر بازی با تبدیل دکمه‌های متنی طولانی به آیکن‌های واضح با tooltip، خلاصه‌سازی برچسب‌ها، و جانمایی بهتر با گروه‌بندی رنگی.
 
-The `<img>` at `src/App.tsx:2479` is wrapped in a `<div>` with border, background, shadow, and rounded corners (line 2478). The user wants only the image shown, no frame around it.
+## هدر (App.tsx خط ۲۱۷۳–۲۲۷۴)
 
-**Change (App.tsx around lines 2477–2487):**
+وضعیت فعلی: لوگو + عنوان + ۳ دکمه حالت (STRICT/CONTROLLED/CREATIVE) + Language + Secret Room + Logout + Phase badge → روی موبایل دو ردیف می‌شود و شلوغ است.
 
-Replace the wrapping `<div className="relative w-full max-w-sm mx-auto rounded-2xl overflow-hidden border border-amber-500/25 mb-6 bg-slate-950 shadow-2xl animate-fadeIn">` with a minimal wrapper carrying only sizing/spacing:
+تغییرات:
+- **دکمه‌های Mode (سخت/کنترل/خلاق):** فقط آیکن نگه‌داری شود (`ShieldAlert` قرمز، `Sliders` نارنجی، `Sparkles` سبز) با tooltip فارسی. برچسب متنی حذف. نقطه pulse حفظ شود تا حالت فعال معلوم باشد.
+- **Logout:** فقط آیکن `LogOut` بدون متن «خروج»، با `title` و `aria-label`. اندازه ۹×۹ مثل Secret Room.
+- **Phase badge:** فقط شماره + آیکن (`Sun` برای روز، `Moon` برای شب) مثلاً «☀ ۲» به جای «روز ۲». Tooltip کامل.
+- **جانمایی:** همه کنترل‌های آیکنی (Mode group + Language + Secret Room + Logout + Phase) در یک ردیف افقی چسبیده با ارتفاع یکسان ۳۶px.
 
-```tsx
-<div className="w-full max-w-sm mx-auto mb-6 animate-fadeIn">
-  <img
-    src={coverImg}
-    referrerPolicy="no-referrer"
-    alt="Mr. President Game Cover"
-    loading="lazy"
-    decoding="async"
-    className="w-full h-auto block"
-  />
-</div>
-```
+## فوتر (App.tsx خط ۴۴۳۴–۴۵۰۰)
 
-This removes the border, background, shadow, and rounded corners around the image so only the image itself is displayed.
+وضعیت فعلی: ۴ دکمه با متن‌های طولانی فارسی («📖 راهنمای کامل بازی ↗»، «📋 راهنمای گرداننده»، «شروع مجدد»، «حالت عمومی / پروژکتور (برای رویت هویت‌ها کلیک کنید)») → بسیار شلوغ.
+
+تغییرات:
+- **راهنمای کامل بازی:** آیکن `BookOpen` + متن کوتاه «راهنما» + آیکن `ExternalLink` کوچک. Tooltip: «راهنمای کامل بازی».
+- **راهنمای گرداننده:** آیکن `ClipboardList` + متن «گرداننده». Tooltip: «راهنمای گرداننده».
+- **شروع مجدد:** فقط آیکن `RotateCcw`. در حالت تایید: آیکن + متن کوتاه «تایید؟». Tooltip: «شروع مجدد بازی».
+- **حالت اسرار/پروژکتور:** آیکن `Eye`/`EyeOff` + متن کوتاه «اسرار»/«پروژکتور». حذف توضیح داخل پرانتز. Tooltip طولانی توضیحی.
+- **گروه‌بندی رنگی:** راهنماها (آمبر/تیل) در چپ، اکشن‌های بازی (شروع مجدد/اسرار) در راست با جداکننده عمودی نازک.
+- ارتفاع یکسان ۳۶px برای همه دکمه‌ها.
+
+## نتیجه
+هدر و فوتر از حالت شلوغ چند-ردیفی به یک ردیف تمیز آیکن‌محور تبدیل می‌شوند. عملکرد و رنگ‌بندی معنایی حفظ می‌شود؛ فقط نمایش خلاصه‌تر می‌شود و روی موبایل هم جا می‌گیرد.
+
+## فایل‌های تغییر
+- `src/App.tsx` (فقط هدر ۲۱۷۳–۲۲۷۴ و فوتر ۴۴۳۴–۴۵۰۰)
+- افزودن import آیکن‌های جدید: `ShieldAlert, Sliders, Sparkles, Sun, Moon, BookOpen, ClipboardList, ExternalLink` از lucide-react

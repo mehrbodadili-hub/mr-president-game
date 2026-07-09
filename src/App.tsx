@@ -48,7 +48,12 @@ import {
   Lock,
   User,
   LogOut,
-  Home
+  Home,
+  ShieldAlert,
+  Sliders,
+  Sparkles,
+  ClipboardList,
+  ExternalLink
 } from 'lucide-react';
 
 import coverAsset from './assets/game_cover.jpg.asset.json';
@@ -2191,14 +2196,16 @@ export default function App() {
                     setExecutionMode('STRICT');
                     localStorage.setItem('president_execution_mode', 'STRICT');
                   }}
-                  className={`px-3 py-1.5 text-xs rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  title={tl('حالت سخت‌گیرانه', 'Strict mode')}
+                  aria-label={tl('حالت سخت‌گیرانه', 'Strict mode')}
+                  className={`h-8 w-8 flex items-center justify-center rounded-lg font-bold transition cursor-pointer relative ${
                     executionMode === 'STRICT'
                       ? 'bg-[#b90000] text-white shadow-[0_0_12px_rgba(185,0,0,0.4)]'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                   }`}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full bg-white ${executionMode === 'STRICT' ? 'animate-pulse' : 'opacity-60'}`}></span>
-                  {tl('سخت‌گیرانه', 'سخت‌گیرانه')}
+                  <ShieldAlert className="w-4 h-4" />
+                  {executionMode === 'STRICT' && <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>}
                 </button>
                 <button
                   id="mode-controlled-btn"
@@ -2206,14 +2213,16 @@ export default function App() {
                     setExecutionMode('CONTROLLED');
                     localStorage.setItem('president_execution_mode', 'CONTROLLED');
                   }}
-                  className={`px-3 py-1.5 text-xs rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  title={tl('حالت کنترل‌شده', 'Controlled mode')}
+                  aria-label={tl('حالت کنترل‌شده', 'Controlled mode')}
+                  className={`h-8 w-8 flex items-center justify-center rounded-lg font-bold transition cursor-pointer relative ${
                     executionMode === 'CONTROLLED'
                       ? 'bg-[#d97706] text-white shadow-[0_0_12px_rgba(217,119,6,0.4)]'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                   }`}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full bg-white ${executionMode === 'CONTROLLED' ? 'animate-pulse' : 'opacity-60'}`}></span>
-                  {tl('کنترل‌شده', 'کنترل‌شده')}
+                  <Sliders className="w-4 h-4" />
+                  {executionMode === 'CONTROLLED' && <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>}
                 </button>
                 <button
                   id="mode-creative-btn"
@@ -2221,14 +2230,16 @@ export default function App() {
                     setExecutionMode('CREATIVE');
                     localStorage.setItem('president_execution_mode', 'CREATIVE');
                   }}
-                  className={`px-3 py-1.5 text-xs rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  title={tl('حالت خلاقانه', 'Creative mode')}
+                  aria-label={tl('حالت خلاقانه', 'Creative mode')}
+                  className={`h-8 w-8 flex items-center justify-center rounded-lg font-bold transition cursor-pointer relative ${
                     executionMode === 'CREATIVE'
                       ? 'bg-[#059669] text-white shadow-[0_0_12px_rgba(5,150,105,0.4)]'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                   }`}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full bg-white ${executionMode === 'CREATIVE' ? 'animate-pulse' : 'opacity-60'}`}></span>
-                  {tl('خلاقانه', 'خلاقانه')}
+                  <Sparkles className="w-4 h-4" />
+                  {executionMode === 'CREATIVE' && <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>}
                 </button>
               </div>
             )}
@@ -2251,21 +2262,35 @@ export default function App() {
             </a>
             <button
               onClick={handleLogout}
-              className="bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-400 hover:text-red-400 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+              title={t('auth.logout')}
+              aria-label={t('auth.logout')}
+              className="bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-400 hover:text-red-400 rounded-lg transition flex items-center justify-center h-9 w-9 shadow-sm cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
-              {t('auth.logout')}
             </button>
 
             {/* Help & Rules Button and other controls have been moved to Footer */}
             {gamePhase !== 'setup' && (
               <>
                 {/* Phase badge */}
-                <span className="bg-slate-950 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-800 text-xs font-bold font-mono">
-                  {gamePhase === 'day0' && tl('روز صفر', 'Day Zero')}
-                  {gamePhase === 'night0' && tl('شب صفر', 'Night Zero')}
-                  {gamePhase === 'day' && tl(`روز ${cycleNumber}`, `day ${cycleNumber}`)}
-                  {gamePhase === 'night' && tl(`شب ${cycleNumber}`, `night ${cycleNumber}`)}
+                <span
+                  title={
+                    gamePhase === 'day0' ? tl('روز صفر', 'Day Zero') :
+                    gamePhase === 'night0' ? tl('شب صفر', 'Night Zero') :
+                    gamePhase === 'day' ? tl(`روز ${cycleNumber}`, `Day ${cycleNumber}`) :
+                    tl(`شب ${cycleNumber}`, `Night ${cycleNumber}`)
+                  }
+                  className={`px-2.5 h-9 rounded-lg border text-xs font-bold font-mono flex items-center gap-1.5 ${
+                    gamePhase === 'day' || gamePhase === 'day0'
+                      ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                      : 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30'
+                  }`}
+                >
+                  {(gamePhase === 'day' || gamePhase === 'day0') ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                  {gamePhase === 'day0' && '0'}
+                  {gamePhase === 'night0' && '0'}
+                  {gamePhase === 'day' && cycleNumber}
+                  {gamePhase === 'night' && cycleNumber}
                 </span>
               </>
             )}
@@ -4431,70 +4456,86 @@ export default function App() {
 
       {/* Global Bottom Footer */}
       {(isAuthenticated && gamePhase) && (
-        <footer className="border-t border-amber-950/20 bg-[#0a0d14]/90 backdrop-blur sticky bottom-0 z-40 px-6 py-4 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] mt-auto mt-8 flex flex-wrap items-center justify-center gap-4">
-          {/* Help & Rules — external full guide */}
-          <a
-            href="https://id-preview--d46a3565-74ad-4e97-a73a-804ec777d128.lovable.app/games/mr-president"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
-          >
-            <HelpCircle className="w-4 h-4 text-amber-500" />
-            📖 راهنمای کامل بازی ↗
-          </a>
-          {/* Moderator quick guide */}
-          <button
-            onClick={() => { setModeratorGuideScrollId(undefined); setShowModeratorGuide(true); }}
-            className="bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
-          >
-            📋 راهنمای گرداننده
-          </button>
+        <footer className="border-t border-amber-950/20 bg-[#0a0d14]/90 backdrop-blur sticky bottom-0 z-40 px-4 py-3 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] mt-auto mt-8 flex flex-wrap items-center justify-center gap-2">
+          {/* Guides group */}
+          <div className="flex items-center gap-2">
+            <a
+              href="https://id-preview--d46a3565-74ad-4e97-a73a-804ec777d128.lovable.app/games/mr-president"
+              target="_blank"
+              rel="noopener noreferrer"
+              title={tl('راهنمای کامل بازی', 'Full game guide')}
+              aria-label={tl('راهنمای کامل بازی', 'Full game guide')}
+              className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold h-9 px-3 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+            >
+              <BookOpen className="w-4 h-4" />
+              {tl('راهنما', 'Guide')}
+              <ExternalLink className="w-3 h-3 opacity-70" />
+            </a>
+            <button
+              onClick={() => { setModeratorGuideScrollId(undefined); setShowModeratorGuide(true); }}
+              title={tl('راهنمای گرداننده', 'Moderator guide')}
+              aria-label={tl('راهنمای گرداننده', 'Moderator guide')}
+              className="bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs font-bold h-9 px-3 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+            >
+              <ClipboardList className="w-4 h-4" />
+              {tl('گرداننده', 'Mod')}
+            </button>
+          </div>
 
           {gamePhase !== 'setup' && (
             <>
-              {/* Reset Game Button */}
-              <button
-                onClick={() => {
-                  if (resetConfirmActive) {
-                    handleResetGame(true);
-                    setResetConfirmActive(false);
-                  } else {
-                    setResetConfirmActive(true);
-                    setTimeout(() => setResetConfirmActive(false), 4000);
-                  }
-                }}
-                className={`border text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
-                  resetConfirmActive
-                    ? 'bg-rose-950/80 border-rose-800 text-rose-300 animate-pulse'
-                    : 'bg-slate-950 hover:bg-slate-900 border-slate-800 text-slate-400 hover:text-rose-400'
-                }`}
-                title={tl("بازی از اول", "game from اول")}
-              >
-                <RotateCcw className="w-4 h-4" />
-                {resetConfirmActive ? tl('تایید شروع مجدد؟ (کلیک دوباره)', 'confirm start مجدد? (کلیک twoباره)') : tl('شروع مجدد', 'start مجدد')}
-              </button>
+              {/* separator */}
+              <div className="h-6 w-px bg-slate-800/80 mx-1"></div>
 
-              {/* Secrets reveal mode */}
-              <button
-                onClick={() => setShowSecrets(!showSecrets)}
-                className={`text-xs font-semibold px-4 py-2 rounded-lg border transition flex items-center gap-1.5 cursor-pointer ${
-                  showSecrets
-                    ? 'bg-amber-900/40 text-amber-300 border-amber-800/50 hover:bg-amber-900/60'
-                    : 'bg-indigo-950/40 text-indigo-400 border-indigo-900/50 hover:bg-indigo-900/30'
-                }`}
-              >
-                {showSecrets ? (
-                  <>
-                    <Eye className="w-4 h-4 text-amber-400 animate-pulse" />
-                    اسرار عیان (هویت‌ها نمایان هستند)
-                  </>
-                ) : (
-                  <>
-                    <EyeOff className="w-4 h-4 text-indigo-400" />
-                    حالت عمومی / پروژکتور (برای رویت هویت‌ها کلیک کنید)
-                  </>
-                )}
-              </button>
+              {/* Actions group */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (resetConfirmActive) {
+                      handleResetGame(true);
+                      setResetConfirmActive(false);
+                    } else {
+                      setResetConfirmActive(true);
+                      setTimeout(() => setResetConfirmActive(false), 4000);
+                    }
+                  }}
+                  title={tl('شروع مجدد بازی', 'Restart game')}
+                  aria-label={tl('شروع مجدد بازی', 'Restart game')}
+                  className={`border text-xs font-bold h-9 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                    resetConfirmActive
+                      ? 'bg-rose-950/80 border-rose-800 text-rose-300 animate-pulse px-3'
+                      : 'bg-slate-950 hover:bg-slate-900 border-slate-800 text-slate-400 hover:text-rose-400 w-9'
+                  }`}
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  {resetConfirmActive && tl('تایید؟', 'Confirm?')}
+                </button>
+
+                <button
+                  onClick={() => setShowSecrets(!showSecrets)}
+                  title={showSecrets
+                    ? tl('اسرار عیان — هویت‌ها نمایان هستند', 'Secrets revealed — identities visible')
+                    : tl('حالت پروژکتور — برای رویت هویت‌ها کلیک کنید', 'Projector mode — click to reveal identities')}
+                  aria-label={showSecrets ? tl('اسرار عیان', 'Secrets revealed') : tl('حالت پروژکتور', 'Projector mode')}
+                  className={`text-xs font-bold h-9 px-3 rounded-lg border transition flex items-center gap-1.5 cursor-pointer ${
+                    showSecrets
+                      ? 'bg-amber-900/40 text-amber-300 border-amber-800/50 hover:bg-amber-900/60'
+                      : 'bg-indigo-950/40 text-indigo-300 border-indigo-900/50 hover:bg-indigo-900/30'
+                  }`}
+                >
+                  {showSecrets ? (
+                    <>
+                      <Eye className="w-4 h-4 animate-pulse" />
+                      {tl('اسرار', 'Secrets')}
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff className="w-4 h-4" />
+                      {tl('پروژکتور', 'Projector')}
+                    </>
+                  )}
+                </button>
+              </div>
             </>
           )}
         </footer>
