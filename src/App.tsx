@@ -2196,14 +2196,16 @@ export default function App() {
                     setExecutionMode('STRICT');
                     localStorage.setItem('president_execution_mode', 'STRICT');
                   }}
-                  className={`px-3 py-1.5 text-xs rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  title={tl('حالت سخت‌گیرانه', 'Strict mode')}
+                  aria-label={tl('حالت سخت‌گیرانه', 'Strict mode')}
+                  className={`h-8 w-8 flex items-center justify-center rounded-lg font-bold transition cursor-pointer relative ${
                     executionMode === 'STRICT'
                       ? 'bg-[#b90000] text-white shadow-[0_0_12px_rgba(185,0,0,0.4)]'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                   }`}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full bg-white ${executionMode === 'STRICT' ? 'animate-pulse' : 'opacity-60'}`}></span>
-                  {tl('سخت‌گیرانه', 'سخت‌گیرانه')}
+                  <ShieldAlert className="w-4 h-4" />
+                  {executionMode === 'STRICT' && <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>}
                 </button>
                 <button
                   id="mode-controlled-btn"
@@ -2211,14 +2213,16 @@ export default function App() {
                     setExecutionMode('CONTROLLED');
                     localStorage.setItem('president_execution_mode', 'CONTROLLED');
                   }}
-                  className={`px-3 py-1.5 text-xs rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  title={tl('حالت کنترل‌شده', 'Controlled mode')}
+                  aria-label={tl('حالت کنترل‌شده', 'Controlled mode')}
+                  className={`h-8 w-8 flex items-center justify-center rounded-lg font-bold transition cursor-pointer relative ${
                     executionMode === 'CONTROLLED'
                       ? 'bg-[#d97706] text-white shadow-[0_0_12px_rgba(217,119,6,0.4)]'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                   }`}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full bg-white ${executionMode === 'CONTROLLED' ? 'animate-pulse' : 'opacity-60'}`}></span>
-                  {tl('کنترل‌شده', 'کنترل‌شده')}
+                  <Sliders className="w-4 h-4" />
+                  {executionMode === 'CONTROLLED' && <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>}
                 </button>
                 <button
                   id="mode-creative-btn"
@@ -2226,14 +2230,16 @@ export default function App() {
                     setExecutionMode('CREATIVE');
                     localStorage.setItem('president_execution_mode', 'CREATIVE');
                   }}
-                  className={`px-3 py-1.5 text-xs rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  title={tl('حالت خلاقانه', 'Creative mode')}
+                  aria-label={tl('حالت خلاقانه', 'Creative mode')}
+                  className={`h-8 w-8 flex items-center justify-center rounded-lg font-bold transition cursor-pointer relative ${
                     executionMode === 'CREATIVE'
                       ? 'bg-[#059669] text-white shadow-[0_0_12px_rgba(5,150,105,0.4)]'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                   }`}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full bg-white ${executionMode === 'CREATIVE' ? 'animate-pulse' : 'opacity-60'}`}></span>
-                  {tl('خلاقانه', 'خلاقانه')}
+                  <Sparkles className="w-4 h-4" />
+                  {executionMode === 'CREATIVE' && <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>}
                 </button>
               </div>
             )}
@@ -2256,21 +2262,35 @@ export default function App() {
             </a>
             <button
               onClick={handleLogout}
-              className="bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-400 hover:text-red-400 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+              title={t('auth.logout')}
+              aria-label={t('auth.logout')}
+              className="bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-400 hover:text-red-400 rounded-lg transition flex items-center justify-center h-9 w-9 shadow-sm cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
-              {t('auth.logout')}
             </button>
 
             {/* Help & Rules Button and other controls have been moved to Footer */}
             {gamePhase !== 'setup' && (
               <>
                 {/* Phase badge */}
-                <span className="bg-slate-950 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-800 text-xs font-bold font-mono">
-                  {gamePhase === 'day0' && tl('روز صفر', 'Day Zero')}
-                  {gamePhase === 'night0' && tl('شب صفر', 'Night Zero')}
-                  {gamePhase === 'day' && tl(`روز ${cycleNumber}`, `day ${cycleNumber}`)}
-                  {gamePhase === 'night' && tl(`شب ${cycleNumber}`, `night ${cycleNumber}`)}
+                <span
+                  title={
+                    gamePhase === 'day0' ? tl('روز صفر', 'Day Zero') :
+                    gamePhase === 'night0' ? tl('شب صفر', 'Night Zero') :
+                    gamePhase === 'day' ? tl(`روز ${cycleNumber}`, `Day ${cycleNumber}`) :
+                    tl(`شب ${cycleNumber}`, `Night ${cycleNumber}`)
+                  }
+                  className={`px-2.5 h-9 rounded-lg border text-xs font-bold font-mono flex items-center gap-1.5 ${
+                    gamePhase === 'day' || gamePhase === 'day0'
+                      ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                      : 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30'
+                  }`}
+                >
+                  {(gamePhase === 'day' || gamePhase === 'day0') ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                  {gamePhase === 'day0' && '0'}
+                  {gamePhase === 'night0' && '0'}
+                  {gamePhase === 'day' && cycleNumber}
+                  {gamePhase === 'night' && cycleNumber}
                 </span>
               </>
             )}
