@@ -4456,70 +4456,86 @@ export default function App() {
 
       {/* Global Bottom Footer */}
       {(isAuthenticated && gamePhase) && (
-        <footer className="border-t border-amber-950/20 bg-[#0a0d14]/90 backdrop-blur sticky bottom-0 z-40 px-6 py-4 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] mt-auto mt-8 flex flex-wrap items-center justify-center gap-4">
-          {/* Help & Rules — external full guide */}
-          <a
-            href="https://id-preview--d46a3565-74ad-4e97-a73a-804ec777d128.lovable.app/games/mr-president"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
-          >
-            <HelpCircle className="w-4 h-4 text-amber-500" />
-            📖 راهنمای کامل بازی ↗
-          </a>
-          {/* Moderator quick guide */}
-          <button
-            onClick={() => { setModeratorGuideScrollId(undefined); setShowModeratorGuide(true); }}
-            className="bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
-          >
-            📋 راهنمای گرداننده
-          </button>
+        <footer className="border-t border-amber-950/20 bg-[#0a0d14]/90 backdrop-blur sticky bottom-0 z-40 px-4 py-3 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] mt-auto mt-8 flex flex-wrap items-center justify-center gap-2">
+          {/* Guides group */}
+          <div className="flex items-center gap-2">
+            <a
+              href="https://id-preview--d46a3565-74ad-4e97-a73a-804ec777d128.lovable.app/games/mr-president"
+              target="_blank"
+              rel="noopener noreferrer"
+              title={tl('راهنمای کامل بازی', 'Full game guide')}
+              aria-label={tl('راهنمای کامل بازی', 'Full game guide')}
+              className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold h-9 px-3 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+            >
+              <BookOpen className="w-4 h-4" />
+              {tl('راهنما', 'Guide')}
+              <ExternalLink className="w-3 h-3 opacity-70" />
+            </a>
+            <button
+              onClick={() => { setModeratorGuideScrollId(undefined); setShowModeratorGuide(true); }}
+              title={tl('راهنمای گرداننده', 'Moderator guide')}
+              aria-label={tl('راهنمای گرداننده', 'Moderator guide')}
+              className="bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs font-bold h-9 px-3 rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+            >
+              <ClipboardList className="w-4 h-4" />
+              {tl('گرداننده', 'Mod')}
+            </button>
+          </div>
 
           {gamePhase !== 'setup' && (
             <>
-              {/* Reset Game Button */}
-              <button
-                onClick={() => {
-                  if (resetConfirmActive) {
-                    handleResetGame(true);
-                    setResetConfirmActive(false);
-                  } else {
-                    setResetConfirmActive(true);
-                    setTimeout(() => setResetConfirmActive(false), 4000);
-                  }
-                }}
-                className={`border text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
-                  resetConfirmActive
-                    ? 'bg-rose-950/80 border-rose-800 text-rose-300 animate-pulse'
-                    : 'bg-slate-950 hover:bg-slate-900 border-slate-800 text-slate-400 hover:text-rose-400'
-                }`}
-                title={tl("بازی از اول", "game from اول")}
-              >
-                <RotateCcw className="w-4 h-4" />
-                {resetConfirmActive ? tl('تایید شروع مجدد؟ (کلیک دوباره)', 'confirm start مجدد? (کلیک twoباره)') : tl('شروع مجدد', 'start مجدد')}
-              </button>
+              {/* separator */}
+              <div className="h-6 w-px bg-slate-800/80 mx-1"></div>
 
-              {/* Secrets reveal mode */}
-              <button
-                onClick={() => setShowSecrets(!showSecrets)}
-                className={`text-xs font-semibold px-4 py-2 rounded-lg border transition flex items-center gap-1.5 cursor-pointer ${
-                  showSecrets
-                    ? 'bg-amber-900/40 text-amber-300 border-amber-800/50 hover:bg-amber-900/60'
-                    : 'bg-indigo-950/40 text-indigo-400 border-indigo-900/50 hover:bg-indigo-900/30'
-                }`}
-              >
-                {showSecrets ? (
-                  <>
-                    <Eye className="w-4 h-4 text-amber-400 animate-pulse" />
-                    اسرار عیان (هویت‌ها نمایان هستند)
-                  </>
-                ) : (
-                  <>
-                    <EyeOff className="w-4 h-4 text-indigo-400" />
-                    حالت عمومی / پروژکتور (برای رویت هویت‌ها کلیک کنید)
-                  </>
-                )}
-              </button>
+              {/* Actions group */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (resetConfirmActive) {
+                      handleResetGame(true);
+                      setResetConfirmActive(false);
+                    } else {
+                      setResetConfirmActive(true);
+                      setTimeout(() => setResetConfirmActive(false), 4000);
+                    }
+                  }}
+                  title={tl('شروع مجدد بازی', 'Restart game')}
+                  aria-label={tl('شروع مجدد بازی', 'Restart game')}
+                  className={`border text-xs font-bold h-9 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                    resetConfirmActive
+                      ? 'bg-rose-950/80 border-rose-800 text-rose-300 animate-pulse px-3'
+                      : 'bg-slate-950 hover:bg-slate-900 border-slate-800 text-slate-400 hover:text-rose-400 w-9'
+                  }`}
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  {resetConfirmActive && tl('تایید؟', 'Confirm?')}
+                </button>
+
+                <button
+                  onClick={() => setShowSecrets(!showSecrets)}
+                  title={showSecrets
+                    ? tl('اسرار عیان — هویت‌ها نمایان هستند', 'Secrets revealed — identities visible')
+                    : tl('حالت پروژکتور — برای رویت هویت‌ها کلیک کنید', 'Projector mode — click to reveal identities')}
+                  aria-label={showSecrets ? tl('اسرار عیان', 'Secrets revealed') : tl('حالت پروژکتور', 'Projector mode')}
+                  className={`text-xs font-bold h-9 px-3 rounded-lg border transition flex items-center gap-1.5 cursor-pointer ${
+                    showSecrets
+                      ? 'bg-amber-900/40 text-amber-300 border-amber-800/50 hover:bg-amber-900/60'
+                      : 'bg-indigo-950/40 text-indigo-300 border-indigo-900/50 hover:bg-indigo-900/30'
+                  }`}
+                >
+                  {showSecrets ? (
+                    <>
+                      <Eye className="w-4 h-4 animate-pulse" />
+                      {tl('اسرار', 'Secrets')}
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff className="w-4 h-4" />
+                      {tl('پروژکتور', 'Projector')}
+                    </>
+                  )}
+                </button>
+              </div>
             </>
           )}
         </footer>
