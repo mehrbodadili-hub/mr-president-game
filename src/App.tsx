@@ -349,6 +349,14 @@ export default function App() {
     const saved = localStorage.getItem('president_popeVetoedOnDay0');
     return saved ? saved === 'true' : false;
   });
+  const [pendingPopeSuccession, setPendingPopeSuccession] = useState<boolean>(() => {
+    const saved = localStorage.getItem('president_pendingPopeSuccession');
+    return saved ? saved === 'true' : false;
+  });
+  const [priestAppointmentPending, setPriestAppointmentPending] = useState<boolean>(() => {
+    const saved = localStorage.getItem('president_priestAppointmentPending');
+    return saved ? saved === 'true' : false;
+  });
   const [selectedPresidentUnifiedRole, setSelectedPresidentUnifiedRole] = useState<string>('');
   const [resetConfirmActive, setResetConfirmActive] = useState<boolean>(false);
   const [logsConfirmActive, setLogsConfirmActive] = useState<boolean>(false);
@@ -601,6 +609,14 @@ export default function App() {
   }, [popeVetoedOnDay0]);
 
   useEffect(() => {
+    localStorage.setItem('president_pendingPopeSuccession', pendingPopeSuccession.toString());
+  }, [pendingPopeSuccession]);
+
+  useEffect(() => {
+    localStorage.setItem('president_priestAppointmentPending', priestAppointmentPending.toString());
+  }, [priestAppointmentPending]);
+
+  useEffect(() => {
     if (courtExecutionToVeto) {
       localStorage.setItem('president_courtExecutionToVeto', courtExecutionToVeto);
     } else {
@@ -782,28 +798,19 @@ export default function App() {
     }
   }, [players, gamePhase]);
 
-  // Pope automatic succession effect (Rule 7: Successor of Pope is priest)
+  // Pope death detection (Rule 7): only FLAG the succession here. The actual
+  // promotion/assignment is deferred to the start of the next day (see
+  // resolvePopeSuccession, invoked from the night->day transition).
   useEffect(() => {
     if (gamePhase === 'setup' || gamePhase === 'gameover' || gamePhase === 'day0' || gamePhase === 'night0') return;
 
     const hasLivePope = players.some((p) => p.role === 'pope' && p.isAlive);
-    const priest = players.find((p) => p.role === 'priest' && p.isAlive);
+    const deadPopeExists = players.some((p) => p.role === 'pope' && !p.isAlive);
 
-    if (!hasLivePope && priest) {
-      setPlayers((prev) =>
-        prev.map((p) => {
-          if (p.id === priest.id) {
-            return { ...p, role: 'pope', hasShield: true, shieldBroken: false }; // Pope receives initial shield
-          }
-          return p;
-        })
-      );
-      handleLogEvent(
-        tl(`🚨 جانشینی عالی پاپ! با فقدان پاپ، کشیشِ مجمع «${priest.name}» ردای سرخ پاپ را به دوش افکند.`, `🚨 succession عالی High Pope! with فقدان High Pope, Priestِ assembly "${priest.name}" ردای سرخ High Pope را to twoش افکند.`),
-        'system'
-      );
+    if (!hasLivePope && deadPopeExists && !pendingPopeSuccession) {
+      setPendingPopeSuccession(true);
     }
-  }, [players, gamePhase]);
+  }, [players, gamePhase, pendingPopeSuccession]);
 
   // Lawyer 60-second speech timer effect
   useEffect(() => {
@@ -1016,6 +1023,8 @@ export default function App() {
         'president_mayorRevoltedToday',
         'president_nightResults',
         'president_popeVetoedOnDay0',
+        'president_pendingPopeSuccession',
+        'president_priestAppointmentPending',
         'president_courtExecutionToVeto',
         'president_prisonerExecutionToVeto',
         'president_pendingPoliceTerrorists',
@@ -1044,6 +1053,8 @@ export default function App() {
       setMayorRevoltedToday(false);
       setPendingPoliceTerrorists(0);
       setPopeVetoedOnDay0(false);
+      setPendingPopeSuccession(false);
+      setPriestAppointmentPending(false);
       setCourtExecutionToVeto(null);
       setPrisonerExecutionToVeto(null);
       setSimulatedWinner(null);
@@ -1419,7 +1430,18 @@ export default function App() {
       alert(tl('لطفاً یک بازیکن زنده را به عنوان کشیش جدید انتخاب فرمایید.', 'Please a player alive را to عنوان Priest new select فرمایید.'));
       return;
     }
+    // A living Priest cannot be replaced.
+    if (players.some((p) => p.role === 'priest' && p.isAlive)) {
+      alert(tl('کشیش زنده قابل تعویض نیست.', 'A living Priest cannot be replaced.'));
+      return;
+    }
+    // Priest may only be chosen from role-less players.
+    if (nominee.role !== 'none') {
+      alert(tl('کشیش تنها از میان بازیکنان بدون نقش قابل انتخاب است.', 'Priest can only be chosen from role-less players.'));
+      return;
+    }
 
+    setPriestAppointmentPending(false);
     setPlayers((prev) =>
       prev.map((p) => {
         // Clear dead priest's role to maintain unique assignments
@@ -1446,6 +1468,11 @@ export default function App() {
       alert(tl('لطفاً یک بازیکن زنده جهت جانشینی مقام پاپ انتخاب نمایید.', 'Please a player alive جهت succession office Pope select نمایید.'));
       return;
     }
+    // Mayor and Judge may not be appointed as Pope.
+    if (nominee.role === 'mayor' || nominee.role === 'judge') {
+      alert(tl('شهردار و قاضی نمی‌توانند به عنوان پاپ منصوب شوند.', 'Mayor and Judge cannot be appointed as Pope.'));
+      return;
+    }
 
     setPlayers((prev) =>
       prev.map((p) => {
@@ -1460,8 +1487,18 @@ export default function App() {
       })
     );
 
+    // New Pope: reset veto cooldown (independent from previous Pope) and open Priest appointment.
+    setPopeVetoCooldown(0);
+    localStorage.removeItem('president_popeVetoCooldown');
+    setPendingPopeSuccession(false);
+    setPriestAppointmentPending(true);
+
     handleLogEvent(
       tl(`به دلیل فوت همزمان پاپ و کشیش، رئیس‌جمهور مجمع بازیکن زنده «${nominee.name}» را به مقام پاپ منصوب نمود.`, `to دلیل death همزمان Pope and Priest, President open assemblyیکن alive "${nominee.name}" را to office High Pope appointed نمود.`),
+      'system'
+    );
+    handleLogEvent(
+      tl('پاپ جدید تعیین شد. قابلیت وتوی وی مستقل از پاپ قبلی است و از هم‌اکنون قابل استفاده است.', 'A new Pope was set. His veto power is independent of the previous Pope and is available immediately.'),
       'system'
     );
   };
@@ -2021,6 +2058,42 @@ export default function App() {
       const unique = Array.from(new Set(merged));
       return unique.slice(0, 2); // Maximum of 2 nominees in the court
     });
+
+    // Resolve deferred Pope succession at the START of the new day (Rule 7).
+    {
+      const survivorIds = new Set(
+        players.filter((p) => p.isAlive && !results.deaths.includes(p.id)).map((p) => p.id)
+      );
+      const popeAliveAfter = players.some((p) => p.role === 'pope' && survivorIds.has(p.id));
+      const deadPope = players.find((p) => p.role === 'pope' && !survivorIds.has(p.id));
+      if (!popeAliveAfter && deadPope) {
+        const priestAlive = players.find((p) => p.role === 'priest' && survivorIds.has(p.id));
+        if (priestAlive) {
+          // Scenario A: auto-promote the living Priest to Pope with a fresh initial shield.
+          setPlayers((prev) =>
+            prev.map((p) => {
+              if (p.id === priestAlive.id) return { ...p, role: 'pope', hasShield: true, shieldBroken: false };
+              if (p.role === 'pope' && p.id !== priestAlive.id) return { ...p, role: 'none', hasShield: false };
+              return p;
+            })
+          );
+          setPopeVetoCooldown(0);
+          localStorage.removeItem('president_popeVetoCooldown');
+          setPendingPopeSuccession(false);
+          setPriestAppointmentPending(true);
+          setTimeout(() => {
+            handleLogEvent(tl('کشیش زنده به مقام پاپ ارتقا یافت و یک سپر اولیه دریافت کرد. اکنون می‌تواند از بین بازیکنان بدون نقش، کشیش جدید انتخاب کند (اختیاری).', 'The living Priest was promoted to Pope and received an initial shield. He may now appoint a new Priest from role-less players (optional).'), 'system');
+            handleLogEvent(tl('پاپ جدید تعیین شد. قابلیت وتوی وی مستقل از پاپ قبلی است و از هم‌اکنون قابل استفاده است.', 'A new Pope was set. His veto power is independent of the previous Pope and is available immediately.'), 'system');
+          }, 160);
+        } else {
+          // Scenario B: no living Priest -> President must appoint a new Pope at day start.
+          setPendingPopeSuccession(true);
+          setTimeout(() => {
+            handleLogEvent(tl('پاپ و کشیش هر دو کشته شده‌اند. رئیس‌جمهور باید در آغاز این روز یک پاپ جدید منصوب کند. اولویت با بازیکنان بدون نقش است؛ در نبود آنها، از میان نقش‌داران به‌جز شهردار و قاضی.', 'Both the Pope and the Priest are dead. The President must appoint a new Pope at the start of this day. Priority: role-less players; otherwise role-holders except Mayor and Judge.'), 'system');
+          }, 160);
+        }
+      }
+    }
 
     handleLogEvent(tl(`بیدارباش! خورشید دور جدید فروزان شد. نتایج رویدادهای شب گذشته بروی تابلوی اعلانات قرار گرفت.`, `awakeباش! خورشید round new فdayان شد. results رویدادهای night گذشته بروی تابلوی اعلانات قرار گرفت.`), 'system');
   };
@@ -3011,6 +3084,16 @@ export default function App() {
                     {/* STEP 1: NIGHT EVENTS AND EMERGENCIES (حوادث و گزارش‌های شب) */}
                     {currentDayStep === 1 && (
                       <div className="space-y-4 animate-fadeIn">
+                        {(pendingPopeSuccession || priestAppointmentPending) && (
+                          <div className="p-3 bg-amber-950/30 border border-amber-700/50 rounded-xl flex items-start gap-2">
+                            <ShieldAlert className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                            <p className="text-[10px] text-amber-200 leading-relaxed font-bold">
+                              {pendingPopeSuccession
+                                ? tl('ترتیب آغاز روز: نخست جانشینی پاپ را تعیین کنید، سپس (در صورت نیاز) کشیش جدید، و تنها پس از آن به انتصابات ریاست‌جمهوری و احکام بپردازید.', 'Day start order: first resolve Pope succession, then (if needed) appoint a Priest, and only afterwards proceed to presidential appointments and verdicts.')
+                                : tl('پاپ می‌تواند پیش از انتصابات ریاست‌جمهوری، کشیش جدید را از میان بازیکنان بدون نقش انتخاب کند (اختیاری).', 'Before presidential appointments, the Pope may appoint a new Priest from role-less players (optional).')}
+                            </p>
+                          </div>
+                        )}
                         <CollapsibleGuide title={tl("گام ۱ از ۷: اعلام حوادث دیشب مجمع", "step 1 from 7: اعلام حوادث دیnight assembly")} defaultOpen={false}>
                           <p className="text-[10px] text-slate-400 leading-normal mt-0.5">
                             {tl('خروجی خودکار شب گذشته اعم از اعدام ها، ترورهای مستقیم لژ و سپرهای مخدوش شده را به حضار اعلام بفرمایید.', 'exitی خودکار night گذشته اعم from execution ها, ترورهای مستقیم lodge and shieldهای مخtwoش شده را to حضار اعلام بفرمایید.')}
@@ -3097,10 +3180,18 @@ export default function App() {
                                     {tl('تایید کشیش', 'confirm Priest')}
                                   </button>
                                 </div>
+                                {priestAppointmentPending && (
+                                  <button
+                                    onClick={() => setPriestAppointmentPending(false)}
+                                    className="text-[9px] text-slate-400 hover:text-slate-200 underline underline-offset-2 transition"
+                                  >
+                                    {tl('فعلاً از انتصاب کشیش صرف‌نظر می‌کنم (اختیاری)', 'Skip Priest appointment for now (optional)')}
+                                  </button>
+                                )}
                               </>
                             ) : (
                               <p className="text-[9.5px] text-rose-400 leading-relaxed font-bold bg-rose-950/20 p-2 border border-rose-900/30 rounded">
-                                ⚠️ متاسفانه هیچ شهروند بدون نقشی (آزاد) برای تصدی جایگاه کشیش در دسترس نیست. پاپ می‌تواند تا زمان آزادی یک فرد از زندان یا به وجود آمدن شهروند آزاد صبر کند. در این مدت، قابلیت مشترک پاپ و کشیش (وتوی زندان) غیرفعال خواهد بود.
+                                ⚠️ در حال حاضر بازیکن بدون نقشی در بازی نیست. انتصاب کشیش به روزی موکول می‌شود که یک بازیکن بدون نقش در دسترس باشد (مثلاً پس از آزادسازی زندانی توسط قاضی).
                               </p>
                             )}
                           </div>
@@ -3524,7 +3615,7 @@ export default function App() {
                             {!players.some(p => p.role === 'pope' && p.isAlive) && !players.some(p => p.role === 'priest' && p.isAlive) && (
                               <div className="p-3 bg-rose-950/20 border border-rose-900/40 rounded-xl space-y-2 mt-2">
                                 <span className="text-[10px] font-black text-rose-400 block mb-1">{tl('⛪ تعیین اضطراری پاپ جدید (قاعده ۸)', '⛪ set emergency High Pope new (قاعده 8)')}</span>
-                                <p className="text-[8.5px] text-slate-400 leading-normal">{tl('رئیس‌جمهور موظف است در فوت همزمان پاپ و کشیش، پاپ جدید را با اولویت شهروند (قاضی و کشیش مجاز نیستند) برگزیند.', 'President موظف است in death همزمان Pope and Priest, Pope new را with اولویت citizen plain (Judge and Priest مجاز نیستند) برگزیند.')}</p>
+                                <p className="text-[8.5px] text-slate-400 leading-normal">{tl('پاپ و کشیش هر دو کشته شده‌اند. رئیس‌جمهور باید در آغاز این روز یک پاپ جدید منصوب کند. اولویت با بازیکنان بدون نقش است؛ در نبود آنها، از میان نقش‌داران به‌جز شهردار و قاضی.', 'President موظف است in death همزمان Pope and Priest, Pope new را with اولویت citizen plain (Judge and Priest مجاز نیستند) برگزیند.')}</p>
                                 <div className="flex gap-2">
                                   <select
                                     id="president-assign-pope-select"
@@ -3532,7 +3623,7 @@ export default function App() {
                                   >
                                     <option value="">{tl('شهروند واجد صلاحیت...', 'citizen واجد صلاحیت...')}</option>
                                     {players
-                                      .filter(p => p.isAlive && p.id !== cabinet.presidentId && p.role !== 'judge' && p.role !== 'priest')
+                                      .filter(p => p.isAlive && p.id !== cabinet.presidentId && p.role !== 'mayor' && p.role !== 'judge')
                                       .sort((a,b) => {
                                         if (a.role === 'none' && b.role !== 'none') return -1;
                                         if (a.role !== 'none' && b.role === 'none') return 1;
@@ -4473,6 +4564,8 @@ export default function App() {
                         setMayorRevoltedToday(false);
                         setPendingPoliceTerrorists(0);
                         setPopeVetoedOnDay0(false);
+                        setPendingPopeSuccession(false);
+                        setPriestAppointmentPending(false);
                                           setCourtExecutionToVeto(null);
                         setPrisonerExecutionToVeto(null);
                         setSimulatedWinner(null);
